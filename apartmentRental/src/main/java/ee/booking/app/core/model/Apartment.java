@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -24,11 +25,12 @@ public class Apartment {
 	@JoinColumn(name="apartmentTypeId")
 	private ApartmentType apartmentType;
 	private int size;
-	@OneToMany
-	private List<Room> rooms;
 	
 	private int bathroomsCount;
 	
 	private BigDecimal pricePerNight;
 	private int minimumNights;
+	
+	private String description;
+	private String rules;
 }
