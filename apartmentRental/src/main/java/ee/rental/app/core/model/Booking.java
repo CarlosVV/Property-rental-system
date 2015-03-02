@@ -15,18 +15,18 @@ public class Booking {
 	@Id @GeneratedValue
 	private Long id;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private UserAccount account;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private Apartment apartment;
-	@OneToMany
+	@OneToMany(mappedBy="booking")
 	private List<Guest> guests;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private BookingStatus bookingStatus;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private BookingPayed bookingPayed;
 	public Long getId() {
 		return id;

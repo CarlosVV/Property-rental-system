@@ -14,7 +14,7 @@ public class BookingPayed {
 	@Id @GeneratedValue
 	private Long id;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private Booking booking;
 	private Date payedDate;
 	public Long getId() {

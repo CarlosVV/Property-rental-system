@@ -14,10 +14,10 @@ public class Review {
 	private Long id;
 	//@JoinColumn(name="accountId")
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private UserAccount author;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private Apartment apartment;
 	private String review;
 	private int stars;

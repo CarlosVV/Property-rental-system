@@ -18,14 +18,14 @@ public class Message {
 	private String message;
 	//@JoinColumn(name="senderId")
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private UserAccount sender;
 	//@JoinColumn(name="receiverId")
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private UserAccount receiver;
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private Booking booking;
 	private Date sentDate;
 	public Date getSentDate() {

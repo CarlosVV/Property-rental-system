@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -19,7 +21,7 @@ public class Apartment {
 	private Long id;
 	//@JoinColumn(name="ownerId")
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private UserAccount owner;
 	private String country;
 	private String city;
@@ -29,7 +31,7 @@ public class Apartment {
 	private String title;
 	//@JoinColumn(name="apartmentTypeId")
 	@OneToOne(cascade=CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	//@PrimaryKeyJoinColumn
 	private ApartmentType apartmentType;
 	private int size;
 	
@@ -37,15 +39,16 @@ public class Apartment {
 	
 	private BigDecimal pricePerNight;
 	private int minimumNights;
-	
+	@Lob
 	private String description;
+	@Lob
 	private String rules;
 	
-	@OneToMany
+	@OneToMany(mappedBy="apartment")
 	private List<InavailabilityDate> inavailabilityDates;
-	@OneToMany
+	@OneToMany(mappedBy="apartment")
 	private List<Review> reviews;
-	@OneToMany
+	@ManyToMany
 	private List<ApartmentFacility> apartmentFacilities;
 	
 	public Long getId() {
