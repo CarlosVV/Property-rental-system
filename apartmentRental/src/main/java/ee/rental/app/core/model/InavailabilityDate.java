@@ -11,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -21,6 +22,7 @@ public class InavailabilityDate {
 	//@JoinColumn(name="apartmentId")
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
+	@JsonIgnore
 	private Apartment apartment;
 	private Date date;
 	public Long getId() {

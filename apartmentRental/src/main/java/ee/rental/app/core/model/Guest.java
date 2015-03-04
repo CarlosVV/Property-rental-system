@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -16,6 +17,7 @@ public class Guest {
 	private String firstName;
 	private String surname;
 	@ManyToOne
+	@JsonIgnore
 	private Booking booking;
 	public Booking getBooking() {
 		return booking;

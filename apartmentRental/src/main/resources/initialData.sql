@@ -12,4 +12,4 @@ INSERT INTO Booking(account_id, apartment_id, bookingStatus_id) VALUES(2,1,1);
 INSERT INTO Guest(firstName,surname,booking_id) VALUES('petr','petrov',1);
 INSERT INTO Guest(firstName,surname,booking_id) VALUES('ivan','ivanov',1);
 
-INSERT INTO Message(message,sender_id,receiver_id,booking_id) VALUES('dgsaigs',1,2,1);
+INSERT INTO Message(sentDate,message,sender_id,receiver_id,booking_id) VALUES('2011-03-15 00:22:22','dgsaigs',1,2,1);

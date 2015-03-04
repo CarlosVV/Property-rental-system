@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -19,6 +20,7 @@ public class BookingPayed {
 	private Long id;
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
+	@JsonIgnore
 	private Booking booking;
 	private Date payedDate;
 	public Long getId() {

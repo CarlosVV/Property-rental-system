@@ -11,7 +11,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -30,6 +33,8 @@ public class Message {
 	private UserAccount receiver;
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
+	//dont need booking info in each message
+	@JsonIgnore
 	private Booking booking;
 	private Date sentDate;
 	public Date getSentDate() {
