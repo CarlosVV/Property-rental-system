@@ -2,6 +2,8 @@ package ee.rental.app.rest.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import ee.rental.app.rest.exception.NotFoundException;
 
 @RestController
 public class ApartmentController {
+	private static final Logger logger = LoggerFactory.getLogger(ApartmentController.class);
 	@Autowired
 	private UserAccountService userAccountService;
 	@Autowired
@@ -25,7 +28,9 @@ public class ApartmentController {
 			@RequestParam(value="receiverId") Long receiverId,
 			@RequestParam(value="bookingId") Long bookingId){
 		try{
-			return messageService.findMessages(senderId, receiverId, bookingId);
+			List<Message> messages = messageService.findMessages(senderId, receiverId, bookingId);
+			logger.info(messages.toString());
+			return messages;
 		}catch(UserAccountNotFoundException | BookingNotFoundException e){
 			throw new NotFoundException(e);
 		}

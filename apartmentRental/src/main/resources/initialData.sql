@@ -1,6 +1,5 @@
 INSERT INTO UserAccount(username) VALUES('FIRST USER');
 INSERT INTO UserAccount(username) VALUES('SECOND USER');
-INSERT INTO Message(message,sender_id,receiver_id) VALUES('dgsaigs',1,2);
 
 INSERT INTO ApartmentType(id,name,description) VALUES(1,'Studio','Studio desc');
 
@@ -13,3 +12,4 @@ INSERT INTO Booking(account_id, apartment_id, bookingStatus_id) VALUES(2,1,1);
 INSERT INTO Guest(firstName,surname,booking_id) VALUES('petr','petrov',1);
 INSERT INTO Guest(firstName,surname,booking_id) VALUES('ivan','ivanov',1);
 
+INSERT INTO Message(message,sender_id,receiver_id,booking_id) VALUES('dgsaigs',1,2,1);
