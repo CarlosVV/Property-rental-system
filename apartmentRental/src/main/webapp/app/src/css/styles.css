@@ -1,0 +1,11 @@
+.resetMarginPadding {
+	margin:0px;
+	padding:0px;
+}
+.centerText{
+	text-align: center;
+}
+.centerElement{
+	float:none;
+	margin:0 auto;
+}
