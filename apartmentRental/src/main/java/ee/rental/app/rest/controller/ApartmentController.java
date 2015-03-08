@@ -1,5 +1,6 @@
 package ee.rental.app.rest.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import ee.rental.app.core.service.ApartmentService;
 import ee.rental.app.core.service.MessageService;
 import ee.rental.app.core.service.UserAccountService;
 import ee.rental.app.core.service.exception.ApartmentNotFoundException;
+import ee.rental.app.core.service.exception.ApartmentsNotFoundException;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 import ee.rental.app.rest.exception.NotFoundException;
@@ -28,11 +30,23 @@ public class ApartmentController {
 	@Autowired
 	private ApartmentService apartmentService;
 	@RequestMapping("/getApartment")
-	public Apartment greeting(@RequestParam("apartmentId") Long apartmentId){
+	public Apartment getApartment(@RequestParam("apartmentId") Long apartmentId){
 		try{
 			Apartment apartment = apartmentService.findApartment(apartmentId);
 			return apartment;
 		}catch(ApartmentNotFoundException e){
+			throw new NotFoundException(e);
+		}
+	}
+	@RequestMapping("/queryApartments")
+	public List<Apartment> queryApartments(@RequestParam("loc") String location,
+			@RequestParam("checkIn") Date checkIn,
+			@RequestParam("checkOut") Date checkOut,
+			@RequestParam("guests") Integer guests){
+		try{
+			return null;
+			
+		}catch(ApartmentsNotFoundException e){
 			throw new NotFoundException(e);
 		}
 	}

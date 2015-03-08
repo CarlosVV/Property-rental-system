@@ -2,7 +2,7 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','ApartmentService','ApartmentController']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ApartmentService','ApartmentController']);
 
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
@@ -29,9 +29,26 @@ rentalApp.config(
 				views:{
 					"mainView":{
 						templateUrl:"partials/showApartment.html",
-						controller:"ApartmentCtrl"
+						controller:"ShowApartmentCtrl"
+					}
+				}
+			})
+			.state("addApartment",{
+				url:"/addApartment",
+				views:{
+					"mainView":{
+						templateUrl:"partials/addApartment.html",
+						controller:"AddApartmentCtrl"
 					}
 				}
 			});
 	}
 );
+
+rentalApp.config(function(uiGmapGoogleMapApiProvider){
+	uiGmapGoogleMapApiProvider.configure({
+        v: '3.17',
+        libraries: 'weather,geometry,visualization'
+    });
+	console.log("configured");
+});

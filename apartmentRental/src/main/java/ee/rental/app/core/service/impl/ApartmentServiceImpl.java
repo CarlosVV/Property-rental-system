@@ -45,4 +45,10 @@ public class ApartmentServiceImpl implements ApartmentService{
 		return apartmentRepo.findApartmentsByAccount(accountId);
 	}
 
+	@Override
+	public List<Apartment> queryApartments() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

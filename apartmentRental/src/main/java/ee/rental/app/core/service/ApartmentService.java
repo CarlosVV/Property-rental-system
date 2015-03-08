@@ -9,4 +9,5 @@ public interface ApartmentService {
 	public List<Apartment> findAllApartments();
 	public Apartment findApartment(Long id);
 	public List<Apartment> findApartmentsByAccount(Long accountId);
+	public List<Apartment> queryApartments();
 }
