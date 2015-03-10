@@ -2,7 +2,7 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ApartmentService','ApartmentController']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ApartmentService','ApartmentController']);
 
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
@@ -44,11 +44,13 @@ rentalApp.config(
 			});
 	}
 );
-
+/*
+if use this way of injecting google maps api then ngAutocomplete doesn't work.
+Just inject with <script> and nothing changes in the rest of app but it is not recomended to do like that
 rentalApp.config(function(uiGmapGoogleMapApiProvider){
 	uiGmapGoogleMapApiProvider.configure({
         v: '3.17',
         libraries: 'weather,geometry,visualization'
     });
 	console.log("configured");
-});
+});*/
