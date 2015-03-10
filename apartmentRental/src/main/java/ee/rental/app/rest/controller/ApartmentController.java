@@ -35,6 +35,7 @@ public class ApartmentController {
 			Apartment apartment = apartmentService.findApartment(apartmentId);
 			return apartment;
 		}catch(ApartmentNotFoundException e){
+			logger.info("thrown");
 			throw new NotFoundException(e);
 		}
 	}

@@ -9,6 +9,7 @@ apartmentController.controller("ShowApartmentCtrl", ["$scope","ApartmentService"
 	
 	$scope.service = ApartmentService;
 	$scope.apartment={title:"y"};
+	console.log($scope.apartment);
 	console.log("ShowApartmentCtrl");
 	console.log("n");
 	$scope.changeLoc = function(){
@@ -21,39 +22,39 @@ apartmentController.controller("ShowApartmentCtrl", ["$scope","ApartmentService"
 	}
 	ApartmentService.getApartment().get({apartmentId:1},function(apartment){
 		$scope.apartment = apartment;
-		console.log($scope.apartment);
-			$scope.marker = {
-					id: 0,
-				      coords: {
-				        latitude: $scope.apartment.lattitude,
-				        longitude: $scope.apartment.longitude
-				      },
-				      options: { draggable: true },
-				      events: {
-				        dragend: function (marker, eventName, args) {
-				        	console.log('marker dragend');
-				          var lat = marker.getPosition().lat();
-				          var lon = marker.getPosition().lng();
-				          console.log(lat);
-				          console.log(lon);
+		console.log("hmm",$scope.apartment);
+		$scope.marker = {
+				id: 0,
+			      coords: {
+			        latitude: $scope.apartment.latitude,
+			        longitude: $scope.apartment.longitude
+			      },
+			      options: { draggable: true },
+			      events: {
+			        dragend: function (marker, eventName, args) {
+			        	console.log('marker dragend');
+			          var lat = marker.getPosition().lat();
+			          var lon = marker.getPosition().lng();
+			          console.log(lat);
+			          console.log(lon);
 
-				          $scope.marker.options = {
-				            draggable: true,
-				            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
-				            labelAnchor: "100 0",
-				            labelClass: "marker-labels"
-				          };
-				        }
-				      }
-			};
-				//$scope.marker.latitude = $scope.apartment.lattitude;
-				//$scope.marker.longitude = $scope.apartment.longitude;
-				console.log("ok its loaded changing coord");
-				//center map
-				$scope.map.center.latitude = $scope.apartment.lattitude;
-				$scope.map.center.longitude = $scope.apartment.longitude;
-				console.log($scope.marker.coords.latitude);
-		        console.log($scope.marker.coords.longitude);
+			          $scope.marker.options = {
+			            draggable: true,
+			            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
+			            labelAnchor: "100 0",
+			            labelClass: "marker-labels"
+			          };
+			        }
+			      }
+		};
+			//$scope.marker.latitude = $scope.apartment.latitude;
+			//$scope.marker.longitude = $scope.apartment.longitude;
+			console.log("ok its loaded changing coord");
+			//center map
+			$scope.map.center.latitude = $scope.apartment.latitude;
+			$scope.map.center.longitude = $scope.apartment.longitude;
+			console.log($scope.marker.coords.latitude);
+	        console.log($scope.marker.coords.longitude);
 		//console.log("new lat:",$scope.marker.latitude);
 	});
 	

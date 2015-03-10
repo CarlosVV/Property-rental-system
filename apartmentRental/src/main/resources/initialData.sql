@@ -3,7 +3,7 @@ INSERT INTO UserAccount(username) VALUES('SECOND USER');
 
 INSERT INTO ApartmentType(id,name,description) VALUES(1,'Studio','Studio desc');
 
-INSERT INTO Apartment(owner_id,country,city,zipCode,address,title,apartmentType_id,size,bathroomsCount,pricePerNight,minimumNights,description,rules,longitude,lattitude) VALUES(1,'country1','city1','zipcode1','adress 1 2','first apartment',1,50,3,505,2,'first apartment desc','no smoking plix plox',-71,44);
+INSERT INTO Apartment(owner_id,country,city,zipCode,address,title,apartmentType_id,size,bathroomsCount,pricePerNight,minimumNights,description,rules,longitude,latitude) VALUES(1,'country1','city1','zipcode1','adress 1 2','first apartment',1,50,3,505,2,'first apartment desc','no smoking plix plox',-71,44);
 
 INSERT INTO BookingStatus(id,name,description) VALUES(1,'Created','The booking is created');
 
