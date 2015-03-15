@@ -20,7 +20,7 @@ apartmentController.controller("ShowApartmentCtrl", ["$scope","ApartmentService"
         $scope.map.center.latitude = 44.58193206287199;
         $scope.map.center.longitude = -72.263427734375;
 	}
-	ApartmentService.get({apartmentId:1},function(apartment){
+	ApartmentService.getApartment().get({apartmentId:1},function(apartment){
 		$scope.apartment = apartment;
 		console.log("hmm",$scope.apartment);
 		$scope.marker = {
@@ -119,7 +119,7 @@ apartmentController.controller("AddApartmentCtrl",["$scope","ApartmentService","
 		console.log("ok its loaded");
     });
 }]);
-apartmentController.controller("HomeController",["$scope",function($scope){
+apartmentController.controller("HomeController",["$scope","ApartmentService",function($scope,ApartmentService){
 	$scope.neededAddressComponents = {
 		locality : 'long_name',
 		administrative_area_level_1: 'short_name',
@@ -146,7 +146,10 @@ apartmentController.controller("HomeController",["$scope",function($scope){
 	});
 	
 	$scope.queryApartments = function(query){
-		console.log("FORM DATA SENT");
+		console.log("FORM SUBMIT:",$scope.query);
+		ApartmentService.queryApartments().save($scope.query, function(){
+			console.log("DATA SENT YAY");
+		});
 	}
 	$scope.resetQuery = function(){
 		delete $scope.query.locality;

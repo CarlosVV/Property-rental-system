@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import ee.rental.app.core.model.Apartment;
+import ee.rental.app.core.model.wrapper.ApartmentQueryWrapper;
 import ee.rental.app.core.repository.ApartmentRepo;
 
 @Repository
@@ -40,6 +41,18 @@ public class ApartmentRepoJpa implements ApartmentRepo{
 		apartment.setTitle(data.getTitle());
 		//need to add more
 		return apartment;
+	}
+
+	public List<Apartment> queryApartmentsByCountry(ApartmentQueryWrapper query) {
+		Query queryToDb = em.createQuery("SELECT a FROM Apartment a WHERE a.country=?1");
+		queryToDb.setParameter(1, query.getCountry());
+		return queryToDb.getResultList();
+	}
+	public List<Apartment> queryApartmentsByCity(ApartmentQueryWrapper query) {
+		Query queryToDb = em.createQuery("SELECT a FROM Apartment a WHERE a.city=?1 AND a.country=?2");
+		queryToDb.setParameter(1, query.getCity());
+		queryToDb.setParameter(2, query.getCountry());
+		return queryToDb.getResultList();
 	}
 
 }

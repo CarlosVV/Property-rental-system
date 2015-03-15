@@ -7,12 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.rental.app.core.model.Apartment;
 import ee.rental.app.core.model.Message;
+import ee.rental.app.core.model.wrapper.ApartmentQueryWrapper;
 import ee.rental.app.core.service.ApartmentService;
 import ee.rental.app.core.service.MessageService;
 import ee.rental.app.core.service.UserAccountService;
@@ -41,15 +43,8 @@ public class ApartmentController {
 		}
 	}
 	@RequestMapping("/queryApartments")
-	public List<Apartment> queryApartments(@RequestParam("loc") String location,
-			@RequestParam("checkIn") Date checkIn,
-			@RequestParam("checkOut") Date checkOut,
-			@RequestParam("guests") Integer guests){
-		try{
-			return null;
-			
-		}catch(ApartmentsNotFoundException e){
-			throw new NotFoundException(e);
-		}
+	public List<Apartment> queryApartments(@RequestBody ApartmentQueryWrapper query){
+		logger.info("GOT IT "+query);
+		return null;
 	}
 }

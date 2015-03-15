@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import ee.rental.app.core.model.Apartment;
 import ee.rental.app.core.model.UserAccount;
+import ee.rental.app.core.model.wrapper.ApartmentQueryWrapper;
 import ee.rental.app.core.repository.ApartmentRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.ApartmentService;
@@ -46,9 +47,11 @@ public class ApartmentServiceImpl implements ApartmentService{
 	}
 
 	@Override
-	public List<Apartment> queryApartments() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Apartment> queryApartments(ApartmentQueryWrapper query) {
+		if(query.getLocality() != null)
+			return apartmentRepo.queryApartmentsByCity(query);
+		else
+			return apartmentRepo.queryApartmentsByCountry(query);
 	}
 
 }
