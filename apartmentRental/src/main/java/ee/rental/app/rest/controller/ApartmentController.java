@@ -33,6 +33,7 @@ public class ApartmentController {
 	public Apartment getApartment(@RequestParam("apartmentId") Long apartmentId){
 		try{
 			Apartment apartment = apartmentService.findApartment(apartmentId);
+			logger.info("WORKING "+apartment);
 			return apartment;
 		}catch(ApartmentNotFoundException e){
 			logger.info("thrown");

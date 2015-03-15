@@ -20,7 +20,7 @@ apartmentController.controller("ShowApartmentCtrl", ["$scope","ApartmentService"
         $scope.map.center.latitude = 44.58193206287199;
         $scope.map.center.longitude = -72.263427734375;
 	}
-	ApartmentService.getApartment().get({apartmentId:1},function(apartment){
+	ApartmentService.get({apartmentId:1},function(apartment){
 		$scope.apartment = apartment;
 		console.log("hmm",$scope.apartment);
 		$scope.marker = {
@@ -84,7 +84,7 @@ apartmentController.controller("AddApartmentCtrl",["$scope","ApartmentService","
 			console.log("changed");
 		}
 	});
-	$scope.autoCompleteOptions = {watchEnter:true};
+	$scope.autoCompleteOptions = {watchEnter:false};
 	
 	$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 	console.log("addapartmentctrl",$scope.map);
@@ -118,4 +118,39 @@ apartmentController.controller("AddApartmentCtrl",["$scope","ApartmentService","
 	uiGmapGoogleMapApi.then(function(maps) {
 		console.log("ok its loaded");
     });
+}]);
+apartmentController.controller("HomeController",["$scope",function($scope){
+	$scope.neededAddressComponents = {
+		locality : 'long_name',
+		administrative_area_level_1: 'short_name',
+		country: 'long_name'
+	};
+	$scope.query = {};
+	$scope.details = {};
+	$scope.autoCompleteOptions = {watchEnter:false};
+	//get address details for query
+	$scope.$watch('details',function(newVal){
+		if(typeof newVal.address_components !== 'undefined'){
+			//resetting query object for new location
+			delete $scope.query.locality;
+			delete $scope.query.administrative_area_level_1;
+			delete $scope.query.country;
+			for(var i=0; i < newVal.address_components.length; i++){
+				var addressType = newVal.address_components[i].types[0];
+				if($scope.neededAddressComponents[addressType]){
+					$scope.query[addressType] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+				}
+			}
+		}
+		console.log("query: ",$scope.query);
+	});
+	
+	$scope.queryApartments = function(query){
+		console.log("FORM DATA SENT");
+	}
+	$scope.resetQuery = function(){
+		delete $scope.query.locality;
+		delete $scope.query.administrative_area_level_1;
+		delete $scope.query.country;
+	}
 }]);

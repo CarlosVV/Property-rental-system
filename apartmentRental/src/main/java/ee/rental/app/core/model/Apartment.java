@@ -29,6 +29,7 @@ public class Apartment {
 	private UserAccount owner;
 	private String country;
 	private String city;
+	private String administrativeArea;
 	private String zipCode;
 	private String address;
 	private Double longitude;
@@ -170,6 +171,12 @@ public class Apartment {
 	}
 	public void setApartmentFacilities(List<ApartmentFacility> apartmentFacilities) {
 		this.apartmentFacilities = apartmentFacilities;
+	}
+	public String getAdministrativeArea() {
+		return administrativeArea;
+	}
+	public void setAdministrativeArea(String administrativeArea) {
+		this.administrativeArea = administrativeArea;
 	}
 	
 	

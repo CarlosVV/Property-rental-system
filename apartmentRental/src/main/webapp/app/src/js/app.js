@@ -2,7 +2,7 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ApartmentService','ApartmentController']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ApartmentService','ApartmentController','ApartmentDirective']);
 
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
@@ -12,7 +12,8 @@ rentalApp.config(
 				url:"/home",
 				views: {
 					"mainView":{
-						templateUrl:"partials/home.html"
+						templateUrl:"partials/home.html",
+						controller:"HomeController"
 					}
 				}
 			})

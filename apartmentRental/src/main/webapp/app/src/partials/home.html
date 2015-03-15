@@ -4,11 +4,16 @@
 			<h2 class="col-md-6 col-md-offset-3 centerText">Find apartments for rent</h2>
 		</div>
 		<div class="row">
-			<form class="col-md-9 centerElement">
-				<input type="text" placeholder="Location"/>
-				<input type="text" placeholder="Check in"/>
-				<input type="text" placeholder="Check out"/>
-				<input type="number" placeholder="Number of guests"/>
+			<form class="col-md-9 centerElement" name="queryForm" ng-submit="queryForm.$valid && queryApartments(query)" novalidate>
+				<input type="text" name="location" placeholder="Location" options="autoCompleteOptions" 
+					ng-autocomplete details="details" ng-model="query.address" 
+					class="form-control" check-query="{{query}}" ng-change="resetQuery()" required/>
+				<input type="text" name="checkIn" placeholder="Check in" ng-model="query.checkIn" 
+					class="form-control" required />
+				<input type="text" name="checkOut" placeholder="Check out" ng-model="query.checkOut" 
+					class="form-control" required/>
+				<input type="number" name="guestNumber" placeholder="Number of guests" ng-model="query.guestNumber" 
+					class="form-control" min="0" required/>
 				<input type="submit" value="Find"/>
 			</form>
 		</div>
