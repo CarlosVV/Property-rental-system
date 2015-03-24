@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ import ee.rental.app.core.repository.ApartmentRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.ApartmentService;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
+import ee.rental.app.rest.controller.ApartmentController;
 
 @Service
 @Transactional
 public class ApartmentServiceImpl implements ApartmentService{
+	private static final Logger logger = LoggerFactory.getLogger(ApartmentController.class);
 	@Autowired
 	private ApartmentRepo apartmentRepo;
 	@Autowired
@@ -31,27 +35,24 @@ public class ApartmentServiceImpl implements ApartmentService{
 		return apartmentRepo.createApartment(apartment);
 	}
 
-	@Override
 	public List<Apartment> findAllApartments() {
 		return apartmentRepo.findAllApartments();
 	}
 
-	@Override
 	public Apartment findApartment(Long id) {
 		return apartmentRepo.findApartment(id);
 	}
-
-	@Override
+	
 	public List<Apartment> findApartmentsByAccount(Long accountId) {
 		return apartmentRepo.findApartmentsByAccount(accountId);
 	}
-
-	@Override
+	
 	public List<Apartment> queryApartments(ApartmentQueryWrapper query) {
-		if(query.getLocality() != null)
+		if(!query.getLocality().equals("")){
 			return apartmentRepo.queryApartmentsByCity(query);
-		else
+		}else{
 			return apartmentRepo.queryApartmentsByCountry(query);
+		}
 	}
 
 }

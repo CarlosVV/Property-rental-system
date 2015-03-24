@@ -20,7 +20,7 @@ apartmentController.controller("ShowApartmentCtrl", ["$scope","ApartmentService"
         $scope.map.center.latitude = 44.58193206287199;
         $scope.map.center.longitude = -72.263427734375;
 	}
-	ApartmentService.getApartment().get({apartmentId:1},function(apartment){
+	ApartmentService.get({id:1},function(apartment){
 		$scope.apartment = apartment;
 		console.log("hmm",$scope.apartment);
 		$scope.marker = {
@@ -119,7 +119,7 @@ apartmentController.controller("AddApartmentCtrl",["$scope","ApartmentService","
 		console.log("ok its loaded");
     });
 }]);
-apartmentController.controller("HomeController",["$scope","ApartmentService",function($scope,ApartmentService){
+apartmentController.controller("HomeController",["$scope","ApartmentService","$state","$filter",function($scope,ApartmentService,$state,$filter){
 	$scope.neededAddressComponents = {
 		locality : 'long_name',
 		administrative_area_level_1: 'short_name',
@@ -132,9 +132,9 @@ apartmentController.controller("HomeController",["$scope","ApartmentService",fun
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
 			//resetting query object for new location
-			delete $scope.query.locality;
-			delete $scope.query.administrative_area_level_1;
-			delete $scope.query.country;
+			$scope.query.locality = "";
+			$scope.query.administrative_area_level_1 = "";
+			$scope.query.country = "";
 			for(var i=0; i < newVal.address_components.length; i++){
 				var addressType = newVal.address_components[i].types[0];
 				if($scope.neededAddressComponents[addressType]){
@@ -147,13 +147,76 @@ apartmentController.controller("HomeController",["$scope","ApartmentService",fun
 	
 	$scope.queryApartments = function(query){
 		console.log("FORM SUBMIT:",$scope.query);
-		ApartmentService.queryApartments().save($scope.query, function(){
-			console.log("DATA SENT YAY");
+		$state.go("queryApartments",{
+			address:$scope.query.address,
+			country:$scope.query.country,
+			locality:$scope.query.locality,
+			admArea:$scope.query.administrative_area_level_1,
+			checkIn:$scope.query.checkIn,
+			checkOut:$scope.query.checkOut,
+			guestNumber:$scope.query.guestNumber
 		});
 	}
 	$scope.resetQuery = function(){
-		delete $scope.query.locality;
-		delete $scope.query.administrative_area_level_1;
-		delete $scope.query.country;
+		$scope.query.locality = "";
+		$scope.query.administrative_area_level_1 = "";
+		$scope.query.country = "";
 	}
+	//old way, should use directive instead!
+	/*$scope.$watch('data.dateDropDownInput',function(newVal){
+		if(typeof $scope.data !== 'undefined'){
+			$scope.data.dateDropDownInput = $filter("date")(newVal,'dd-MM-yyyy');
+			console.log($scope.data.dateDropDownInput);
+		}
+	});*/
+}]);
+apartmentController.controller("SearchApartments",["$scope", "ApartmentService", "$stateParams", "$location", function($scope, ApartmentService, $stateParams, $location){
+	/*ApartmentService.save($scope.query, function(){
+	console.log("DATA SENT YAY");
+	});*/
+	$scope.neededAddressComponents = {
+			locality : 'long_name',
+			administrative_area_level_1: 'short_name',
+			country: 'long_name'
+	};
+	$scope.query = {
+			address:$stateParams.address,
+			country:$stateParams.country,
+			locality:$stateParams.locality,
+			administrative_area_level_1:$stateParams.admArea,
+			checkIn:$stateParams.checkIn,
+			checkOut:$stateParams.checkOut,
+			guestNumber:parseInt($stateParams.guestNumber)
+	};
+	$scope.details = {};
+	$scope.autoCompleteOptions = {watchEnter:false};
+	$scope.$watch('details',function(newVal){
+		if(typeof newVal.address_components !== 'undefined'){
+			//resetting query object for new location
+			$scope.query.locality = "";
+			$scope.query.administrative_area_level_1 = "";
+			$scope.query.country = "";
+			for(var i=0; i < newVal.address_components.length; i++){
+				var addressType = newVal.address_components[i].types[0];
+				if($scope.neededAddressComponents[addressType]){
+					$scope.query[addressType] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+				}
+			}
+		}
+		console.log("query: ",$scope.query);
+	});
+	$scope.apartments = ApartmentService.find($scope.query);
+	$scope.queryApartments = function(query){
+		//console.log("FORM SUBMIT2:",$scope.query);
+		var newUrl = "/queryApartments/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.locality+"/"+$scope.query.administrative_area_level_1+"/"+$scope.query.checkIn+"/"+$scope.query.checkOut+"/"+$scope.query.guestNumber;
+		$location.path(newUrl).replace();
+		console.log("huh",$scope.query);
+		$scope.apartments = ApartmentService.find($scope.query);
+	}
+	$scope.resetQuery = function(){
+		$scope.query.locality = "";
+		$scope.query.administrative_area_level_1 = "";
+		$scope.query.country = "";
+	}
+	//:country/:city/:admArea/:checkIn/:checkOut
 }]);

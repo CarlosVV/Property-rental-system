@@ -26,7 +26,8 @@ apartmentDirective.directive('checkQuery', function () {
             	//this variant cuz we have {{}} in our attribute check-query="{{query}}"
             	attrs.$observe('checkQuery',function(actualValue){
             		//console.log(actualValue);
-            		ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(actualValue)));
+            		//можно исопльзовать scope.query??
+            		ngModelCtrl.$setValidity('validQuery', isValid(scope.$eval(actualValue)));
             	});
         		return viewValue;
                 /*ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(attrs.checkQuery)));
@@ -37,7 +38,7 @@ apartmentDirective.directive('checkQuery', function () {
             	//console.log("VVVVVVVVVVVVVVIIIIIIIEEEEEEWWWWWW22222222",modelValue);
             	attrs.$observe('checkQuery',function(actualValue){
             		//console.log(actualValue);
-            		ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(actualValue)));
+            		ngModelCtrl.$setValidity('validQuery', isValid(scope.$eval(actualValue)));
             	});
             	return modelValue;
                 /*ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(attrs.checkQuery)));
@@ -46,4 +47,19 @@ apartmentDirective.directive('checkQuery', function () {
             });
         }
     };
+});
+//alternative to $scope.$watch solution
+apartmentDirective.directive('filterDate', function($filter){
+	return {
+		require:'ngModel',
+		link: function(scope,element,attrs,modelCtrl){
+			modelCtrl.$formatters.push(function(inputValue){
+				console.log("HEH");
+				var transformedInput = $filter("date")(inputValue,'MM/dd/yyyy');
+				modelCtrl.$setViewValue(transformedInput);
+				modelCtrl.$render();
+				return transformedInput;
+			});
+		}
+	};
 });

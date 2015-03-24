@@ -2,14 +2,16 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ApartmentService','ApartmentController','ApartmentDirective']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','ApartmentService','ApartmentController','ApartmentDirective']);
+
+rentalApp.constant('API_URL',"/apartmentRental/");
 
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
-		$urlRouterProvider.otherwise("/home");
+		$urlRouterProvider.otherwise("/");
 		$stateProvider
 			.state("home", {
-				url:"/home",
+				url:"/",
 				views: {
 					"mainView":{
 						templateUrl:"partials/home.html",
@@ -17,11 +19,12 @@ rentalApp.config(
 					}
 				}
 			})
-			.state("apartmentListByQuery", {
-				url:"/apartmentListByQuery",
+			.state("queryApartments",{
+				url:"/queryApartments/:address/:country/:locality/:admArea/:checkIn/:checkOut/:guestNumber",
 				views: {
 					"mainView":{
-						templateUrl:"partials/apartmentListByQuery.html"
+						templateUrl:"partials/apartmentListByQuery.html",
+						controller:"SearchApartments"
 					}
 				}
 			})

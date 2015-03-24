@@ -21,3 +21,23 @@ For elements with both the ng-valid and ng-dirty classes
   border-color: green;
   outline-color: green;
 }
+[class^="col-md-"]{
+	padding: 0 5px 0 5px;
+}
+.formSection{
+	padding:5px;
+}
+.apartmentBlock{
+	padding:5px;
+	margin:5px;
+}
+.apartmentBlock:hover{
+	text-decoration: none;
+}
+.apartmentTitle{
+	font-size: 25px;
+}
+.apartmentLocation{
+	font-size:15px;
+	color:black;
+}

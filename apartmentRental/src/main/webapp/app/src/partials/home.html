@@ -4,18 +4,60 @@
 			<h2 class="col-md-6 col-md-offset-3 centerText">Find apartments for rent</h2>
 		</div>
 		<div class="row">
-			<form class="col-md-9 centerElement" name="queryForm" ng-submit="queryForm.$valid && queryApartments(query)" novalidate>
-				<input type="text" name="location" placeholder="Location" options="autoCompleteOptions" 
-					ng-autocomplete details="details" ng-model="query.address" 
-					class="form-control" check-query="{{query}}" ng-change="resetQuery()" required/>
-				<input type="text" name="checkIn" placeholder="Check in" ng-model="query.checkIn" 
-					class="form-control" required />
-				<input type="text" name="checkOut" placeholder="Check out" ng-model="query.checkOut" 
-					class="form-control" required/>
-				<input type="number" name="guestNumber" placeholder="Number of guests" ng-model="query.guestNumber" 
-					class="form-control" min="0" required/>
-				<input type="submit" value="Find"/>
-			</form>
+			<div class="col-md-9 centerElement input-append">
+				<form name="queryForm" ng-submit="queryForm.$valid && queryApartments(query)" novalidate>
+					<div class="col-md-4 col-xs-12">
+						<input type="text" name="location" placeholder="Location" options="autoCompleteOptions" 
+							ng-autocomplete details="details" ng-model="query.address" 
+							class="form-control" check-query="{{query}}" ng-change="resetQuery()" required/>
+							<div ng-show="queryForm.location.$dirty && queryForm.location.$error.validQuery">INVALID QUERY</div>
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#" href="#">
+						    <div class="input-group">
+						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="query.checkIn" 
+								class="form-control" filter-date required />
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker data-ng-model="query.checkIn" data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown1' }"/>
+						</ul>
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+		    				<div class="input-group">
+		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="query.checkOut" 
+								class="form-control" filter-date required/>
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker data-ng-model="query.checkOut" data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
+						</ul>
+					</div>
+					<div class="col-md-2 col-xs-4">
+						<input type="number" name="guestNumber" placeholder="Guest number" ng-model="query.guestNumber" 
+							class="form-control" min="0" required/>
+					</div>
+					<div class="col-md-1 col-xs-12">
+						<input type="submit" value="Search" class="btn btn-default"/>
+					</div>
+				</form>
+			</div>
 		</div>
+		<!-- <div class="dropdown">
+		  <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+		    <div class="input-group">
+		    	<input type="text" class="form-control" data-ng-model="data.dateDropDownInput" filter-date>
+			    <span class="input-group-addon">
+			    	<i class="glyphicon glyphicon-calendar"></i>
+			    </span>
+		    </div>
+		  </a>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+		    <datetimepicker data-ng-model="data.dateDropDownInput" data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
+		  </ul>
+		</div> -->
 	</div>
 </div>

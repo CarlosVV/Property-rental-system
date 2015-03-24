@@ -28,6 +28,12 @@ public class ApartmentQueryWrapper {
 	public void setLocality(String locality) {
 		this.locality = locality;
 	}
+	public String getAdministrativeAreaLevel1() {
+		return administrative_area_level_1;
+	}
+	public void setAdministrativeAreaLevel1(String administrative_area_level_1) {
+		this.administrative_area_level_1 = administrative_area_level_1;
+	}
 	public String getAdministrative_area_level_1() {
 		return administrative_area_level_1;
 	}

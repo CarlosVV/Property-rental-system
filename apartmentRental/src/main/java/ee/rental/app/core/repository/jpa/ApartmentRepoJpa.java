@@ -6,14 +6,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import ee.rental.app.core.model.Apartment;
 import ee.rental.app.core.model.wrapper.ApartmentQueryWrapper;
 import ee.rental.app.core.repository.ApartmentRepo;
+import ee.rental.app.rest.controller.ApartmentController;
 
 @Repository
 public class ApartmentRepoJpa implements ApartmentRepo{
+	private static final Logger logger = LoggerFactory.getLogger(ApartmentController.class);
 	@PersistenceContext
 	private EntityManager em;
 	public Apartment createApartment(Apartment apartment) {
@@ -49,9 +53,10 @@ public class ApartmentRepoJpa implements ApartmentRepo{
 		return queryToDb.getResultList();
 	}
 	public List<Apartment> queryApartmentsByCity(ApartmentQueryWrapper query) {
-		Query queryToDb = em.createQuery("SELECT a FROM Apartment a WHERE a.city=?1 AND a.country=?2");
-		queryToDb.setParameter(1, query.getCity());
+		Query queryToDb = em.createQuery("SELECT a FROM Apartment a WHERE a.city=?1 AND a.country=?2 AND a.administrativeArea=?3");
+		queryToDb.setParameter(1, query.getLocality());
 		queryToDb.setParameter(2, query.getCountry());
+		queryToDb.setParameter(3, query.getAdministrativeAreaLevel1());
 		return queryToDb.getResultList();
 	}
 
