@@ -1,0 +1,26 @@
+/**
+ * 
+ */
+var propertyService = angular.module("PropertyService", []);
+propertyService.factory("PropertyService", [ "$resource", "API_URL", function($resource,API_URL) {
+		//earlier was: {id : "@id"}
+		var apartmentService = {
+			property: $resource(API_URL+'properties/:id', {}, {
+					find:{
+						method:"POST",
+						isArray:true,//API_URL+"apartments/search/:country/:city/:admArea/:checkIn/:checkOut"
+						url:API_URL+"properties/search"/*,
+						params:{
+							country:"@country",
+							city:"@locality",
+							admArea:"@administrative_area_level_1",
+							checkIn:"@checkIn",
+							checkOut:"@checkOut"
+						}*/
+					}
+			}),
+			propertyType: $resource(API_URL+'properties/propertyTypes', {})
+		};
+		return apartmentService;
+	}
+]);
