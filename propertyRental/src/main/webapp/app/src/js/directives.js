@@ -3,17 +3,12 @@
  */
 var apartmentDirective = angular.module("PropertyDirective", []);
 
+//this directive is used to check whether user has chosen address from the list that is provided by google
 apartmentDirective.directive('checkQuery', function () {
     var isValid = function(query) {
-    	//console.log("checking validity",query);
-    	//console.log(query);
-    	var result = typeof query.country;
-    	//console.log("result: ",result);
-        if(typeof query.country !== 'undefined'){
-        	//console.log("TRUE");
+        if(typeof query !== 'undefined'){
         	return true;
         }else{
-        	//console.log("FALSE");
         	return false;
         }
     };
@@ -27,7 +22,8 @@ apartmentDirective.directive('checkQuery', function () {
             	attrs.$observe('checkQuery',function(actualValue){
             		//console.log(actualValue);
             		//можно исопльзовать scope.query??
-            		ngModelCtrl.$setValidity('validQuery', isValid(scope.$eval(actualValue)));
+            		//scope.$eval to transform from string to javascript object
+            		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
         		return viewValue;
                 /*ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(attrs.checkQuery)));
@@ -38,7 +34,7 @@ apartmentDirective.directive('checkQuery', function () {
             	//console.log("VVVVVVVVVVVVVVIIIIIIIEEEEEEWWWWWW22222222",modelValue);
             	attrs.$observe('checkQuery',function(actualValue){
             		//console.log(actualValue);
-            		ngModelCtrl.$setValidity('validQuery', isValid(scope.$eval(actualValue)));
+            		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
             	return modelValue;
                 /*ngModelCtrl.$setValidity('strongPass', isValid(scope.$eval(attrs.checkQuery)));

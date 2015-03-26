@@ -20,7 +20,7 @@ rentalApp.config(
 				}
 			})
 			.state("queryProperties",{
-				url:"/queryProperties/:address/:country/:locality/:admArea/:checkIn/:checkOut/:guestNumber",
+				url:"/queryProperties/:address/:country/:city/:admArea/:checkIn/:checkOut/:guestNumber",
 				views: {
 					"mainView":{
 						templateUrl:"partials/propertyListByQuery.html",

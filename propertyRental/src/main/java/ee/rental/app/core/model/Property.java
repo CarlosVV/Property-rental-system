@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -21,8 +22,24 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@propertyId")
 public class Property {
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Override
+	public String toString() {
+		return "Property [id=" + id + ", owner=" + owner + ", country="
+				+ country + ", city=" + city + ", administrativeArea="
+				+ administrativeArea + ", postalCode=" + postalCode
+				+ ", address=" + address + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", title=" + title
+				+ ", propertyType=" + propertyType + ", size=" + size
+				+ ", bathroomCount=" + bathroomCount + ", bedroomCount="
+				+ bedroomCount + ", pricePerNight=" + pricePerNight
+				+ ", minimumNights=" + minimumNights + ", description="
+				+ description + ", rules=" + rules + ", inavailabilityDates="
+				+ inavailabilityDates + ", reviews=" + reviews
+				+ ", propertyFacilities=" + propertyFacilities
+				+ ", imagePaths=" + imagePaths + "]";
+	}
 	//@JoinColumn(name="ownerId")
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
@@ -30,7 +47,7 @@ public class Property {
 	private String country;
 	private String city;
 	private String administrativeArea;
-	private String zipCode;
+	private String postalCode;
 	private String address;
 	private Double longitude;
 	private Double latitude;
@@ -42,8 +59,9 @@ public class Property {
 	//@PrimaryKeyJoinColumn
 	private PropertyType propertyType;
 	private int size;
-	
-	private int bathroomsCount;
+
+	private int bathroomCount;
+	private int bedroomCount;
 	
 	private BigDecimal pricePerNight;
 	private int minimumNights;
@@ -97,11 +115,11 @@ public class Property {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	public String getZipCode() {
-		return zipCode;
+	public String getPostalCode() {
+		return postalCode;
 	}
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 	public String getAddress() {
 		return address;
@@ -127,11 +145,23 @@ public class Property {
 	public void setSize(int size) {
 		this.size = size;
 	}
-	public int getBathroomsCount() {
-		return bathroomsCount;
+	public int getBathroomCount() {
+		return bathroomCount;
 	}
-	public void setBathroomsCount(int bathroomsCount) {
-		this.bathroomsCount = bathroomsCount;
+	public void setBathroomCount(int bathroomCount) {
+		this.bathroomCount = bathroomCount;
+	}
+	public int getBedroomCount() {
+		return bedroomCount;
+	}
+	public void setBedroomCount(int bedroomCount) {
+		this.bedroomCount = bedroomCount;
+	}
+	public List<ImagePath> getImagePaths() {
+		return imagePaths;
+	}
+	public void setImagePaths(List<ImagePath> imagePaths) {
+		this.imagePaths = imagePaths;
 	}
 	public BigDecimal getPricePerNight() {
 		return pricePerNight;

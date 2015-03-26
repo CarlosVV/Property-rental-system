@@ -5,9 +5,9 @@ import java.util.List;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
+import ee.rental.app.core.model.wrapper.PropertyWrapper;
 
 public interface PropertyRepo {
-	public Property createProperty(Property property);
 	public List<Property> findAllProperties();
 	public Property findProperty(Long id);
 	public List<Property> findPropertiesByAccount(Long accountId);
@@ -15,4 +15,5 @@ public interface PropertyRepo {
 	public List<Property> queryPropertiesByCity(PropertyQueryWrapper query);
 	public List<Property> queryPropertiesByCountry(PropertyQueryWrapper query);
 	public List<PropertyType> findAllPropertyTypes();
+	public Property addProperty(PropertyWrapper property);
 }

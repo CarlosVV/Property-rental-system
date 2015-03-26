@@ -1,11 +1,14 @@
 package ee.rental.app.rest.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,7 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.Message;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
+import ee.rental.app.core.model.wrapper.PropertyWrapper;
 import ee.rental.app.core.service.PropertyService;
 import ee.rental.app.core.service.MessageService;
 import ee.rental.app.core.service.UserAccountService;
@@ -35,7 +39,7 @@ public class PropertyController {
 	@Autowired
 	private PropertyService propertyService;
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Property getApartment(@PathVariable("id") Long id){
+	public Property getProperty(@PathVariable("id") Long id){
 		try{
 			Property property = propertyService.findApartment(id);
 			logger.info("WORKING "+property);
@@ -44,7 +48,13 @@ public class PropertyController {
 			logger.info("thrown");
 			throw new NotFoundException(e);
 		}
-	}///query
+	}
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Property> addProperty(@RequestBody PropertyWrapper property){
+		logger.info("ADDING "+property);
+		Property createdProperty = propertyService.addProperty(property);
+		return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
+	}
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public List<Property> queryApartments(@RequestBody PropertyQueryWrapper query){
 		logger.info("GOT IT "+query);

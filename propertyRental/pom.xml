@@ -43,12 +43,6 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		<!-- Hateoas -->
-		<dependency>
-			<groupId>org.springframework.hateoas</groupId>
-			<artifactId>spring-hateoas</artifactId>
-			<version>0.16.0.RELEASE</version>
-		</dependency>
 
 		<!-- Jackson json -->
 		<dependency>

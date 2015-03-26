@@ -60,34 +60,60 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	
 }]);
 propertyController.controller("AddPropertyCtrl",["$scope","PropertyService","uiGmapGoogleMapApi",function($scope,PropertyService,uiGmapGoogleMapApi){
-	$scope.property = {};
+	$scope.property = new PropertyService.property;
 	$scope.details={};
 	$scope.propertyTypes = PropertyService.propertyType.query();
-	console.log($scope.details);
+	$scope.neededAddressComponents = {
+			locality : 'long_name',
+			administrative_area_level_1: 'short_name',
+			country: 'long_name',
+			postal_code:'long_name',
+			route:'long_name',
+			street_number:'long_name'
+	};
+	$scope.addressAssembler = {
+		locality:'city',
+		administrative_area_level_1:'administrativeArea',
+		country:'country',
+		postal_code:'postalCode'
+	};
+	$scope.addressComponentsAssembler = {
+		route:'street',
+		street_number:'street_number'
+	};
+	//get address details for property
 	$scope.$watch('details',function(newVal){
-		if(typeof newVal.geometry !== 'undefined'){
+		if(typeof newVal.address_components !== 'undefined'){
+			var street = "";
+			var streetNumber = "";
+			for(var i=0; i < newVal.address_components.length; i++){
+				var addressType = newVal.address_components[i].types[0];
+				if($scope.neededAddressComponents[addressType]){
+					if($scope.addressComponentsAssembler[addressType] == 'street'){
+						street = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+					}else if($scope.addressComponentsAssembler[addressType] == 'street_number'){
+						streetNumber = " "+newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+					}else{
+						$scope.property[$scope.addressAssembler[addressType]] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+					}
+				}
+			}
+			$scope.property.address = street+streetNumber;
+			
 			$scope.marker.coords.latitude = newVal.geometry.location.k;
 			$scope.marker.coords.longitude = newVal.geometry.location.D;
 			$scope.map.center.latitude = newVal.geometry.location.k;
 			$scope.map.center.longitude = newVal.geometry.location.D;
-			$scope.map.zoom = 15;
-			console.log($scope.details);
-			console.log("house number",$scope.details.address_components[0].long_name);
-			console.log("street",$scope.details.address_components[1].long_name);
-			console.log("city",$scope.details.address_components[3].long_name);
-			console.log("country",$scope.details.address_components[6].long_name);
-			console.log("zipCode",$scope.details.address_components[7].long_name);
-			$scope.property.country = $scope.details.address_components[6].long_name;
-			$scope.property.city = $scope.details.address_components[3].long_name;
-			$scope.property.zipCode = $scope.details.address_components[7].long_name;
-			$scope.property.address = $scope.details.address_components[1].long_name+" "+$scope.details.address_components[0].long_name;
-			console.log($scope.property.address);
-			console.log("changed");
+			$scope.map.zoom = 16;
+			$scope.property.latitude = newVal.geometry.location.k;
+			$scope.property.longitude = newVal.geometry.location.D;
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
-	
-	$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
+	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
+	$scope.showMap = function(){
+		return $scope.map.center.latitude != 0;
+	}
 	console.log("addapartmentctrl",$scope.map);
 	$scope.marker = {
 			id: 0,
@@ -98,33 +124,35 @@ propertyController.controller("AddPropertyCtrl",["$scope","PropertyService","uiG
 		      options: { draggable: true },
 		      events: {
 		        dragend: function (marker, eventName, args) {
-		        	console.log('marker dragend');
 		          var lat = marker.getPosition().lat();
 		          var lon = marker.getPosition().lng();
 		          $scope.property.longitude = lon;
 		          $scope.property.latitude = lat;
-		          console.log($scope.property.latitude);
-		          console.log($scope.property.longitude);
-		          console.log($scope.property);
-
 		          $scope.marker.options = {
 		            draggable: true,
-		            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
 		            labelAnchor: "100 0",
 		            labelClass: "marker-labels"
 		          };
 		        }
 		      }
 	};
-	uiGmapGoogleMapApi.then(function(maps) {
-		console.log("ok its loaded");
-    });
+	$scope.addProperty = function(){
+		console.log("adding",$scope.property);
+		$scope.property.$save($scope.property, function(data){
+			console.log($scope.property);
+		});
+	};
 }]);
 propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter",function($scope,PropertyService,$state,$filter){
 	$scope.neededAddressComponents = {
 		locality : 'long_name',
 		administrative_area_level_1: 'short_name',
 		country: 'long_name'
+	};
+	$scope.addressAssembler = {
+			locality:'city',
+			administrative_area_level_1:'administrativeArea',
+			country:'country'
 	};
 	$scope.query = {};
 	$scope.details = {};
@@ -133,13 +161,13 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
 			//resetting query object for new location
-			$scope.query.locality = "";
-			$scope.query.administrative_area_level_1 = "";
+			$scope.query.city = "";
+			$scope.query.administrativeArea = "";
 			$scope.query.country = "";
 			for(var i=0; i < newVal.address_components.length; i++){
 				var addressType = newVal.address_components[i].types[0];
 				if($scope.neededAddressComponents[addressType]){
-					$scope.query[addressType] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+					$scope.query[$scope.addressAssembler[addressType]] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
 				}
 			}
 		}
@@ -150,16 +178,16 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 		$state.go("queryProperties",{
 			address:$scope.query.address,
 			country:$scope.query.country,
-			locality:$scope.query.locality,
-			admArea:$scope.query.administrative_area_level_1,
+			city:$scope.query.city,
+			admArea:$scope.query.administrativeArea,
 			checkIn:moment($scope.query.checkIn).format('DD/MM/YYYY'),
 			checkOut:moment($scope.query.checkOut).format('DD/MM/YYYY'),
 			guestNumber:$scope.query.guestNumber
 		});
 	}
 	$scope.resetQuery = function(){
-		$scope.query.locality = "";
-		$scope.query.administrative_area_level_1 = "";
+		$scope.query.city = "";
+		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
 	}
 	//old way, should use directive instead!
@@ -182,11 +210,16 @@ propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService
 			administrative_area_level_1: 'short_name',
 			country: 'long_name'
 	};
+	$scope.addressAssembler = {
+			locality:'city',
+			administrative_area_level_1:'administrativeArea',
+			country:'country'
+	};
 	$scope.query = {
 			address:$stateParams.address,
 			country:$stateParams.country,
-			locality:$stateParams.locality,
-			administrative_area_level_1:$stateParams.admArea,
+			city:$stateParams.city,
+			administrativeArea:$stateParams.admArea,
 			checkIn:$stateParams.checkIn,
 			checkOut:$stateParams.checkOut,
 			guestNumber:parseInt($stateParams.guestNumber)
@@ -197,26 +230,27 @@ propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService
 		if(typeof newVal.address_components !== 'undefined'){
 			//resetting query object for new location
 			$scope.query.locality = "";
-			$scope.query.administrative_area_level_1 = "";
+			$scope.query.administrativeArea = "";
 			$scope.query.country = "";
 			for(var i=0; i < newVal.address_components.length; i++){
 				var addressType = newVal.address_components[i].types[0];
 				if($scope.neededAddressComponents[addressType]){
-					$scope.query[addressType] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
+					$scope.query[$scope.addressAssembler[addressType]] = newVal.address_components[i][$scope.neededAddressComponents[addressType]];
 				}
 			}
 		}
+		console.log($scope.details);
 		console.log("query: ",$scope.query);
 	});
 	$scope.properties = PropertyService.property.find($scope.query);
 	$scope.queryProperties = function(query){
-		var newUrl = "/queryProperties/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.locality+"/"+$scope.query.administrative_area_level_1+"/"+encodeURIComponent(moment($scope.query.checkIn).format('DD/MM/YYYY'))+"/"+encodeURIComponent(moment($scope.query.checkOut).format('DD/MM/YYYY'))+"/"+$scope.query.guestNumber;
+		var newUrl = "/queryProperties/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.city+"/"+$scope.query.administrativeArea+"/"+encodeURIComponent(moment($scope.query.checkIn).format('DD/MM/YYYY'))+"/"+encodeURIComponent(moment($scope.query.checkOut).format('DD/MM/YYYY'))+"/"+$scope.query.guestNumber;
 		$location.path(newUrl).replace();
 		$scope.properties = PropertyService.property.find($scope.query);
 	}
 	$scope.resetQuery = function(){
-		$scope.query.locality = "";
-		$scope.query.administrative_area_level_1 = "";
+		$scope.query.city = "";
+		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
 	}
 	//:country/:city/:admArea/:checkIn/:checkOut

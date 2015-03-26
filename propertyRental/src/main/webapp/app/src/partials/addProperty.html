@@ -1,23 +1,82 @@
 <div class="container">
 	<h2>Add a property</h2>
-	<form novalidate class="simple-form">
-		<div class="form-group">
+	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && addProperty()">
+		<div class="row">
+		<div class="form-group col-md-6">
 			<label for="title">Property title:</label>
-			<input type="text" class="form-control" name="title" ng-model="property.title">
+			<input type="text" class="form-control" name="title" ng-model="property.title" required>
 		</div>
-		<div class="form-group">
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
 			<label for="propertyType">Property type:</label>
-			<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.type">
+			<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType" required></select>
 		</div>
-		
-		<div class="form-group">
-			<label for="address">Address:</label>
-			<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete="country" details="details" ng-model="property.address" class="form-control"/><br/>
 		</div>
-		<ui-gmap-google-map center='map.center' zoom='map.zoom'>
-			<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
-	        </ui-gmap-marker>
-		</ui-gmap-google-map>
+		<div class="row">
+		<div class="form-group col-md-6">
+			<label for="size">Property size:</label>
+			<div class="input-group">
+			<input type="number" class="form-control" name="size" ng-model="property.size" required>
+  			<span class="input-group-addon">m^2</span>
+  			</div>
+		</div>
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
+			<label for="bedroomCount">Bedroom count:</label>
+			<input type="number" class="form-control" name="bedroomCount" ng-model="property.bedroomCount" required>
+		</div>
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
+			<label for="bathroomCount">Bathroom count:</label>
+			<input type="number" class="form-control" name="bathroomCount" ng-model="property.bathroomCount" required>
+		</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label for="address">Address:</label>
+				<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete
+				details="details" ng-model="address" class="form-control" check-query="{{property.address}}"/>
+				<p ng-if="map.center.latitude != 0">Pro tip: drag the marker to specify the location!</p>
+				<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
+					<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+				</ui-gmap-google-map>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label for="description">Property description:</label>
+				<textarea rows="20" class="form-control" name="description" ng-model="property.description" required></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label for="rules">Your rules:</label>
+				<textarea rows="15" class="form-control" name="rules" ng-model="property.rules" required></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label for="size">Price per night:</label>
+				<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label for="size">Minimum length of stay:</label>
+				<div class="input-group">
+					<input type="number" class="form-control" name="minimumNights" ng-model="property.minimumNights" required>
+					<span class="input-group-addon">nights</span>
+  				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+				<input type="submit" value="Add a property" class="btn btn-default"/>
+			</div>
+		</div>
 	</form>
 	
 </div>

@@ -5,8 +5,8 @@ import java.util.Date;
 public class PropertyQueryWrapper {
 	private String address;
 	private String country;
-	private String locality;
-	private String administrative_area_level_1;
+	private String city;
+	private String administrativeArea;
 	private String checkIn;
 	private String checkOut;
 	private int guestNumber;
@@ -22,23 +22,17 @@ public class PropertyQueryWrapper {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getLocality() {
-		return locality;
+	public String getCity() {
+		return city;
 	}
-	public void setLocality(String locality) {
-		this.locality = locality;
+	public void setCity(String city) {
+		this.city = city;
 	}
-	public String getAdministrativeAreaLevel1() {
-		return administrative_area_level_1;
+	public String getAdministrativeArea() {
+		return administrativeArea;
 	}
-	public void setAdministrativeAreaLevel1(String administrative_area_level_1) {
-		this.administrative_area_level_1 = administrative_area_level_1;
-	}
-	public String getAdministrative_area_level_1() {
-		return administrative_area_level_1;
-	}
-	public void setAdministrative_area_level_1(String administrative_area_level_1) {
-		this.administrative_area_level_1 = administrative_area_level_1;
+	public void setAdministrativeArea(String administrativeArea) {
+		this.administrativeArea = administrativeArea;
 	}
 	public String getCheckIn() {
 		return checkIn;
@@ -61,9 +55,9 @@ public class PropertyQueryWrapper {
 	@Override
 	public String toString() {
 		return "ApartmentQueryWrapper [address=" + address + ", country="
-				+ country + ", locality=" + locality
+				+ country + ", locality=" + city
 				+ ", administrative_area_level_1="
-				+ administrative_area_level_1 + ", checkIn=" + checkIn
+				+ administrativeArea + ", checkIn=" + checkIn
 				+ ", checkOut=" + checkOut + ", guestNumber=" + guestNumber
 				+ "]";
 	}
