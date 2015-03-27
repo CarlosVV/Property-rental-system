@@ -15,8 +15,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@inavailabilityDate")
-public class InavailabilityDate {
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@unavailableDateId")
+public class UnavailableDate {
 	@Id @GeneratedValue
 	private Long id;
 	//@JoinColumn(name="apartmentId")
@@ -24,23 +24,40 @@ public class InavailabilityDate {
 	//@PrimaryKeyJoinColumn
 	@JsonIgnore
 	private Property property;
-	private Date date;
+	private Date startDate;
+	private Date endDate;
+	public UnavailableDate(){}
+	public UnavailableDate(Date startDate, Date endDate) {
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Property getApartment() {
+	public Property getProperty() {
 		return property;
 	}
-	public void setApartment(Property property) {
+	public void setProperty(Property property) {
 		this.property = property;
 	}
-	public Date getDate() {
-		return date;
+	public Date getStartDate() {
+		return startDate;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	@Override
+	public String toString() {
+		return "UnavailableDate [id=" + id + ", property=" + property
+				+ ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 }

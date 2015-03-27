@@ -1,6 +1,7 @@
 package ee.rental.app.core.repository.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,10 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyType;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.rest.controller.PropertyController;
 
@@ -94,6 +98,19 @@ public class PropertyRepoImpl implements PropertyRepo{
 		sessionFactory.getCurrentSession().save(p);
 		return p;
 	}
+
+	public List<UnavailableDate> findBookedDates(Long id) {
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT new UnavailableDate(b.bookingStart,b.bookingEnd) FROM Booking b"
+				+ " WHERE b.property.id=?");
+		query.setParameter(0, id);
+		return query.list();
+	}
+	public List<UnavailableDate> findUnavailabilityDates(Long id){
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT u FROM UnavailableDate u WHERE u.property.id=?");
+		query.setParameter(0, id);
+		return query.list();
+	}
+
 
 
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.repository.BookingRepo;

@@ -35,8 +35,7 @@ public class Property {
 				+ ", bathroomCount=" + bathroomCount + ", bedroomCount="
 				+ bedroomCount + ", pricePerNight=" + pricePerNight
 				+ ", minimumNights=" + minimumNights + ", description="
-				+ description + ", rules=" + rules + ", inavailabilityDates="
-				+ inavailabilityDates + ", reviews=" + reviews
+				+ description + ", rules=" + rules + ", reviews=" + reviews
 				+ ", propertyFacilities=" + propertyFacilities
 				+ ", imagePaths=" + imagePaths + "]";
 	}
@@ -70,8 +69,8 @@ public class Property {
 	@Lob
 	private String rules;
 	
-	@OneToMany(mappedBy="property")
-	private List<InavailabilityDate> inavailabilityDates;
+	//@OneToMany(mappedBy="property")
+	//private List<UnavailableDate> unavailableDates;
 	@OneToMany(mappedBy="property")
 	private List<Review> reviews;
 	@ManyToMany
@@ -186,12 +185,6 @@ public class Property {
 	}
 	public void setRules(String rules) {
 		this.rules = rules;
-	}
-	public List<InavailabilityDate> getInavailabilityDates() {
-		return inavailabilityDates;
-	}
-	public void setInavailabilityDates(List<InavailabilityDate> inavailabilityDates) {
-		this.inavailabilityDates = inavailabilityDates;
 	}
 	public List<Review> getReviews() {
 		return reviews;

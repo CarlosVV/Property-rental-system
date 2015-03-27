@@ -47,6 +47,54 @@
 		</div>
 		<div class="row">
 			<div class="form-group col-md-6">
+				<label for="photos">Property photos:</label>
+				<div ng-file-drop ng-file-select ng-model="photos" class="drop-box" 
+			        drag-over-class="dragover" ng-multiple="true" allow-dir="true"
+			        accept="image/*">Drop photos here or click to upload</div>
+			    <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
+			    <div class="col-md-8">
+				    <div ng-show="photosToUpload.length > 0" class="photosToUpload">
+						<div class="row" ng-repeat="f in photosToUpload">
+							<button ng-click="removePhoto(f)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							</button>
+							<img ng-show="f.dataUrl" ng-src="{{f.dataUrl}}" class="thumbnail">
+							
+								<div class="progress" ng-show="f.progress >= 0">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="{{f.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{f.progress}}%;">
+								    {{f.progress}}
+								  </div>
+								</div>
+							<button class="btn btn-default" ng-click="f.upload.abort();f.upload.aborted=true" 
+									ng-show="f.upload != null && f.progress < 100 && !f.upload.aborted">Abort</button>
+							
+							{{f.name}} - size: {{f.size}}B
+							<hr/>
+							
+							<!--  <a ng-show="f.result" href="javascript:void(0)" ng-click="f.showDetail = !f.showDetail">details</a>
+							<div ng-show="f.showDetail">
+								<br/>
+								<div data-ng-show="f.result.result == null">{{f.result}}</div>
+								<ul>
+									<li ng-repeat="item in f.result.result">
+										<div data-ng-show="item.name">file name: {{item.name}}</div>
+										<div data-ng-show="item.fieldName">name: {{item.fieldName}}</div>
+										<div data-ng-show="item.size">size on the serve: {{item.size}}</div>
+										<div data-ng-show="item.value">value: {{item.value}}</div>
+									</li>
+								</ul>
+								<div data-ng-show="f.result.requestHeaders" class="reqh">request headers: {{f.result.requestHeaders}}</div>
+							</div>-->
+						</div>
+					</div>
+				
+			    <div><button class='btn btn-default' ng-click="upload()">Upload photos</button></div>
+			    </div>
+			</div>
+			
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
 				<label for="description">Property description:</label>
 				<textarea rows="20" class="form-control" name="description" ng-model="property.description" required></textarea>
 			</div>

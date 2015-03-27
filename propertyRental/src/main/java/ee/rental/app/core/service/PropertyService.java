@@ -6,6 +6,7 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
+import ee.rental.app.core.model.UnavailableDate;
 
 public interface PropertyService {
 	public List<Property> findAllApartments();
@@ -14,4 +15,5 @@ public interface PropertyService {
 	public List<Property> queryApartments(PropertyQueryWrapper query);
 	public List<PropertyType> findAllApartmentTypes();
 	public Property addProperty(PropertyWrapper data);
+	public List<UnavailableDate> findUnavailableDates(Long id);
 }

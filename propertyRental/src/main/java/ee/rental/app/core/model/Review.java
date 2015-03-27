@@ -51,4 +51,10 @@ public class Review {
 	public void setStars(int stars) {
 		this.stars = stars;
 	}
+	public Property getProperty() {
+		return property;
+	}
+	public void setProperty(Property property) {
+		this.property = property;
+	}
 }

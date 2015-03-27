@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyType;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
@@ -57,6 +58,13 @@ public class PropertyServiceImpl implements PropertyService{
 			throw new UserAccountNotFoundException();*/
 		Property property = propertyRepo.addProperty(data);
 		return property;
+	}
+	public List<UnavailableDate> findUnavailableDates(Long id) {
+		List<UnavailableDate> bookedDates = propertyRepo.findUnavailabilityDates(id);
+		List<UnavailableDate> unDates = propertyRepo.findBookedDates(id);
+		bookedDates.addAll(unDates);
+		//System.out.println("OK WE GOT RESULT: "+bookedDates);
+		return bookedDates;
 	}
 
 }

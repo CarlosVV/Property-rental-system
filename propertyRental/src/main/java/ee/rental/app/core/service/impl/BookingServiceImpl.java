@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.core.repository.BookingRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
@@ -22,7 +24,7 @@ public class BookingServiceImpl implements BookingService{
 	@Autowired
 	private PropertyRepo propertyRepo;
 	public Booking createBooking(Booking booking) {
-		Property property = propertyRepo.findProperty(booking.getApartment().getId());
+		Property property = propertyRepo.findProperty(booking.getProperty().getId());
 		if(property == null)
 			throw new PropertyNotFoundException();
 		UserAccount account = userAccountRepo.findUserAccount(booking.getAccount().getId());

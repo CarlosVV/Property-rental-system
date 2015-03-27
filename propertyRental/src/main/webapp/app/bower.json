@@ -19,6 +19,7 @@
     "lodash":"3.4.0",
     "angular-google-maps":"2.0.13",
 	"ngAutocomplete":"1.0.0",
-    "angular-bootstrap-datetimepicker": "0.3.12"
+    "angular-bootstrap-datetimepicker": "0.3.12",
+	"ng-file-upload":"3.2.4"
   }
 }

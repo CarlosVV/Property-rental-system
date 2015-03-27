@@ -2,7 +2,7 @@
 	{{apartment.title}}<button ng-click="changeLoc()" value="change loc"></button>
 	
 </div>
-<ui-gmap-google-map center='map.center' zoom='map.zoom'>
+<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
 	<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
        </ui-gmap-marker>
 </ui-gmap-google-map>

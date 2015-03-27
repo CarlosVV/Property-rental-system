@@ -1,5 +1,6 @@
 package ee.rental.app.core.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -32,6 +33,26 @@ public class Booking {
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
 	private BookingPayed bookingPayed;
+	private Date bookingStart;
+	private Date bookingEnd;
+	public Property getProperty() {
+		return property;
+	}
+	public void setProperty(Property property) {
+		this.property = property;
+	}
+	public Date getBookingStart() {
+		return bookingStart;
+	}
+	public void setBookingStart(Date bookingStart) {
+		this.bookingStart = bookingStart;
+	}
+	public Date getBookingEnd() {
+		return bookingEnd;
+	}
+	public void setBookingEnd(Date bookingEnd) {
+		this.bookingEnd = bookingEnd;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -43,12 +64,6 @@ public class Booking {
 	}
 	public void setAccount(UserAccount account) {
 		this.account = account;
-	}
-	public Property getApartment() {
-		return property;
-	}
-	public void setApartment(Property property) {
-		this.property = property;
 	}
 	public List<Guest> getGuests() {
 		return guests;
