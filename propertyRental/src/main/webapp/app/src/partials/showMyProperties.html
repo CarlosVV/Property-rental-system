@@ -1,0 +1,12 @@
+<div class="container">
+	<div class="row" ng-repeat="property in properties">
+		<a ui-sref="showProperty({propertyId : property.id})" class="col-md-12 apartmentBlock">
+			<div class="apartmentTitle">{{property.title}}</div>
+			<div class="apartmentLocation">{{property.city}}, {{property.administrativeArea}}, {{property.country}}</div>
+		</a>
+		<a ui-sref="updateProperty({propertyId:property.id})" class='editPropButton'>
+			<button class='btn btn-default'>Edit property</button>
+		</a>
+		<hr/>
+	</div>
+</div>

@@ -1,6 +1,6 @@
 <div class="container">
-	<h2>Add a property</h2>
-	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && addProperty()">
+	<h2>Edit the property</h2>
+	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && updateProperty()">
 		<div class="row">
 		<div class="form-group col-md-6">
 			<label for="title">Property title:</label>
@@ -72,42 +72,36 @@
 			        drag-over-class="dragover" ng-multiple="true" allow-dir="true"
 			        accept="image/*">Drop photos here or click to upload</div>
 			    <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
-			    <div ng-show="photosToUpload.length > 0" class="photoList col-md-8">
-					<div class="row" ng-repeat="p in photosToUpload">
-						<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
-						  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-						<img ng-show="p.dataUrl" ng-src="{{p.dataUrl}}" class="thumbnail">
-						
-							<div class="progress" ng-show="p.progress >= 0">
-							  <div class="progress-bar" ng-class="{'progress-bar-danger': p.error}" role="progressbar" aria-valuenow="{{p.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{p.progress}}%;">
-							    {{p.progressMsg}}
-							  </div>
-							</div>
-						<button class="btn btn-default" ng-click="p.upload.abort();p.upload.aborted=true" 
-								ng-show="p.upload != null && p.progress < 100 && !p.upload.aborted">Abort</button>
-						
-						{{p.name}} - size: {{p.size}}B
-						<hr/>
-						
-						<!--  <a ng-show="f.result" href="javascript:void(0)" ng-click="f.showDetail = !f.showDetail">details</a>
-						<div ng-show="f.showDetail">
-							<br/>
-							<div data-ng-show="f.result.result == null">{{f.result}}</div>
-							<ul>
-								<li ng-repeat="item in f.result.result">
-									<div data-ng-show="item.name">file name: {{item.name}}</div>
-									<div data-ng-show="item.fieldName">name: {{item.fieldName}}</div>
-									<div data-ng-show="item.size">size on the serve: {{item.size}}</div>
-									<div data-ng-show="item.value">value: {{item.value}}</div>
-								</li>
-							</ul>
-							<div data-ng-show="f.result.requestHeaders" class="reqh">request headers: {{f.result.requestHeaders}}</div>
-						</div>-->
+				    <div ng-show="photosBackup.length > 0" class="photoList col-md-8">
+			    		<p>Deleted photos:</p>
+						<div class="row" ng-repeat="p in photosBackup">
+							<button ng-click="restorePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							  <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+							</button>
+							<img ng-src="../uploads/photos/{{p.path}}" class="thumbnail thumbnail-backup">
+							<hr/>
+						</div>
 					</div>
-		    	<!-- <div><button class='btn btn-default' ng-click="upload()">Upload photos</button></div> -->
-				</div>
-				
+				    <div ng-show="photosToUpload.length > 0" class="photoList col-md-8">
+			    		<p>Photos:</p>
+						<div class="row" ng-repeat="p in photosToUpload">
+							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							</button>
+							<img ng-if="p.path" ng-src="../uploads/photos/{{p.path}}" class="thumbnail">
+							<img ng-if="!p.path" ng-src="{{p.dataUrl}}" class="thumbnail">
+							
+								<div class="progress" ng-show="p.progress >= 0">
+								  <div class="progress-bar" ng-class="{'progress-bar-danger': p.error}" role="progressbar" aria-valuenow="{{p.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{p.progress}}%;">
+								    {{p.progressMsg}}
+								  </div>
+								</div>
+							<button class="btn btn-default" ng-click="p.upload.abort();p.upload.aborted=true" 
+									ng-show="p.upload != null && p.progress < 100 && !p.upload.aborted">Abort</button>
+							
+							<hr/>
+						</div>
+			    	</div>
 			</div>
 			
 		</div>

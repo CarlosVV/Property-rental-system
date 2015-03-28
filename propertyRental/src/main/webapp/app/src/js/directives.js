@@ -54,6 +54,7 @@ apartmentDirective.directive('filterDate', function($filter){
 		}
 	};
 });
+//from http://stackoverflow.com/questions/14514461/how-can-angularjs-bind-to-list-of-checkbox-values
 apartmentDirective.directive('checkList',["$parse",function($parse){
 	return{
 		scope:{
@@ -62,24 +63,29 @@ apartmentDirective.directive('checkList',["$parse",function($parse){
 		},
 		link:function(scope,elem,attrs){
 			var handler = function(setup){
-				var checked = elem.prop('checked');
-				var index = scope.list.indexOf(scope.value);
-				if (checked && index == -1) {
-			          if (setup) elem.prop('checked', false);
-			          else scope.list.push(scope.$eval(scope.value));
-			        } else if (!checked && index != -1) {
-			          if (setup) elem.prop('checked', true);
-			          else scope.list.splice(index, 1);
-			    }
+				if(typeof scope.list != 'undefined'){
+					var checked = elem.prop('checked');
+					var index = scope.list.map(function(o) { return o.id; }).indexOf(scope.$eval(scope.value).id);
+					//console.log(scope.$eval(scope.value));
+					//console.log(index);
+					if (checked && index == -1) {
+				          if (setup) elem.prop('checked', false);
+				          else scope.list.push(scope.$eval(scope.value));
+				        } else if (!checked && index != -1) {
+				          if (setup) elem.prop('checked', true);
+				          else scope.list.splice(index, 1);
+				    }
+					//console.log(scope.list);
+				}
 				
 			};
 			//if there are any data on startup setupHandler takes it 
-			//var setupHandler = handler.bind(null,true);
+			var setupHandler = handler.bind(null,true);
 			var changeHandler = handler.bind(null,false);
 			elem.bind('change', function(){
 				scope.$apply(changeHandler);
 			});
-			//scope.$watch('list', setupHandler, true);
+			scope.$watch('list', setupHandler, true);
 		}
 	};
 }]);

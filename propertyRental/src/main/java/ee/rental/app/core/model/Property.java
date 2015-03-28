@@ -54,7 +54,7 @@ public class Property {
 	
 	private String title;
 	//@JoinColumn(name="apartmentTypeId")
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	//@PrimaryKeyJoinColumn
 	private PropertyType propertyType;
 	private int size;
@@ -73,11 +73,11 @@ public class Property {
 	
 	//@OneToMany(mappedBy="property")
 	//private List<UnavailableDate> unavailableDates;
-	@OneToMany(mappedBy="property",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="property")
 	private List<Review> reviews;
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	private List<PropertyFacility> propertyFacilities;
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="property")
 	private List<ImagePath> imagePaths;
 	
 	public Double getLongitude() {

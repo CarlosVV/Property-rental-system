@@ -31,26 +31,23 @@ public class PropertyServiceImpl implements PropertyService{
 	private PropertyRepo propertyRepo;
 	@Autowired
 	private UserAccountRepo userAccountRepo;
-	public List<Property> findAllApartments() {
-		return propertyRepo.findAllProperties();
-	}
 
-	public Property findApartment(Long id) {
+	public Property findProperty(Long id) {
 		return propertyRepo.findProperty(id);
 	}
 	
-	public List<Property> findApartmentsByAccount(Long accountId) {
-		return propertyRepo.findPropertiesByAccount(accountId);
+	public List<Property> findPropertiesByOwner(Long ownerId) {
+		return propertyRepo.findPropertiesByOwner(ownerId);
 	}
 	
-	public List<Property> queryApartments(PropertyQueryWrapper query) {
+	public List<Property> queryProperties(PropertyQueryWrapper query) {
 		if(!query.getCity().equals("")){
 			return propertyRepo.queryPropertiesByCity(query);
 		}else{
 			return propertyRepo.queryPropertiesByCountry(query);
 		}
 	}
-	public List<PropertyType> findAllApartmentTypes(){
+	public List<PropertyType> findAllPropertyTypes(){
 		return propertyRepo.findAllPropertyTypes();
 	}
 
@@ -78,6 +75,10 @@ public class PropertyServiceImpl implements PropertyService{
 	public List<PropertyFacility> findPropertyFacilities() {
 		List<PropertyFacility> result = propertyRepo.findPropertyFacilities();
 		return result;
+	}
+
+	public void updateProperty(Property property) {
+		propertyRepo.updateProperty(property);
 	}
 
 }

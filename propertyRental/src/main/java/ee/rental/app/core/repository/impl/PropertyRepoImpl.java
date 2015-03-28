@@ -1,6 +1,7 @@
 package ee.rental.app.core.repository.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,17 +45,26 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return (Property) sessionFactory.getCurrentSession().get(Property.class, id);
 	}
 
-	public List<Property> findPropertiesByAccount(Long accountId) {
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT p FROM Property p where p.owner.id=?1");
-		query.setParameter(1, accountId);
+	public List<Property> findPropertiesByOwner(Long ownerId) {
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT p FROM Property p where p.owner.id=:ownerId");
+		query.setParameter("ownerId", ownerId);
 		return query.list();
 	}
 
-	public Property updateProperty(Property data) {
-		Property property = (Property) sessionFactory.getCurrentSession().get(Property.class, data.getId());
-		property.setTitle(data.getTitle());
-		//need to add more
-		return property;
+	public void updateProperty(Property property) {
+		Session session =  sessionFactory.getCurrentSession();
+		session.update(property);
+		List<ImagePath> tempImgs = new ArrayList<ImagePath>(property.getImagePaths());
+		session.flush();
+		Query query = session.createQuery("delete ImagePath WHERE property_id = :id");
+		query.setLong("id", property.getId());
+		query.executeUpdate();
+		session.flush();
+		for(ImagePath img : tempImgs){
+			img.setProperty(property);
+			session.save(img);
+		}
+		session.flush();
 	}
 
 	public List<Property> queryPropertiesByCountry(PropertyQueryWrapper query) {
@@ -98,13 +108,14 @@ public class PropertyRepoImpl implements PropertyRepo{
 		p.setSize(Integer.parseInt(property.getSize()));
 		p.setTitle(property.getTitle());*/
 		Session session = sessionFactory.getCurrentSession();
-		session.save(property);
+		//property.setPropertyType((PropertyType)session.load(PropertyType.class, property.getPropertyType().getId()));
+		Long id = (Long) session.save(property);
 		session.flush();
-		/*property.setId(id);
+		property.setId(id);
 		for(ImagePath img : property.getImagePaths()){
-			img.setProperty(property);
+			img.setProperty(property);session.save(img);
 		}
-		session.flush();*/
+		session.flush();
 		return property;
 	}
 

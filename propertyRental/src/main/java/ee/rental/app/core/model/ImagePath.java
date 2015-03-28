@@ -16,9 +16,9 @@ public class ImagePath {
 	@Id @GeneratedValue
 	private Long id;
 	private String path;
-	/*@OneToOne
+	@OneToOne
 	@JsonIgnore
-	private Property property;*/
+	private Property property;
 	public Long getId() {
 		return id;
 	}
@@ -31,12 +31,12 @@ public class ImagePath {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	/*public Property getProperty() {
+	public Property getProperty() {
 		return property;
 	}
 	public void setProperty(Property property) {
 		this.property = property;
-	}*/
+	}
 	@Override
 	public String toString() {
 		return "ImagePath [id=" + id + ", path=" + path + "]";

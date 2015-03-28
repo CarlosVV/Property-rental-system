@@ -28,8 +28,11 @@ For elements with both the ng-valid and ng-dirty classes
 	padding:5px;
 }
 .apartmentBlock{
-	padding:5px;
-	margin:5px;
+	padding:5px 5px 0 5px;
+	margin:5px 5px 0 5px;
+}
+.editPropButton{
+	margin:0px 5px 5px 10px;
 }
 .apartmentBlock:hover{
 	text-decoration: none;
@@ -58,9 +61,12 @@ For elements with both the ng-valid and ng-dirty classes
 .deletePhoto{
 	float:right;
 }
-.photosToUpload{
+.photoList{
 	margin:10px 0 10px 5px;
 }
 .facility{
 	font-weight: normal;
+}
+.thumbnail-backup{
+	opacity: 0.4;
 }

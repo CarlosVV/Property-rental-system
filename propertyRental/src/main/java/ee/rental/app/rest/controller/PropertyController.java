@@ -59,13 +59,26 @@ public class PropertyController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Property getProperty(@PathVariable("id") Long id){
 		try{
-			Property property = propertyService.findApartment(id);
+			Property property = propertyService.findProperty(id);
 			logger.info("WORKING "+property);
 			return property;
 		}catch(PropertyNotFoundException e){
 			logger.info("thrown");
 			throw new NotFoundException(e);
 		}
+	}
+	@RequestMapping(value = "/myProperties/{ownerId}", method = RequestMethod.GET)
+	public List<Property> getPropertiesByOwner(@PathVariable("ownerId") Long ownerId){
+		List<Property> properties = propertyService.findPropertiesByOwner(ownerId);
+		logger.info("WORKING "+properties);
+		return properties;
+	}
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public Property updateProperty(@PathVariable("id") Long id, @RequestBody Property property){
+			logger.info("OKAY UPDATING "+property);
+			propertyService.updateProperty(property);
+			return property;
+		
 	}
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Property> addProperty(@RequestBody Property property){
@@ -77,13 +90,13 @@ public class PropertyController {
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public List<Property> queryApartments(@RequestBody PropertyQueryWrapper query){
 		logger.info("GOT IT "+query);
-		List<Property> result = propertyService.queryApartments(query);
+		List<Property> result = propertyService.queryProperties(query);
 		logger.info("ANSWER:"+result);
 		return result;
 	}
 	@RequestMapping(value = "/propertyTypes", method = RequestMethod.GET)
 	public List<PropertyType> getApartmentTypes(){
-		List<PropertyType> result = propertyService.findAllApartmentTypes();
+		List<PropertyType> result = propertyService.findAllPropertyTypes();
 		logger.info("ANSWER:"+result);
 		return result;
 	}
@@ -114,8 +127,9 @@ public class PropertyController {
 			for(MimeType mime : mimeTypesList){
 				mimeType += mime.toString();
 			}
-			//String filePath = request.getServletContext().getRealPath("")+"/app/uploads/photos/";
-			String filePath = "E:/Java/fileUploads/propertyRentalApp/";
+			String filePath = request.getServletContext().getRealPath("")+"/app/uploads/photos/";
+			logger.info("UPLOADING TO "+filePath);
+			//String filePath = "E:/Java/fileUploads/propertyRentalApp/";
 			String extension = "";
 			if(mimeType.equals("image/jpeg") || mimeType.equals("image/pjpeg")){
 				extension += ".jpg";

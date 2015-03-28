@@ -45,6 +45,24 @@ rentalApp.config(
 						controller:"AddPropertyCtrl"
 					}
 				}
+			})
+			.state("updateProperty",{
+				url:"/updateProperty/{propertyId}",
+				views:{
+					"mainView":{
+						templateUrl:"partials/updateProperty.html",
+						controller:"UpdatePropertyCtrl"
+					}
+				}
+			})
+			.state("showMyProperties",{
+				url:"/showMyProperties",
+				views:{
+					"mainView":{
+						templateUrl:"partials/showMyProperties.html",
+						controller:"ShowMyPropertiesCtrl"
+					}
+				}
 			});
 	}
 );
