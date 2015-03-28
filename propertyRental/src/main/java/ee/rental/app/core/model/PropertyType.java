@@ -9,7 +9,7 @@ public class PropertyType extends BaseLookup{
 		super();
 		this.setId(id);
 		this.setName(name);
-		this.setDescrription(description);
+		this.setDescription(description);
 	}
 
 }

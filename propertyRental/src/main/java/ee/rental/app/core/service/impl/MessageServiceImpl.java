@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.Message;
@@ -16,6 +17,7 @@ import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 
 @Service
+@Transactional
 public class MessageServiceImpl implements MessageService{
 	@Autowired
 	private MessageRepo messageRepo;

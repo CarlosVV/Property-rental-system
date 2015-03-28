@@ -61,6 +61,8 @@ public class Property {
 
 	private int bathroomCount;
 	private int bedroomCount;
+	private int bedCount;
+	private int guestCount;
 	
 	private BigDecimal pricePerNight;
 	private int minimumNights;
@@ -71,11 +73,11 @@ public class Property {
 	
 	//@OneToMany(mappedBy="property")
 	//private List<UnavailableDate> unavailableDates;
-	@OneToMany(mappedBy="property")
+	@OneToMany(mappedBy="property",cascade = CascadeType.ALL)
 	private List<Review> reviews;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	private List<PropertyFacility> propertyFacilities;
-	@OneToMany(mappedBy="property")
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<ImagePath> imagePaths;
 	
 	public Double getLongitude() {
@@ -89,6 +91,18 @@ public class Property {
 	}
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	}
+	public int getBedCount() {
+		return bedCount;
+	}
+	public void setBedCount(int bedCount) {
+		this.bedCount = bedCount;
+	}
+	public int getGuestCount() {
+		return guestCount;
+	}
+	public void setGuestCount(int guestCount) {
+		this.guestCount = guestCount;
 	}
 	public Long getId() {
 		return id;

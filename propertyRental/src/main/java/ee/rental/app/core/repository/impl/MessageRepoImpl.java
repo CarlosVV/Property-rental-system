@@ -17,7 +17,6 @@ import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.repository.MessageRepo;
 
 @Repository
-@Transactional
 public class MessageRepoImpl implements MessageRepo{
 
 	@Autowired

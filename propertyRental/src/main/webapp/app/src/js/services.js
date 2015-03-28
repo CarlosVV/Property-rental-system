@@ -19,7 +19,8 @@ propertyService.factory("PropertyService", [ "$resource", "API_URL", function($r
 						}*/
 					}
 			}),
-			propertyType: $resource(API_URL+'properties/propertyTypes', {}),
+			propertyTypes: $resource(API_URL+'properties/propertyTypes', {}),
+			propertyFacilities : $resource(API_URL+'properties/propertyFacilities',{}),
 			unavailableDates : $resource(API_URL+'properties/unavailableDates/:id', {})
 		};
 		return apartmentService;

@@ -14,15 +14,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@imagePathId")
 public class ImagePath {
 	@Id @GeneratedValue
-	private long id;
+	private Long id;
 	private String path;
-	@OneToOne(cascade=CascadeType.ALL)
+	/*@OneToOne
 	@JsonIgnore
-	private Property property;
-	public long getId() {
+	private Property property;*/
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getPath() {
@@ -31,10 +31,14 @@ public class ImagePath {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public Property getApartment() {
+	/*public Property getProperty() {
 		return property;
 	}
-	public void setApartment(Property property) {
+	public void setProperty(Property property) {
 		this.property = property;
+	}*/
+	@Override
+	public String toString() {
+		return "ImagePath [id=" + id + ", path=" + path + "]";
 	}
 }

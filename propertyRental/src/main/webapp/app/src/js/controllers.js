@@ -22,11 +22,13 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		console.log($scope.unavailableDates);
 	});
 }]);
-propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertyService","$upload","API_URL",function($scope,$timeout,PropertyService,$upload,API_URL){
+propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
 	$scope.property = new PropertyService.property;
 	$scope.property.imagePaths = [];
+	$scope.property.propertyFacilities = [];
 	$scope.details={};
-	$scope.propertyTypes = PropertyService.propertyType.query();
+	$scope.propertyTypes = PropertyService.propertyTypes.query();
+	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
 	$scope.photosToUpload = [];
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 	$scope.neededAddressComponents = {
@@ -77,10 +79,6 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertySe
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
 	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
-	$scope.showMap = function(){
-		return $scope.map.center.latitude != 0;
-	}
-	console.log("addapartmentctrl",$scope.map);
 	$scope.marker = {
 			id: 0,
 		      coords: {
@@ -104,9 +102,7 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertySe
 	};
 	$scope.addProperty = function(){
 		console.log("adding",$scope.property);
-		$scope.property.$save($scope.property, function(data){
-			console.log($scope.property);
-		});
+		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
 		console.log("WORKS?", newVal);
@@ -118,7 +114,7 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertySe
 			}
 		}
 	});
-	$scope.upload = function(){
+	$scope.uploadAndSave = function(){
 		if($scope.photosToUpload && $scope.photosToUpload.length){
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
 				console.log("UPLOADING",$scope.photosToUpload[i]);
@@ -143,10 +139,24 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertySe
             file: photo
         }).progress(function (evt) {
         	photo.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        	photo.progressMsg = photo.progress;
         }).success(function (data, status, headers, config) {
         	photo.progress = 100;
+        	photo.progressMsg = "Success";
+        	photo.error = false;
             console.log('file ' + config.file.name + 'uploaded. Response: ' + data.success);
-            $scope.property.imagePaths.push({id:null,path:data.success});
+            $scope.property.imagePaths.push({path:data.success});
+            if($scope.property.imagePaths.length == $scope.photosToUpload.length){
+				$scope.property.$save(function(data){
+					$state.go("showProperty",{
+						propertyId:data.id
+					});
+				});
+			}
+        }).error(function(data,status,headers,config){
+        	photo.progress = 100;
+        	photo.progressMsg = "Error";
+        	photo.error = true;
         });
 	}
 	$scope.generateThumb = function(file) {
@@ -164,6 +174,9 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","PropertySe
 			}
 		}
 	};
+	$scope.$watch('property.propertyFacilities',function(newVal){
+		console.log("OK NEW VAL ",$scope.property.propertyFacilities);
+	})
 }]);
 propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter",function($scope,PropertyService,$state,$filter){
 	$scope.neededAddressComponents = {

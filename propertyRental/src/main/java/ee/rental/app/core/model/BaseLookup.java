@@ -12,7 +12,7 @@ public class BaseLookup {
 	@Column(name="name")
 	private String name;
 	@Column(name="description")
-	private String descrription;
+	private String description;
 	public Long getId() {
 		return id;
 	}
@@ -25,10 +25,15 @@ public class BaseLookup {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDescrription() {
-		return descrription;
+	public String getDescription() {
+		return description;
 	}
-	public void setDescrription(String descrription) {
-		this.descrription = descrription;
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	@Override
+	public String toString() {
+		return "BaseLookup [id=" + id + ", name=" + name + ", descrription="
+				+ description + "]";
 	}
 }

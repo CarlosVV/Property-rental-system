@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ee.rental.app.core.model.Property;
+import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.Message;
 import ee.rental.app.core.model.UnavailableDate;
@@ -67,7 +68,8 @@ public class PropertyController {
 		}
 	}
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Property> addProperty(@RequestBody PropertyWrapper property){
+	public ResponseEntity<Property> addProperty(@RequestBody Property property){
+		logger.info("PLS DUDE");
 		logger.info("ADDING "+property);
 		Property createdProperty = propertyService.addProperty(property);
 		return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
@@ -89,6 +91,11 @@ public class PropertyController {
 	public List<UnavailableDate> queryApartments(@PathVariable("id") Long id){
 		List<UnavailableDate> result = propertyService.findUnavailableDates(id);
 		logger.info("ANSWER:"+result);
+		return result;
+	}
+	@RequestMapping(value = "/propertyFacilities", method = RequestMethod.GET)
+	public List<PropertyFacility> propertyFacilityList(){
+		List<PropertyFacility> result = propertyService.findPropertyFacilities();
 		return result;
 	}
 	@ResponseStatus(HttpStatus.OK)

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.repository.UserAccountRepo;
 @Repository
-@Transactional
 public class UserAccountRepoImpl implements UserAccountRepo{
 
 	@Autowired

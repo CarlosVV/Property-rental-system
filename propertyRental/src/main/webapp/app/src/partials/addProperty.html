@@ -10,7 +10,15 @@
 		<div class="row">
 		<div class="form-group col-md-6">
 			<label for="propertyType">Property type:</label>
-			<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType" required></select>
+			<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType.id" required></select>
+		</div>
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
+			<label>Property facilities:</label>
+			<div ng-repeat="facility in propertyFacilities">
+				<br/><label class='facility'><input type="checkbox" value="{{facility}}" check-list="property.propertyFacilities"/> <strong>{{facility.name}}</strong> - {{facility.description}}</label>
+			</div>
 		</div>
 		</div>
 		<div class="row">
@@ -24,8 +32,20 @@
 		</div>
 		<div class="row">
 		<div class="form-group col-md-6">
+			<label for="bedCount">Bedroom count:</label>
+			<input type="number" class="form-control" name="bedCount" ng-model="property.bedCount" required>
+		</div>
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
 			<label for="bedroomCount">Bedroom count:</label>
 			<input type="number" class="form-control" name="bedroomCount" ng-model="property.bedroomCount" required>
+		</div>
+		</div>
+		<div class="row">
+		<div class="form-group col-md-6">
+			<label for="guestCount">Guest count:</label>
+			<input type="number" class="form-control" name="guestCount" ng-model="property.guestCount" required>
 		</div>
 		</div>
 		<div class="row">
@@ -61,8 +81,8 @@
 							<img ng-show="f.dataUrl" ng-src="{{f.dataUrl}}" class="thumbnail">
 							
 								<div class="progress" ng-show="f.progress >= 0">
-								  <div class="progress-bar" role="progressbar" aria-valuenow="{{f.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{f.progress}}%;">
-								    {{f.progress}}
+								  <div class="progress-bar" ng-class="{'progress-bar-danger': f.error}" role="progressbar" aria-valuenow="{{f.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{f.progress}}%;">
+								    {{f.progressMsg}}
 								  </div>
 								</div>
 							<button class="btn btn-default" ng-click="f.upload.abort();f.upload.aborted=true" 
@@ -88,7 +108,7 @@
 						</div>
 					</div>
 				
-			    <div><button class='btn btn-default' ng-click="upload()">Upload photos</button></div>
+			    <!-- <div><button class='btn btn-default' ng-click="upload()">Upload photos</button></div> -->
 			    </div>
 			</div>
 			

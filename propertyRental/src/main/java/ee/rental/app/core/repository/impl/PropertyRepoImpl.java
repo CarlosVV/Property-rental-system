@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ee.rental.app.core.model.Booking;
+import ee.rental.app.core.model.ImagePath;
 import ee.rental.app.core.model.Property;
+import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
@@ -27,7 +30,6 @@ import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.rest.controller.PropertyController;
 
 @Repository
-@Transactional(readOnly=false)
 public class PropertyRepoImpl implements PropertyRepo{
 	private static final Logger logger = LoggerFactory.getLogger(PropertyRepoImpl.class);
 	@Autowired
@@ -76,8 +78,8 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return (List<PropertyType>)query.list();
 	}
 	
-	public Property addProperty(PropertyWrapper property) {
-		Property p = new Property();
+	public Property addProperty(Property property) {
+		/*Property p = new Property();
 		p.setAddress(property.getAddress());
 		p.setAdministrativeArea(property.getAdministrativeArea());
 		p.setBathroomCount(Integer.parseInt(property.getBathroomCount()));
@@ -94,9 +96,16 @@ public class PropertyRepoImpl implements PropertyRepo{
 		//p.setPropertyType(new PropertyType(1L, "Apartment", "Apartment desc"));
 		p.setRules(property.getRules());
 		p.setSize(Integer.parseInt(property.getSize()));
-		p.setTitle(property.getTitle());
-		sessionFactory.getCurrentSession().save(p);
-		return p;
+		p.setTitle(property.getTitle());*/
+		Session session = sessionFactory.getCurrentSession();
+		session.save(property);
+		session.flush();
+		/*property.setId(id);
+		for(ImagePath img : property.getImagePaths()){
+			img.setProperty(property);
+		}
+		session.flush();*/
+		return property;
 	}
 
 	public List<UnavailableDate> findBookedDates(Long id) {
@@ -110,6 +119,18 @@ public class PropertyRepoImpl implements PropertyRepo{
 		query.setParameter(0, id);
 		return query.list();
 	}
+
+	public List<PropertyFacility> findPropertyFacilities() {
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT pf FROM PropertyFacility pf");
+		return query.list();
+	}
+
+	/*public void addImagePaths(List<ImagePath> imagePaths) {
+		Session session = sessionFactory.getCurrentSession();
+	    session.save(imagePaths.get(0));
+        session.flush();
+        session.clear();
+	}*/
 
 
 

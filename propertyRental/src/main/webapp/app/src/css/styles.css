@@ -61,3 +61,6 @@ For elements with both the ng-valid and ng-dirty classes
 .photosToUpload{
 	margin:10px 0 10px 5px;
 }
+.facility{
+	font-weight: normal;
+}

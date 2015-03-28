@@ -16,7 +16,6 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.repository.BookingRepo;
 @Repository
-@Transactional
 public class BookingRepoImpl implements BookingRepo{
 
 	@Autowired

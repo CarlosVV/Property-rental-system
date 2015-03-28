@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ee.rental.app.core.model.ImagePath;
 import ee.rental.app.core.model.Property;
+import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
@@ -52,11 +54,17 @@ public class PropertyServiceImpl implements PropertyService{
 		return propertyRepo.findAllPropertyTypes();
 	}
 
-	public Property addProperty(PropertyWrapper data) {
+	public Property addProperty(Property data) {
 		/*UserAccount account = userAccountRepo.findUserAccount(property.getOwner().getId());
 		if(account == null)
 			throw new UserAccountNotFoundException();*/
 		Property property = propertyRepo.addProperty(data);
+		/*for(ImagePath img : property.getImagePaths()){
+			System.out.println("Setting property");
+			img.setProperty(property);
+		}*/
+		System.out.println("inserted");
+		//propertyRepo.addImagePaths(property.getImagePaths());
 		return property;
 	}
 	public List<UnavailableDate> findUnavailableDates(Long id) {
@@ -65,6 +73,11 @@ public class PropertyServiceImpl implements PropertyService{
 		bookedDates.addAll(unDates);
 		//System.out.println("OK WE GOT RESULT: "+bookedDates);
 		return bookedDates;
+	}
+
+	public List<PropertyFacility> findPropertyFacilities() {
+		List<PropertyFacility> result = propertyRepo.findPropertyFacilities();
+		return result;
 	}
 
 }
