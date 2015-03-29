@@ -29,12 +29,17 @@ rentalApp.config(
 				}
 			})
 			.state("showProperty",{
-				url:"/showProperty/{propertyId}",
+				url:"/showProperty/{propertyId}/{checkIn}/{checkOut}/{guestNumber}",
 				views:{
 					"mainView":{
 						templateUrl:"partials/showProperty.html",
 						controller:"ShowPropertyCtrl"
 					}
+				},
+				params:{
+					checkIn:"",
+					checkOut:"",
+					guestNumber:""
 				}
 			})
 			.state("addProperty",{
@@ -66,13 +71,3 @@ rentalApp.config(
 			});
 	}
 );
-/*
-if use this way of injecting google maps api then ngAutocomplete doesn't work.
-Just inject with <script> and nothing changes in the rest of app but it is not recomended to do like that
-rentalApp.config(function(uiGmapGoogleMapApiProvider){
-	uiGmapGoogleMapApiProvider.configure({
-        v: '3.17',
-        libraries: 'weather,geometry,visualization'
-    });
-	console.log("configured");
-});*/

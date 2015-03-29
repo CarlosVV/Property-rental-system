@@ -1,11 +1,85 @@
 <div class="container">
-	{{apartment.title}}<button ng-click="changeLoc()" value="change loc"></button>
-	
+	<h1 class='propertyTitle'>{{property.title}}</h1>
 </div>
-<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
+<div class="jumbotron formSection formMargin">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9 centerElement input-append">
+				<form name="bookingForm" ng-submit="bookingForm.$valid && bookApartment()" novalidate>
+					
+					<div class="col-md-1 bookingFormText">
+						Check in:
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#">
+						    <div class="input-group">
+						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="booking.checkIn" 
+								class="form-control" filter-date check-date="{{unavailableDates}}" 
+								check-dates-match="{{booking.checkOut}}" required />
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker ng-if="unavailableDates.length" data-ng-model="booking.checkIn" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown1' }"/>
+						</ul>
+					</div>
+					<div class="col-md-1 bookingFormText">
+						Check out:
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#">
+		    				<div class="input-group">
+		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="booking.checkOut" 
+								class="form-control" filter-date check-date="{{unavailableDates}}" 
+								check-dates-match="{{booking.checkIn}}" required/>
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker ng-if="unavailableDates.length" data-ng-model="booking.checkOut" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
+						</ul>
+					</div>
+					<div class="col-md-1 bookingFormText">
+						Guests:
+					</div>
+					<div class="col-md-2 col-xs-4">
+						<input type="number" name="guestNumber" placeholder="Guest number" ng-model="booking.guestNumber" 
+							class="form-control" min="0" required/>
+					</div>
+					<div class="col-md-2 col-xs-12">
+						<input type="submit" value="Book apartment" class="btn btn-default"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="fullWidthContainer">
+	<div class="container">
+		<div class="mainImgContainer">
+			<a href='javascript:void(0)' class="leftArrowBox" ng-click="prevImg()">
+				<span></span>
+			</a>
+			<img ng-src="../uploads/photos/{{mainImgUrl}}">
+			<a href='javascript:void(0)' class="rightArrowBox" ng-click="nextImg()">
+				<span></span>
+			</a>
+		</div>
+		<ul class="photoThumbs">
+		  <li ng-repeat="img in property.imagePaths">
+		    <img ng-src="../uploads/photos/{{img.path}}" ng-click="setImg(img)" ng-class="{imgBorder:img.path == mainImgUrl}">
+		  </li>
+		</ul>
+	</div>
+</div>
+<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom' options="mapOptions">
 	<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
        </ui-gmap-marker>
 </ui-gmap-google-map>
 <div class="container">
-	{{apartment.address}}
+	{{property.address}}
 </div>

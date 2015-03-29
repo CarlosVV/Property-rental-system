@@ -3,8 +3,22 @@
  */
 var propertyController = angular.module("PropertyController",[]);
 
-propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resource","$stateParams","uiGmapGoogleMapApi",function($scope,PropertyService,$resource,$stateParams,uiGmapGoogleMapApi){
+propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resource","$stateParams",function($scope,PropertyService,$resource,$stateParams){
 	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 16 };
+	$scope.mapOptions = {scrollwheel: false};
+	var checkInTemp = undefined;
+	var checkOutTemp = undefined;
+	if($stateParams.checkIn != "" || $stateParams.checkOut != ""){
+		console.log("ok",$stateParams.checkIn);
+		checkInTemp = moment($stateParams.checkIn,'DD/MM/YYYY')._d;
+		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
+	}
+	console.log(checkInTemp);
+	$scope.booking = {
+			checkIn:checkInTemp,
+			checkOut:checkOutTemp,
+			guestNumber:parseInt($stateParams.guestNumber)
+	};
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
@@ -17,10 +31,46 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 			      options: { draggable: false }
 		};
 		console.log($scope.property);
+		$scope.currentIndx = 0;
+		$scope.mainImgUrl = $scope.property.imagePaths[0].path;
 	});
+	$scope.setImg = function(img){
+		$scope.mainImgUrl = img.path;
+		$scope.currentIndx = $scope.property.imagePaths.indexOf(img);
+	}
+	$scope.nextImg = function(){
+		if($scope.currentIndx == $scope.property.imagePaths.length - 1){
+			$scope.setImg($scope.property.imagePaths[0]);
+		}else{
+			$scope.setImg($scope.property.imagePaths[$scope.currentIndx+1]);
+		}
+	}
+	$scope.prevImg = function(){
+		if($scope.currentIndx == 0){
+			$scope.setImg($scope.property.imagePaths[$scope.property.imagePaths.length-1]);
+		}else{
+			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
+		}
+	}
 	$scope.unavailableDates = new PropertyService.unavailableDates.query({id:1}, function(){
 		console.log($scope.unavailableDates);
 	});
+	$scope.bookApartment = function(){
+		
+	};
+	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
+		for(var i=0;i<$dates.length;i++){
+			var compare = moment($dates[i].utcDateValue);
+			for(var j=0;j<$scope.unavailableDates.length;j++){
+				var start = moment($scope.unavailableDates[j].startDate);
+				var end = moment($scope.unavailableDates[j].endDate);
+				if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
+					$dates[i].selectable = false;
+				}
+			}
+		}
+	}
+	
 }]);
 propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
 	$scope.property = new PropertyService.property;
@@ -75,6 +125,11 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 			$scope.map.zoom = 16;
 			$scope.property.latitude = newVal.geometry.location.k;
 			$scope.property.longitude = newVal.geometry.location.D;
+			console.log($scope.property.address);
+			console.log($scope.marker.coords.latitude);
+			console.log($scope.marker.coords.longitude);
+			console.log($scope.property.postalCode);
+			console.log($scope.property.administrativeArea);
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -179,6 +234,9 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 	})
 }]);
 propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter",function($scope,PropertyService,$state,$filter){
+	$scope.test = function(){
+		$scope.query.checkIn = moment().format("DD/MM/YYYY");
+	};
 	$scope.neededAddressComponents = {
 		locality : 'long_name',
 		administrative_area_level_1: 'short_name',
@@ -189,6 +247,9 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
+	$scope.$watch('query.checkIn',function(newVal){
+		console.log("NEW VAL CHECKIN:",$scope.query.checkIn);
+	});
 	$scope.query = {};
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -209,14 +270,15 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 		console.log("query: ",$scope.query);
 	});
 	
-	$scope.queryProperties = function(query){
+	$scope.queryProperties = function(){
+		console.log("sending",$filter("date")($scope.query.checkIn,'dd/MM/yyyy'));
 		$state.go("queryProperties",{
 			address:$scope.query.address,
 			country:$scope.query.country,
 			city:$scope.query.city,
 			admArea:$scope.query.administrativeArea,
-			checkIn:moment($scope.query.checkIn).format('DD/MM/YYYY'),
-			checkOut:moment($scope.query.checkOut).format('DD/MM/YYYY'),
+			checkIn:$filter("date")($scope.query.checkIn,'dd/MM/yyyy'),
+			checkOut:$filter("date")($scope.query.checkOut,'dd/MM/yyyy'),
 			guestNumber:$scope.query.guestNumber
 		});
 	}
@@ -236,10 +298,17 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 		}
 	});*/
 }]);
-propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService", "$stateParams", "$location", function($scope, PropertyService, $stateParams, $location){
+propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService", "$stateParams", "$location","$filter", function($scope, PropertyService, $stateParams, $location,$filter){
 	/*PropertyService.apartment.save($scope.query, function(){
 	console.log("DATA SENT YAY");
 	});*/
+	$scope.queryToPass = {};
+	$scope.$watch('query.checkIn',function(newVal){
+		$scope.queryToPass.checkIn = $filter("date")($scope.query.checkIn,'dd/MM/yyyy');
+	});
+	$scope.$watch('query.checkOut',function(newVal){
+		$scope.queryToPass.checkOut = $filter("date")($scope.query.checkOut,'dd/MM/yyyy');
+	});
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
 			administrative_area_level_1: 'short_name',
@@ -250,15 +319,18 @@ propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
+	console.log("we got ",$stateParams.checkIn,moment($stateParams.checkIn,'DD/MM/yyyy')._d);
+	console.log("and ",$stateParams.checkOut,moment($stateParams.checkOut,'DD/MM/yyyy')._d);
 	$scope.query = {
 			address:$stateParams.address,
 			country:$stateParams.country,
 			city:$stateParams.city,
 			administrativeArea:$stateParams.admArea,
-			checkIn:$stateParams.checkIn,
-			checkOut:$stateParams.checkOut,
+			checkIn:moment($stateParams.checkIn,'DD/MM/YYYY')._d,
+			checkOut:moment($stateParams.checkOut,'DD/MM/YYYY')._d,
 			guestNumber:parseInt($stateParams.guestNumber)
 	};
+	console.log("what goes to datepicker::",$scope.query.checkIn);
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
 	$scope.$watch('details',function(newVal){

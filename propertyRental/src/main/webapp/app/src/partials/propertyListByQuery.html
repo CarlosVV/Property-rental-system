@@ -10,10 +10,10 @@
 							<div ng-show="queryForm.location.$dirty && queryForm.location.$error.validQuery">INVALID QUERY</div>
 					</div>
 					<div class="col-md-2 col-xs-4 dropdown">
-						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#" href="#">
+						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#">
 						    <div class="input-group">
 						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="query.checkIn" 
-								class="form-control" filter-date required />
+								class="form-control" filter-date check-dates-match="{{query.checkOut}}" required />
 							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
 						    </div>
 						</a>
@@ -22,10 +22,10 @@
 						</ul>
 					</div>
 					<div class="col-md-2 col-xs-4 dropdown">
-						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#">
 		    				<div class="input-group">
 		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="query.checkOut" 
-								class="form-control" filter-date required/>
+								class="form-control" filter-date check-dates-match="{{query.checkIn}}" required/>
 							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
 						    </div>
 						</a>
@@ -48,7 +48,7 @@
 
 <div class="container">
 	<div class="row" ng-repeat="property in properties">
-		<a ui-sref="showProperty({propertyId : property.id})" class="col-md-12 apartmentBlock">
+		<a ui-sref="showProperty({propertyId : property.id,checkIn:queryToPass.checkIn,checkOut:queryToPass.checkOut,guestNumber:query.guestNumber})" class="col-md-12 apartmentBlock">
 			<div class="apartmentTitle">{{property.title}}</div>
 			<div class="apartmentLocation">{{property.city}}, {{property.administrativeArea}}, {{property.country}}</div>
 			
