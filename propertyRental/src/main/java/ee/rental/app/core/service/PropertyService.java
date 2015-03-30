@@ -11,7 +11,7 @@ import ee.rental.app.core.model.UnavailableDate;
 
 public interface PropertyService {
 	public Property findProperty(Long id);
-	public List<Property> findPropertiesByOwner(Long ownerId);
+	public List<Property> findPropertiesByOwner(String userAccount);
 	public List<Property> queryProperties(PropertyQueryWrapper query);
 	public List<PropertyType> findAllPropertyTypes();
 	public Property addProperty(Property property);

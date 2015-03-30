@@ -74,6 +74,7 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 }]);
 propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
 	$scope.property = new PropertyService.property;
+	$scope.property.userAccount = {username:localStorage.currentUsername};
 	$scope.property.imagePaths = [];
 	$scope.property.propertyFacilities = [];
 	$scope.details={};
@@ -537,8 +538,10 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 	/*PropertyService.apartment.save($scope.query, function(){
 	console.log("DATA SENT YAY");
 	});*/
-	$scope.properties = PropertyService.property.findMyProperties({ownerId:1});
-	
+	$scope.properties = PropertyService.property.findMyProperties();
+	$scope.$watch('properties',function(newVal){
+		console.log($scope.properties);
+	});
 }]);
 propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
 	console.log($scope.returnToState);

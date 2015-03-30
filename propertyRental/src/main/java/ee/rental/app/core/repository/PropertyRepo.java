@@ -14,7 +14,7 @@ import ee.rental.app.core.model.wrapper.PropertyWrapper;
 public interface PropertyRepo {
 	public List<Property> findAllProperties();
 	public Property findProperty(Long id);
-	public List<Property> findPropertiesByOwner(Long ownerId);
+	public List<Property> findPropertiesByOwner(String userAccount);
 	public void updateProperty(Property data);
 	public List<Property> queryPropertiesByCity(PropertyQueryWrapper query);
 	public List<Property> queryPropertiesByCountry(PropertyQueryWrapper query);

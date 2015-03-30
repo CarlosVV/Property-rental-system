@@ -62,7 +62,6 @@ public class PropertyController {
 	private UserAccountService userAccountService;
 	@Autowired
 	private PropertyService propertyService;
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Property getProperty(@PathVariable("id") Long id){
 		try{
@@ -74,11 +73,19 @@ public class PropertyController {
 			throw new NotFoundException(e);
 		}
 	}
-	@RequestMapping(value = "/myProperties/{ownerId}", method = RequestMethod.GET)
-	public List<Property> getPropertiesByOwner(@PathVariable("ownerId") Long ownerId){
-		List<Property> properties = propertyService.findPropertiesByOwner(ownerId);
-		logger.info("WORKING "+properties);
-		return properties;
+	@RequestMapping(value = "/myProperties", method = RequestMethod.GET)
+	public List<Property> getPropertiesByOwner(){
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		logger.info(""+principal);
+        if(principal instanceof UserDetails) {
+	        UserDetails details = (UserDetails)principal;
+	    	logger.info("and "+details);
+			List<Property> properties = propertyService.findPropertiesByOwner(details.getUsername());
+			logger.info("WORKING "+properties);
+			return properties;
+	    }else{
+	    	throw new ForbiddenException();
+	    }
 	}
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public Property updateProperty(@PathVariable("id") Long id, @RequestBody Property property){
@@ -98,12 +105,9 @@ public class PropertyController {
         	try{
 	            UserDetails details = (UserDetails)principal;
 	    		logger.info("and "+details);
-	            UserAccount loggedIn = userAccountService.findUserAccountByUsername(details.getUsername());
-	            if(property.getUserAccount().getId() != null){
-		            if(loggedIn.getId() == property.getUserAccount().getId()) {
-						Property createdProperty = propertyService.addProperty(property);
-						return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
-		            }
+	            if(property.getUserAccount().getUsername().equals(details.getUsername())){
+					Property createdProperty = propertyService.addProperty(property);
+					return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
 	            }else{
 	            	throw new BadRequestException();
 	            }
@@ -113,9 +117,7 @@ public class PropertyController {
         }else{
         	throw new ForbiddenException();
         }
-		return null;
 	}
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public List<Property> queryApartments(@RequestBody PropertyQueryWrapper query){
 		logger.info("GOT IT "+query);
@@ -123,21 +125,18 @@ public class PropertyController {
 		logger.info("ANSWER:"+result);
 		return result;
 	}
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyTypes", method = RequestMethod.GET)
 	public List<PropertyType> getApartmentTypes(){
 		List<PropertyType> result = propertyService.findAllPropertyTypes();
 		logger.info("ANSWER:"+result);
 		return result;
 	}
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/unavailableDates/{id}", method = RequestMethod.GET)
 	public List<UnavailableDate> queryApartments(@PathVariable("id") Long id){
 		List<UnavailableDate> result = propertyService.findUnavailableDates(id);
 		logger.info("ANSWER:"+result);
 		return result;
 	}
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyFacilities", method = RequestMethod.GET)
 	public List<PropertyFacility> propertyFacilityList(){
 		List<PropertyFacility> result = propertyService.findPropertyFacilities();

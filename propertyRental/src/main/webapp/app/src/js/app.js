@@ -124,6 +124,30 @@ rentalApp.config(
 			});
 	}
 );
+//to intercept all 403 errors
+rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
+		function($q, $location) {
+			return {
+				response : function(responseData) {
+					return responseData;
+				},
+				responseError : function error(response) {
+					switch (response.status) {
+					case 403:
+						localStorage.removeItem("currentUsername");
+						$location.path('/login');
+						break;
+					default:
+						$location.path('/error');
+					}
+
+					return $q.reject(response);
+				}
+			};
+		} ]);
+rentalApp.config([ '$httpProvider', function($httpProvider) {
+	$httpProvider.interceptors.push('httpErrorResponseInterceptor');
+} ]);
 rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
@@ -131,13 +155,13 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 		return result;
 	};
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams){
-		console.log("toState",toState);
+		//console.log("toState",toState);
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
         if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
 	        $rootScope.returnToState = toState;
 	        $rootScope.returnToStateParams = toStateParams;
-        	console.log("REDIRECTING to login");
+        	//console.log("REDIRECTING to login");
             event.preventDefault();
             $state.go('login');
         }

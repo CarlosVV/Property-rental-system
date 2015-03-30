@@ -46,9 +46,6 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     		<property name="maxUploadSize" value="6000000"/>
 	</bean>
-	<!--  -->
-	<security:global-method-security pre-post-annotations="enabled">
-        <security:protect-pointcut expression="execution(* ee.rental.app.rest.controller.*.*(..))" access="NOONE_HAS_THIS_ROLE"/>
-    </security:global-method-security>
+	
 
 </beans>

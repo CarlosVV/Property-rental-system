@@ -24,10 +24,12 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.UnavailableDate;
+import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.repository.PropertyRepo;
+import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.rest.controller.PropertyController;
 
 @Repository
@@ -35,6 +37,8 @@ public class PropertyRepoImpl implements PropertyRepo{
 	private static final Logger logger = LoggerFactory.getLogger(PropertyRepoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	@Autowired
+	private UserAccountRepo userAccountRepo;
 
 	public List<Property> findAllProperties() {
 		Query query = sessionFactory.getCurrentSession().createQuery("SELECT p FROM Property p");
@@ -45,9 +49,9 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return (Property) sessionFactory.getCurrentSession().get(Property.class, id);
 	}
 
-	public List<Property> findPropertiesByOwner(Long ownerId) {
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT p FROM Property p where p.owner.id=:ownerId");
-		query.setParameter("ownerId", ownerId);
+	public List<Property> findPropertiesByOwner(String userAccount) {
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT p FROM Property p where p.userAccount.username=:userAccount");
+		query.setParameter("userAccount", userAccount);
 		return query.list();
 	}
 
@@ -109,11 +113,14 @@ public class PropertyRepoImpl implements PropertyRepo{
 		p.setTitle(property.getTitle());*/
 		Session session = sessionFactory.getCurrentSession();
 		//property.setPropertyType((PropertyType)session.load(PropertyType.class, property.getPropertyType().getId()));
+		UserAccount userAccount = userAccountRepo.findUserAccountByUsername(property.getUserAccount().getUsername());
+		property.setUserAccount(userAccount);
 		Long id = (Long) session.save(property);
 		session.flush();
 		property.setId(id);
 		for(ImagePath img : property.getImagePaths()){
-			img.setProperty(property);session.save(img);
+			img.setProperty(property);
+			session.save(img);
 		}
 		session.flush();
 		return property;

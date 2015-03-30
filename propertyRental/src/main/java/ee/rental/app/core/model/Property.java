@@ -25,6 +25,20 @@ public class Property {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@Override
+	public String toString() {
+		return "Property [id=" + id + ", userAccount=" +", country=" + country + ", city=" + city
+				+ ", administrativeArea=" + administrativeArea
+				+ ", postalCode=" + postalCode + ", address=" + address
+				+ ", longitude=" + longitude + ", latitude=" + latitude
+				+ ", title=" + title + ", propertyType=" + propertyType
+				+ ", size=" + size + ", bathroomCount=" + bathroomCount
+				+ ", bedroomCount=" + bedroomCount + ", bedCount=" + bedCount
+				+ ", guestCount=" + guestCount + ", pricePerNight="
+				+ pricePerNight + ", minimumNights=" + minimumNights
+				+ ", description=" + description + ", rules=" + rules
+				+ ", reviews=" + reviews + ", imagePaths=" + imagePaths + "]";
+	}
 	//@JoinColumn(name="ownerId")
 	@OneToOne
 	//@PrimaryKeyJoinColumn

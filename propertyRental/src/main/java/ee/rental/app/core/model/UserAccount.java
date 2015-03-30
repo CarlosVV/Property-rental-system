@@ -17,7 +17,7 @@ public class UserAccount {
 	@Override
 	public String toString() {
 		return "UserAccount [id=" + id + ", username=" + username
-				+ ", password=" + password + ", properties=" + properties
+				+ ", password=" + password 
 				+ ", bookings=" + bookings + "]";
 	}
 
@@ -25,8 +25,6 @@ public class UserAccount {
 	private Long id;
 	private String username;
 	private String password;
-	@OneToMany(mappedBy="userAccount")
-	private List<Property> properties;
 	@OneToMany(mappedBy="userAccount")
 	private List<Booking> bookings;
 	@OneToOne(mappedBy="accountUser")
@@ -38,13 +36,6 @@ public class UserAccount {
 		this.bookings = bookings;
 	}
 
-	public List<Property> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(List<Property> properties) {
-		this.properties = properties;
-	}
 
 	public Long getId() {
 		return id;

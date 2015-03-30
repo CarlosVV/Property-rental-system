@@ -39,8 +39,8 @@ public class PropertyServiceImpl implements PropertyService{
 		return resultProperty;
 	}
 	
-	public List<Property> findPropertiesByOwner(Long ownerId) {
-		return propertyRepo.findPropertiesByOwner(ownerId);
+	public List<Property> findPropertiesByOwner(String userAccount) {
+		return propertyRepo.findPropertiesByOwner(userAccount);
 	}
 	
 	public List<Property> queryProperties(PropertyQueryWrapper query) {
