@@ -12,6 +12,7 @@ import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.UserAccountService;
 import ee.rental.app.core.service.exception.UserAccountExistsException;
+import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 
 @Service
 @Transactional
@@ -19,11 +20,11 @@ public class UserAccountServiceImpl implements UserAccountService{
 	@Autowired
 	private UserAccountRepo userAccountRepo;
 	public UserAccount createUserAccount(UserAccount userAccount) {
-		UserAccount account = userAccountRepo.findUserAccountByUsername(userAccount.getName());
+		UserAccount account = userAccountRepo.findUserAccountByUsername(userAccount.getUsername());
 		if(account != null){
 			throw new UserAccountExistsException();
 		}
-		return userAccountRepo.createUserAccount(account);
+		return userAccountRepo.createUserAccount(userAccount);
 	}
 
 	public List<UserAccount> findAllUserAccounts() {
@@ -31,7 +32,14 @@ public class UserAccountServiceImpl implements UserAccountService{
 	}
 
 	public UserAccount findUserAccountByUsername(String username) {
-		return userAccountRepo.findUserAccountByUsername(username);
+		UserAccount result = userAccountRepo.findUserAccountByUsername(username);
+		if(result == null)
+			throw new UserAccountNotFoundException();
+		return result;
+	}
+
+	public UserAccount findUserAccountById(Long accountId) {
+		return userAccountRepo.findUserAccount(accountId);
 	}
 
 }

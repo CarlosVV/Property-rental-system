@@ -233,7 +233,7 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 		console.log("OK NEW VAL ",$scope.property.propertyFacilities);
 	})
 }]);
-propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter",function($scope,PropertyService,$state,$filter){
+propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter","AccountService",function($scope,PropertyService,$state,$filter,AccountService){
 	$scope.test = function(){
 		$scope.query.checkIn = moment().format("DD/MM/YYYY");
 	};
@@ -539,4 +539,36 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 	});*/
 	$scope.properties = PropertyService.property.findMyProperties({ownerId:1});
 	
+}]);
+propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
+	console.log($scope.returnToState);
+	$scope.login = function(){
+		console.log($scope.userAccount);
+		AccountService.login($scope.userAccount).then(function(){
+			//redirecting to set in app $on stateChange state
+			console.log($scope.returnToState);
+			if($scope.returnToState){
+				console.log("ITS ON RIGHT WAY",$scope.returnToState);
+				$state.go($scope.returnToState.name, $scope.returnToStateParams);
+			}else{
+				$state.go("home");
+			}
+		});
+	};
+}]);
+propertyController.controller("RegisterCtrl",["$scope","AccountService","$state",function($scope,AccountService,$state){
+	$scope.userAccount = new AccountService.account;
+	$scope.register = function(){
+		console.log($scope.userAccount);
+		$scope.userAccount.$save(function(returneData){
+			AccountService.login($scope.userAccount).then(function(data){
+				console.log("WTF");
+				console.log(data);
+				$state.go("home");
+			});
+		});
+	};
+}]);
+propertyController.controller('LogoutCtrl', ["$scope","AccountService","$state","$rootScope",function($scope,AccountService,$state,$rootScope){
+    $scope.service = new AccountService.logout();
 }]);

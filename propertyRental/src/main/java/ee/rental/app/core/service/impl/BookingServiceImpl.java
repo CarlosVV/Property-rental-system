@@ -31,7 +31,7 @@ public class BookingServiceImpl implements BookingService{
 		Property property = propertyRepo.findProperty(booking.getProperty().getId());
 		if(property == null)
 			throw new PropertyNotFoundException();
-		UserAccount account = userAccountRepo.findUserAccount(booking.getAccount().getId());
+		UserAccount account = userAccountRepo.findUserAccount(booking.getUserAccount().getId());
 		if(account == null)
 			throw new UserAccountNotFoundException();
 		return bookingRepo.createBooking(booking);

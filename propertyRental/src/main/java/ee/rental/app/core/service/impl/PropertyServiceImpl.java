@@ -33,7 +33,10 @@ public class PropertyServiceImpl implements PropertyService{
 	private UserAccountRepo userAccountRepo;
 
 	public Property findProperty(Long id) {
-		return propertyRepo.findProperty(id);
+		System.out.println("PROPERTY ID: "+id);
+		Property resultProperty = propertyRepo.findProperty(id);
+		System.out.println("WE GOT "+resultProperty);
+		return resultProperty;
 	}
 	
 	public List<Property> findPropertiesByOwner(Long ownerId) {

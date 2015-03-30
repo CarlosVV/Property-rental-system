@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,9 @@ public class UserAccountRepoImpl implements UserAccountRepo{
 	@Autowired
 	private SessionFactory sessionFactory;
 	public UserAccount createUserAccount(UserAccount userAccount) {
-		sessionFactory.getCurrentSession().save(userAccount);
+		Session session = sessionFactory.getCurrentSession();
+		session.save(userAccount);
+		session.flush();
 		return userAccount;
 	}
 	public List<UserAccount> findAllUserAccounts() {
@@ -27,12 +30,17 @@ public class UserAccountRepoImpl implements UserAccountRepo{
 		return query.list();
 	}
 	public UserAccount findUserAccount(Long id) {
-		return (UserAccount) sessionFactory.getCurrentSession().get(UserAccount.class, id);
+		Session session = sessionFactory.getCurrentSession();
+		UserAccount uAccount = (UserAccount) sessionFactory.getCurrentSession().get(UserAccount.class, id);
+		session.flush();
+		return uAccount;
 	}
 	public UserAccount findUserAccountByUsername(String username){
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT ua FROM UserAccount ua WHERE ua.username=?1");
-		query.setParameter(0, username);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT ua FROM UserAccount ua WHERE ua.username=:username");
+		query.setParameter("username", username);
 		UserAccount result = (UserAccount) query.uniqueResult();
+		session.flush();
 		return result;
 	}
 }

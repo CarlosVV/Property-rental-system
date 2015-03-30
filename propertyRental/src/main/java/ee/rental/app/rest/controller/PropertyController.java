@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,7 @@ import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.Message;
 import ee.rental.app.core.model.UnavailableDate;
+import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
 import ee.rental.app.core.service.PropertyService;
@@ -44,6 +48,8 @@ import ee.rental.app.core.service.exception.PropertyNotFoundException;
 import ee.rental.app.core.service.exception.PropertiesNotFoundException;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
+import ee.rental.app.rest.exception.BadRequestException;
+import ee.rental.app.rest.exception.ForbiddenException;
 import ee.rental.app.rest.exception.NotFoundException;
 import ee.rental.app.rest.response.ErrorResponse;
 import ee.rental.app.rest.response.Success;
@@ -56,6 +62,7 @@ public class PropertyController {
 	private UserAccountService userAccountService;
 	@Autowired
 	private PropertyService propertyService;
+	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Property getProperty(@PathVariable("id") Long id){
 		try{
@@ -84,9 +91,31 @@ public class PropertyController {
 	public ResponseEntity<Property> addProperty(@RequestBody Property property){
 		logger.info("PLS DUDE");
 		logger.info("ADDING "+property);
-		Property createdProperty = propertyService.addProperty(property);
-		return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		logger.info(""+principal);
+        if(principal instanceof UserDetails) {
+        	try{
+	            UserDetails details = (UserDetails)principal;
+	    		logger.info("and "+details);
+	            UserAccount loggedIn = userAccountService.findUserAccountByUsername(details.getUsername());
+	            if(property.getUserAccount().getId() != null){
+		            if(loggedIn.getId() == property.getUserAccount().getId()) {
+						Property createdProperty = propertyService.addProperty(property);
+						return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
+		            }
+	            }else{
+	            	throw new BadRequestException();
+	            }
+        	}catch(UserAccountNotFoundException e){
+        		throw new NotFoundException();
+        	}
+        }else{
+        	throw new ForbiddenException();
+        }
+		return null;
 	}
+	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public List<Property> queryApartments(@RequestBody PropertyQueryWrapper query){
 		logger.info("GOT IT "+query);
@@ -94,18 +123,21 @@ public class PropertyController {
 		logger.info("ANSWER:"+result);
 		return result;
 	}
+	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyTypes", method = RequestMethod.GET)
 	public List<PropertyType> getApartmentTypes(){
 		List<PropertyType> result = propertyService.findAllPropertyTypes();
 		logger.info("ANSWER:"+result);
 		return result;
 	}
+	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/unavailableDates/{id}", method = RequestMethod.GET)
 	public List<UnavailableDate> queryApartments(@PathVariable("id") Long id){
 		List<UnavailableDate> result = propertyService.findUnavailableDates(id);
 		logger.info("ANSWER:"+result);
 		return result;
 	}
+	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyFacilities", method = RequestMethod.GET)
 	public List<PropertyFacility> propertyFacilityList(){
 		List<PropertyFacility> result = propertyService.findPropertyFacilities();

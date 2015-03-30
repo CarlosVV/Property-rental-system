@@ -24,25 +24,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Property {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@Override
-	public String toString() {
-		return "Property [id=" + id + ", owner=" + owner + ", country="
-				+ country + ", city=" + city + ", administrativeArea="
-				+ administrativeArea + ", postalCode=" + postalCode
-				+ ", address=" + address + ", longitude=" + longitude
-				+ ", latitude=" + latitude + ", title=" + title
-				+ ", propertyType=" + propertyType + ", size=" + size
-				+ ", bathroomCount=" + bathroomCount + ", bedroomCount="
-				+ bedroomCount + ", pricePerNight=" + pricePerNight
-				+ ", minimumNights=" + minimumNights + ", description="
-				+ description + ", rules=" + rules + ", reviews=" + reviews
-				+ ", propertyFacilities=" + propertyFacilities
-				+ ", imagePaths=" + imagePaths + "]";
-	}
+	
 	//@JoinColumn(name="ownerId")
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	//@PrimaryKeyJoinColumn
-	private UserAccount owner;
+	private UserAccount userAccount;
 	private String country;
 	private String city;
 	private String administrativeArea;
@@ -110,11 +96,11 @@ public class Property {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public UserAccount getOwner() {
-		return owner;
+	public UserAccount getUserAccount() {
+		return userAccount;
 	}
-	public void setOwner(UserAccount owner) {
-		this.owner = owner;
+	public void setUserAccount(UserAccount userAccount) {
+		this.userAccount = userAccount;
 	}
 	public String getCountry() {
 		return country;

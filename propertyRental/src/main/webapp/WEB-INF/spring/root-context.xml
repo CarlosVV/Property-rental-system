@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -10,10 +11,13 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd">
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<context:component-scan base-package="ee.rental.app.core.repository"></context:component-scan>
 	<context:component-scan base-package="ee.rental.app.core.service"></context:component-scan>
+	<context:component-scan base-package="ee.rental.app.core.security"></context:component-scan>
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
 		<property name="username" value="sa" />
@@ -42,5 +46,9 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     		<property name="maxUploadSize" value="6000000"/>
 	</bean>
+	<!--  -->
+	<security:global-method-security pre-post-annotations="enabled">
+        <security:protect-pointcut expression="execution(* ee.rental.app.rest.controller.*.*(..))" access="NOONE_HAS_THIS_ROLE"/>
+    </security:global-method-security>
 
 </beans>

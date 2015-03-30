@@ -8,4 +8,5 @@ public interface UserAccountService {
 	public UserAccount createUserAccount(UserAccount userAccount);
 	public List<UserAccount> findAllUserAccounts();
 	public UserAccount findUserAccountByUsername(String username);
+	public UserAccount findUserAccountById(Long accountId);
 }

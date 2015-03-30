@@ -21,12 +21,10 @@ public class Booking {
 	private Long id;
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
-	private UserAccount account;
+	private UserAccount userAccount;
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
 	private Property property;
-	@OneToMany(mappedBy="booking")
-	private List<Guest> guests;
 	@OneToOne(cascade=CascadeType.ALL)
 	//@PrimaryKeyJoinColumn
 	private BookingStatus bookingStatus;
@@ -59,17 +57,11 @@ public class Booking {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public UserAccount getAccount() {
-		return account;
+	public UserAccount getUserAccount() {
+		return userAccount;
 	}
-	public void setAccount(UserAccount account) {
-		this.account = account;
-	}
-	public List<Guest> getGuests() {
-		return guests;
-	}
-	public void setGuests(List<Guest> guests) {
-		this.guests = guests;
+	public void setUserAccount(UserAccount userAccount) {
+		this.userAccount = userAccount;
 	}
 	public BookingStatus getBookingStatus() {
 		return bookingStatus;

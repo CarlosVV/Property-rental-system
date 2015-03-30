@@ -17,7 +17,10 @@ rentalApp.config(
 						templateUrl:"partials/home.html",
 						controller:"HomeController"
 					}
-				}
+				},
+                data : {
+                    loggedIn:false
+                }
 			})
 			.state("queryProperties",{
 				url:"/queryProperties/:address/:country/:city/:admArea/:checkIn/:checkOut/:guestNumber",
@@ -26,7 +29,10 @@ rentalApp.config(
 						templateUrl:"partials/propertyListByQuery.html",
 						controller:"SearchPropertiesCtrl"
 					}
-				}
+				},
+                data : {
+                    loggedIn:false
+                }
 			})
 			.state("showProperty",{
 				url:"/showProperty/{propertyId}/{checkIn}/{checkOut}/{guestNumber}",
@@ -40,7 +46,10 @@ rentalApp.config(
 					checkIn:"",
 					checkOut:"",
 					guestNumber:""
-				}
+				},
+                data : {
+                    loggedIn:false
+                }
 			})
 			.state("addProperty",{
 				url:"/addProperty",
@@ -49,7 +58,10 @@ rentalApp.config(
 						templateUrl:"partials/addProperty.html",
 						controller:"AddPropertyCtrl"
 					}
-				}
+				},
+                data : {
+                    loggedIn:true
+                }
 			})
 			.state("updateProperty",{
 				url:"/updateProperty/{propertyId}",
@@ -58,7 +70,10 @@ rentalApp.config(
 						templateUrl:"partials/updateProperty.html",
 						controller:"UpdatePropertyCtrl"
 					}
-				}
+				},
+                data : {
+                    loggedIn:true
+                }
 			})
 			.state("showMyProperties",{
 				url:"/showMyProperties",
@@ -67,7 +82,64 @@ rentalApp.config(
 						templateUrl:"partials/showMyProperties.html",
 						controller:"ShowMyPropertiesCtrl"
 					}
-				}
+				},
+                data : {
+                    loggedIn:true
+                }
+			})
+			.state("login",{
+				url:"/login",
+				views:{
+					"mainView":{
+						templateUrl:"partials/login.html",
+						controller:"LoginCtrl"
+					}
+				},
+                data : {
+                    loggedIn:false
+                }
+			})
+			.state("register",{
+				url:"/register",
+				views:{
+					"mainView":{
+						templateUrl:"partials/register.html",
+						controller:"RegisterCtrl"
+					}
+				},
+                data : {
+                    loggedIn:false
+                }
+			})
+			.state("logout",{
+				url:"/logout",
+				views:{
+					"mainView":{
+						controller:"LogoutCtrl"
+					}
+				},
+                data : {
+                    loggedIn:true
+                }
 			});
 	}
 );
+rentalApp.run(["$rootScope","$state",function($rootScope, $state){
+	$rootScope.isLoggedIn = function(){
+		var result = localStorage.getItem("currentUsername") !== null;
+		//console.log("controlling....",result);
+		return result;
+	};
+	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams){
+		console.log("toState",toState);
+        $rootScope.toState = toState;
+        $rootScope.toStateParams = toStateParams;
+        if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
+	        $rootScope.returnToState = toState;
+	        $rootScope.returnToStateParams = toStateParams;
+        	console.log("REDIRECTING to login");
+            event.preventDefault();
+            $state.go('login');
+        }
+    })
+}]);
