@@ -1,11 +1,16 @@
 package ee.rental.app.core.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.UnavailableDate;
@@ -31,9 +36,16 @@ public class BookingServiceImpl implements BookingService{
 		Property property = propertyRepo.findProperty(booking.getProperty().getId());
 		if(property == null)
 			throw new PropertyNotFoundException();
-		UserAccount account = userAccountRepo.findUserAccount(booking.getUserAccount().getId());
+		booking.setProperty(property);
+		UserAccount account = userAccountRepo.findUserAccountByUsername(booking.getUserAccount().getUsername());
 		if(account == null)
 			throw new UserAccountNotFoundException();
+		booking.setUserAccount(account);
+		booking.setBookingStatus(bookingRepo.findBookingStatusById(1L));
+		LocalDateTime checkIn = LocalDateTime.ofInstant(booking.getCheckIn().toInstant(), ZoneId.systemDefault());
+		LocalDateTime checkOut = LocalDateTime.ofInstant(booking.getCheckOut().toInstant(), ZoneId.systemDefault());
+		int duration = (int) ChronoUnit.DAYS.between(checkIn, checkOut);
+		booking.setPrice(property.getPricePerNight().multiply(new BigDecimal(duration)));
 		return bookingRepo.createBooking(booking);
 	}
 	public List<Booking> findAllBookings() {
@@ -42,10 +54,10 @@ public class BookingServiceImpl implements BookingService{
 	public Booking findBooking(Long id) {
 		return bookingRepo.findBooking(id);
 	}
-	public List<Booking> findBookingsByAccount(Long accountId) {
-		UserAccount account = userAccountRepo.findUserAccount(accountId);
-		if(account == null)
-			throw new UserAccountNotFoundException();
-		return bookingRepo.findBookingsByAccount(accountId);
+	public List<Booking> findBookingsByAccount(String username) {
+		return bookingRepo.findBookingsByAccount(username);
+	}
+	public BookingStatus findBookingStatusById(long statusId){
+		return bookingRepo.findBookingStatusById(statusId);
 	}
 }

@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -74,6 +75,7 @@ public class Property {
 	//@OneToMany(mappedBy="property")
 	//private List<UnavailableDate> unavailableDates;
 	@OneToMany(mappedBy="property")
+	@JsonIgnore
 	private List<Review> reviews;
 	@ManyToMany
 	private List<PropertyFacility> propertyFacilities;

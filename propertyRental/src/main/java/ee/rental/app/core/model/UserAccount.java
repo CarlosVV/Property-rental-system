@@ -3,31 +3,41 @@ package ee.rental.app.core.model;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@userAccountId")
 public class UserAccount {
-	@Override
-	public String toString() {
-		return "UserAccount [id=" + id + ", username=" + username
-				+ ", password=" + password 
-				+ ", bookings=" + bookings + "]";
-	}
+	
 
 	@Id @GeneratedValue
 	private Long id;
 	private String username;
+	@JsonIgnore
 	private String password;
 	@OneToMany(mappedBy="userAccount")
 	private List<Booking> bookings;
-	@OneToOne(mappedBy="accountUser")
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Authority authority;
+	
+	public Authority getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(Authority authority) {
+		this.authority = authority;
+	}
+
 	public List<Booking> getBookings() {
 		return bookings;
 	}

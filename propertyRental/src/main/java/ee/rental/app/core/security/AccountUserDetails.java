@@ -17,13 +17,8 @@ public class AccountUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        GrantedAuthority authority = new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return "USER";
-            }
-        };
-
+    	String authorityString = account.getAuthority().getName();
+    	GrantedAuthority authority = new GrantedAuthorityImpl(account.getId(),authorityString);
         ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(authority);
         return authorities;

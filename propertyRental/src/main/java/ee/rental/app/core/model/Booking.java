@@ -1,5 +1,6 @@
 package ee.rental.app.core.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -19,37 +21,56 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Booking {
 	@Id @GeneratedValue
 	private Long id;
-	@OneToOne(cascade=CascadeType.ALL)
-	//@PrimaryKeyJoinColumn
+	@OneToOne
+	@JsonIgnore
 	private UserAccount userAccount;
-	@OneToOne(cascade=CascadeType.ALL)
-	//@PrimaryKeyJoinColumn
+	@OneToOne
 	private Property property;
-	@OneToOne(cascade=CascadeType.ALL)
-	//@PrimaryKeyJoinColumn
+	@OneToOne
 	private BookingStatus bookingStatus;
-	@OneToOne(cascade=CascadeType.ALL)
-	//@PrimaryKeyJoinColumn
+	@OneToOne
 	private BookingPayed bookingPayed;
-	private Date bookingStart;
-	private Date bookingEnd;
+	private Date checkIn;
+	private Date checkOut;
+	private Integer guestNumber;
+	private BigDecimal price;
+	@Override
+	public String toString() {
+		return "Booking [id=" + id + ", userAccount=" + userAccount
+				+ ", property=" + property + ", bookingStatus=" + bookingStatus
+				+ ", bookingPayed=" + bookingPayed + ", checkIn=" + checkIn
+				+ ", checkOut=" + checkOut + ", guestNumber=" + guestNumber
+				+ "]";
+	}
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 	public Property getProperty() {
 		return property;
 	}
 	public void setProperty(Property property) {
 		this.property = property;
 	}
-	public Date getBookingStart() {
-		return bookingStart;
+	public Date getCheckIn() {
+		return checkIn;
 	}
-	public void setBookingStart(Date bookingStart) {
-		this.bookingStart = bookingStart;
+	public void setCheckIn(Date checkIn) {
+		this.checkIn = checkIn;
 	}
-	public Date getBookingEnd() {
-		return bookingEnd;
+	public Date getCheckOut() {
+		return checkOut;
 	}
-	public void setBookingEnd(Date bookingEnd) {
-		this.bookingEnd = bookingEnd;
+	public void setCheckOut(Date checkOut) {
+		this.checkOut = checkOut;
+	}
+	public Integer getGuestNumber() {
+		return guestNumber;
+	}
+	public void setGuestNumber(Integer guestNumber) {
+		this.guestNumber = guestNumber;
 	}
 	public Long getId() {
 		return id;

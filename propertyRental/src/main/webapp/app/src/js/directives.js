@@ -1,12 +1,12 @@
 /**
  * 
  */
-var apartmentDirective = angular.module("PropertyDirective", []);
+var propertyDirective = angular.module("PropertyDirective", []);
 
 //this directive is used to check whether user has chosen address from the list that is provided by google
 //validates ng-model specified in input
 //http://habrahabr.ru/post/167793/
-apartmentDirective.directive('checkQuery', function () {
+propertyDirective.directive('checkQuery', function () {
     var isValid = function(query) {
         if(typeof query !== 'undefined'){
         	return true;
@@ -38,7 +38,7 @@ apartmentDirective.directive('checkQuery', function () {
     };
 });
 //check whether date is allowed
-apartmentDirective.directive('checkDate', function () {
+propertyDirective.directive('checkDate', function () {
     var isValid = function(date,unavailableDates) {
     	var compare = moment(date,"DD/MM/YYYY");
     	for(var j=0;j<unavailableDates.length;j++){
@@ -70,7 +70,7 @@ apartmentDirective.directive('checkDate', function () {
         }
     };
 });
-apartmentDirective.directive('checkDatesMatch', function () {
+propertyDirective.directive('checkDatesMatch', function () {
     var isValid = function(name,date1,date2) {
 		if(typeof date1 === 'undefined' || typeof date2 === 'undefined')
 			return true;
@@ -86,10 +86,10 @@ apartmentDirective.directive('checkDatesMatch', function () {
 		//console.log("checkIn",checkIn._d);
 		//console.log("checkOut",checkOut._d);
     	if(checkIn.isAfter(checkOut)){
-    		console.log("WRONG");
+    		//console.log("WRONG");
     		return false;
     	}
-    	console.log("EVERYTHING IS OK");
+    	//console.log("EVERYTHING IS OK");
     	return true;
     };
     return {
@@ -100,7 +100,7 @@ apartmentDirective.directive('checkDatesMatch', function () {
             	//if other input changes(passed value to this directive changes, eg query.checkIn), we should check it (in observe)
             	//after that we check current input
             	attrs.$observe('checkDatesMatch',function(actualValue){
-            		console.log("currentlyActual:",attrs.name);
+            		//console.log("currentlyActual:",attrs.name);
             		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,viewValue,scope.$eval(actualValue)));
             	});
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,viewValue,scope.$eval(attrs.checkDatesMatch)));
@@ -110,7 +110,7 @@ apartmentDirective.directive('checkDatesMatch', function () {
             	//it is for checking whether the variable is passed to directive or not
             	//http://stackoverflow.com/questions/16232917/angularjs-how-to-pass-scope-variables-to-a-directive
             	attrs.$observe('checkDatesMatch',function(actualValue){
-            		console.log("currentlyView:",attrs.name);
+            		//console.log("currentlyView:",attrs.name);
             		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(actualValue)));
             	});
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(attrs.checkDatesMatch)));
@@ -120,7 +120,7 @@ apartmentDirective.directive('checkDatesMatch', function () {
     };
 });
 //alternative to $scope.$watch solution
-apartmentDirective.directive('filterDate', function($filter){
+propertyDirective.directive('filterDate', function($filter){
 	return {
 		require:'ngModel',
 		link: function(scope,element,attrs,modelCtrl){
@@ -141,8 +141,9 @@ apartmentDirective.directive('filterDate', function($filter){
 	};
 });
 //from http://stackoverflow.com/questions/14514461/how-can-angularjs-bind-to-list-of-checkbox-values
-apartmentDirective.directive('checkList',["$parse",function($parse){
+propertyDirective.directive('checkList',["$parse",function($parse){
 	return{
+		restrict:'E',
 		scope:{
 			list:'=checkList',
 			value:'@'
@@ -172,3 +173,82 @@ apartmentDirective.directive('checkList',["$parse",function($parse){
 		}
 	};
 }]);
+//OH GOD I REINVENTED A WHEEL ( max="{{property.guestCount}}")
+propertyDirective.directive('checkGuests',function(){
+	var isValid = function(guestNumber,maxAllowedGuests) {
+		return guestNumber <= maxAllowedGuests && guestNumber > 0;
+    };
+	return{
+		require:'ngModel',
+		scope:{
+			maxAllowedGuests:"=checkGuests"
+		},
+		link:function(scope,elem,attrs,ngModel){
+			ngModel.$parsers.unshift(function (viewValue) {
+        		ngModel.$setValidity('validGuests', isValid(viewValue,scope.maxAllowedGuests));
+        		return viewValue;
+            });
+			ngModel.$formatters.unshift(function (modelValue) {
+        		ngModel.$setValidity('validGuests', isValid(modelValue,scope.maxAllowedGuests));
+            	return modelValue;
+            });
+		}
+	};
+});
+propertyDirective.directive('countBookingPrice',function(){
+	return{
+		scope:{
+			checkIn:"=",
+			checkOut:"=",
+			nightPrice:"="
+		},
+		templateUrl:"partials/bookingPrice.html",
+		link:function(scope,element,attr){
+			console.log("PLS DUDE",scope.nightPrice);
+			scope.$watch("checkIn",function(newVal){
+				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
+					   var startDate = moment(scope.checkIn);
+					   var endDate = moment(scope.checkOut);
+					   var difference = endDate.diff(startDate,'days')+1;
+					   console.log(difference);
+					   var result = difference*scope.nightPrice;
+					   if(result > 0){
+						   scope.totalPrice = difference*scope.nightPrice;
+					   }else{
+						   delete scope.totalPrice;
+					   }
+				}
+			});
+			scope.$watch("checkOut",function(newVal){
+				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
+					   var startDate = moment(scope.checkIn);
+					   var endDate = moment(scope.checkOut);
+					   var difference = endDate.diff(startDate,'days')+1;
+					   console.log(difference);
+					   var result = difference*scope.nightPrice;
+					   if(result > 0){
+						   scope.totalPrice = difference*scope.nightPrice;
+					   }else{
+						   delete scope.totalPrice;
+					   }
+				}
+			});
+			/*attr.$observe('checkIn', function(value) {
+				   console.log(value);
+				   var startDate = moment(scope.checkIn);
+				   var endDate = moment(scope.checkOut);
+				   var difference = endDate.diff(startDate,'days')+1;
+				   console.log(difference);
+				   scope.totalPrice = difference*scope.nightPrice;
+			});
+			attr.$observe('checkOut', function(value) {
+				   console.log(value);
+				   var startDate = moment(scope.checkIn);
+				   var endDate = moment(scope.checkOut);
+				   var difference = endDate.diff(startDate,'days')+1;
+				   console.log(difference);
+				   scope.totalPrice = difference*scope.nightPrice;
+			});*/
+		}
+	};
+});

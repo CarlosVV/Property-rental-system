@@ -46,7 +46,10 @@ public class PropertyRepoImpl implements PropertyRepo{
 	}
 
 	public Property findProperty(Long id) {
-		return (Property) sessionFactory.getCurrentSession().get(Property.class, id);
+		Session session =  sessionFactory.getCurrentSession();
+		Property property = (Property) session.get(Property.class, id);
+		session.flush();
+		return property;
 	}
 
 	public List<Property> findPropertiesByOwner(String userAccount) {
@@ -127,7 +130,7 @@ public class PropertyRepoImpl implements PropertyRepo{
 	}
 
 	public List<UnavailableDate> findBookedDates(Long id) {
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT new UnavailableDate(b.bookingStart,b.bookingEnd) FROM Booking b"
+		Query query = sessionFactory.getCurrentSession().createQuery("SELECT new UnavailableDate(b.checkIn,b.checkOut) FROM Booking b"
 				+ " WHERE b.property.id=?");
 		query.setParameter(0, id);
 		return query.list();

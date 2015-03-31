@@ -18,6 +18,10 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler{
 			HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		String authority = authentication.getAuthorities().iterator().next().getAuthority();
+		String result = "{\"authority\":\""+authority+"\"}";
+		response.getOutputStream().print(result);
 	}
 
 }

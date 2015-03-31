@@ -19,7 +19,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:false
+                	authorities:[]
                 }
 			})
 			.state("queryProperties",{
@@ -31,7 +31,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:false
+                    	authorities:[]
                 }
 			})
 			.state("showProperty",{
@@ -48,7 +48,7 @@ rentalApp.config(
 					guestNumber:""
 				},
                 data : {
-                    loggedIn:false
+                    	authorities:[]
                 }
 			})
 			.state("addProperty",{
@@ -60,7 +60,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:true
+                    	authorities:['ROLE_USER']
                 }
 			})
 			.state("updateProperty",{
@@ -72,7 +72,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:true
+                    	authorities:['ROLE_USER']
                 }
 			})
 			.state("showMyProperties",{
@@ -84,7 +84,19 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:true
+                    	authorities:['ROLE_USER']
+                }
+			})
+			.state("showMyBookings",{
+				url:"/showMyBookings",
+				views:{
+					"mainView":{
+						templateUrl:"partials/showMyBookings.html",
+						controller:"ShowMyBookingsCtrl"
+					}
+				},
+                data : {
+                	authorities:["ROLE_USER"]
                 }
 			})
 			.state("login",{
@@ -96,7 +108,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:false
+                    	authorities:[]
                 }
 			})
 			.state("register",{
@@ -108,7 +120,7 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:false
+                    	authorities:[]
                 }
 			})
 			.state("logout",{
@@ -119,9 +131,16 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    loggedIn:true
+                    authorities:['ROLE_USER']
                 }
-			});
+			})
+			.state("accessDenied",{
+                url : "/accessDenied",
+                templateUrl: "partials/accessDenied.html",
+                data : {
+                	authorities:[]
+                }
+            });
 	}
 );
 //to intercept all 403 errors
@@ -133,18 +152,26 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 				},
 				responseError : function error(response) {
 					switch (response.status) {
+					case 401:
+						console.log("DOES IT EVEN WORK?)");
+						localStorage.removeItem("currentUsername");
+						localStorage.removeItem("authority");
+						$location.path('/login');
+						break;
 					case 403:
 						localStorage.removeItem("currentUsername");
+						localStorage.removeItem("authority");
 						$location.path('/login');
 						break;
 					default:
-						$location.path('/error');
+						//$location.path('/error');
+						console.log("ERROR AAAA");
 					}
 
 					return $q.reject(response);
 				}
 			};
-		} ]);
+}]);
 rentalApp.config([ '$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 } ]);
@@ -154,16 +181,29 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 		//console.log("controlling....",result);
 		return result;
 	};
+	$rootScope.getAuthority = function(){
+		return localStorage.getItem("authority");
+	}
+	$rootScope.currentUsername = localStorage.getItem("currentUsername");
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams){
 		//console.log("toState",toState);
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
-        if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
+        console.log("current auth:",localStorage.getItem("authority"));
+        //if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
+        console.log($rootScope.toState.data.authorities);
+        if(!$rootScope.isLoggedIn() && $rootScope.toState.data.authorities.length != 0){
+        	console.log("should check");
 	        $rootScope.returnToState = toState;
 	        $rootScope.returnToStateParams = toStateParams;
-        	//console.log("REDIRECTING to login");
-            event.preventDefault();
-            $state.go('login');
+	        if($rootScope.isLoggedIn() && $rootScope.toState.data.authorities.indexOf($rootScope.getAuthority()) == -1){
+	            event.preventDefault();
+	        	$state.go('accessDenied');
+	        }else{
+	        	//console.log("REDIRECTING to login");
+	            event.preventDefault();
+	            $state.go('login');
+	        }
         }
     })
 }]);

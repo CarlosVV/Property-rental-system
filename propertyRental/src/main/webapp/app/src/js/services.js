@@ -34,12 +34,12 @@ propertyService.factory("PropertyService", [ "$resource", "API_URL", function($r
 propertyService.factory("BookingService",["$resource","API_URL",function($resource,API_URL){
 	var bookingService = {
 		booking: $resource(API_URL+'bookings/:id',{},{
-			findMyBookings:{
+			myBookings:{
 				method:"GET",
 				isArray:true,
-				url:API_URL+"bookings/myBookings/:ownerId"
+				url:API_URL+"bookings/myBookings"
 			},
-			findMyPropertiesBookings:{
+			myPropertiesBookings:{
 				method:"GET",
 				isArrays:true,
 				url:API_URL+"bookings/myPropertysBookings/:propertyId/"
@@ -67,18 +67,23 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                } ).then(function(data2) {
 	                    alert("login successful");
 	                    localStorage.setItem("currentUsername", data.username);
+	                    localStorage.setItem("authority",data2.data.authority);
+	                    $state.go("login");
 	                }, function(data2) {
+	                    $state.go("login");
 	                    alert("error logging in");
 	                });
 	    },
 		logout : function(){
-			console.log("EXECUTION");
+			console.log("logout");
 			$http.post(API_URL+"logout", {}).success(function() {
 			    alert("logout successful");
 				localStorage.removeItem("currentUsername");
+				localStorage.removeItem("authority");
 				$state.go("home");
 			  }).error(function(data) {
 				localStorage.removeItem("currentUsername");
+				localStorage.removeItem("authority");
 				$state.go("home");
 			  });
 		}

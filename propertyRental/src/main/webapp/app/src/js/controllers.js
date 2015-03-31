@@ -3,7 +3,8 @@
  */
 var propertyController = angular.module("PropertyController",[]);
 
-propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resource","$stateParams",function($scope,PropertyService,$resource,$stateParams){
+propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resource","$stateParams","BookingService","$state",function($scope,PropertyService,$resource,$stateParams,BookingService,$state){
+	$scope.currentUser = localStorage.getItem('currentUsername');
 	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 16 };
 	$scope.mapOptions = {scrollwheel: false};
 	var checkInTemp = undefined;
@@ -14,11 +15,19 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
 	}
 	console.log(checkInTemp);
-	$scope.booking = {
+	
+	$scope.booking = new BookingService.booking;
+	$scope.booking.checkIn = checkInTemp;
+	$scope.booking.checkOut = checkOutTemp;
+	$scope.booking.guestNumber = parseInt($stateParams.guestNumber);
+	$scope.booking.userAccount = {username:$scope.currentUser};
+	$scope.booking.property = {id:$stateParams.propertyId};
+	console.log($scope.booking);
+	/*{
 			checkIn:checkInTemp,
 			checkOut:checkOutTemp,
 			guestNumber:parseInt($stateParams.guestNumber)
-	};
+	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
@@ -33,6 +42,7 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		console.log($scope.property);
 		$scope.currentIndx = 0;
 		$scope.mainImgUrl = $scope.property.imagePaths[0].path;
+		$scope.maxGuests = $scope.property.guestCount;
 	});
 	$scope.setImg = function(img){
 		$scope.mainImgUrl = img.path;
@@ -69,6 +79,10 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 				}
 			}
 		}
+	}
+	$scope.bookApartment = function(){
+		$scope.booking.$save();
+		$state.go("showMyBookings");
 	}
 	
 }]);
@@ -574,4 +588,10 @@ propertyController.controller("RegisterCtrl",["$scope","AccountService","$state"
 }]);
 propertyController.controller('LogoutCtrl', ["$scope","AccountService","$state","$rootScope",function($scope,AccountService,$state,$rootScope){
     $scope.service = new AccountService.logout();
+}]);
+propertyController.controller("ShowMyBookingsCtrl",["$scope","BookingService",function($scope,BookingService){
+	$scope.bookings = new BookingService.booking.myBookings();
+	$scope.$watch('bookings',function(newVal){
+		console.log($scope.bookings);
+	});
 }]);

@@ -158,3 +158,9 @@ For elements with both the ng-valid and ng-dirty classes
 	text-align:right;
 	padding:6px 0 0 0;
 }
+.bookingCreated{
+	color:red;
+}
+.bookingPricePadding{
+	padding:7px 0 0 7px;
+}

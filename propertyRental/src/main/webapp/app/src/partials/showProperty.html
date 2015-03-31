@@ -48,10 +48,13 @@
 					</div>
 					<div class="col-md-2 col-xs-4">
 						<input type="number" name="guestNumber" placeholder="Guest number" ng-model="booking.guestNumber" 
-							class="form-control" min="0" required/>
+							class="form-control" min="0" ng-if="property.imagePaths.length" max="{{property.guestCount}}" required/>
 					</div>
-					<div class="col-md-2 col-xs-12">
-						<input type="submit" value="Book apartment" class="btn btn-default" ng-show="isLoggedIn()"/>
+					<div class="col-md-2 cold-xs-2 bookingPricePadding">
+						<count-booking-price night-price="property.pricePerNight" check-in="booking.checkIn" check-out="booking.checkOut"></count-booking-price>
+					</div>
+					<div class="col-md-1 col-xs-12">
+						<input type="submit" value="Book apartment" class="btn btn-default" ng-show="isLoggedIn() && property.userAccount.username != currentUser"/>
 					</div>
 				</form>
 			</div>
