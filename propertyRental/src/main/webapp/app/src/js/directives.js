@@ -6,9 +6,11 @@ var propertyDirective = angular.module("PropertyDirective", []);
 //this directive is used to check whether user has chosen address from the list that is provided by google
 //validates ng-model specified in input
 //http://habrahabr.ru/post/167793/
+//passing STRING of some object (usually giving country)
 propertyDirective.directive('checkQuery', function () {
     var isValid = function(query) {
-        if(typeof query !== 'undefined'){
+        if(query != '' && typeof query !== 'undefined'){
+        	console.log("dunno",query);
         	return true;
         }else{
         	return false;
@@ -24,6 +26,7 @@ propertyDirective.directive('checkQuery', function () {
             		//console.log(actualValue);
             		//можно исопльзовать scope.query??
             		//scope.$eval to transform from string to javascript object
+            		console.log("HUH",isValid(actualValue));
             		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
         		return viewValue;

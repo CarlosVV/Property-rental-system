@@ -168,6 +168,15 @@ rentalApp.config(
             });
 	}
 );
+/*
+ * For multi step form
+ */
+rentalApp.value('addPropFormSteps', [
+                     {uiSref: 'addProperty.mainDetails', valid: false},
+                     {uiSref: 'addProperty.sizing', valid: false},
+                     {uiSref: 'addProperty.detailedDesc', valid: false},
+                     {uiSref: 'addProperty.photos', valid: false}
+]);
 //to intercept all 403 errors
 rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 		function($q, $location) {
@@ -200,7 +209,7 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 rentalApp.config([ '$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 } ]);
-rentalApp.run(["$rootScope","$state",function($rootScope, $state){
+rentalApp.run(["$rootScope","$state","addPropFormSteps",function($rootScope, $state,addPropFormSteps){
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
 		//console.log("controlling....",result);
@@ -209,7 +218,7 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
 	}
-	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams){
+	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
 		//console.log("toState",toState);
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
@@ -227,5 +236,28 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	            $state.go('login');
 	        }
         }
-    })
+        
+        //for multistep form:
+        var canGoToStep = false;
+        // only go to next if previous is valid
+        var toStateIndex = _.findIndex(addPropFormSteps, function(formStep) {
+        	console.log(toState.name);
+          return formStep.uiSref === toState.name;
+        });
+        console.log('toStateIndex',toStateIndex)
+        if(toStateIndex === 0) {
+          canGoToStep = true;
+        } else {
+        	console.log(toStateIndex - 1);
+          canGoToStep = addPropFormSteps[toStateIndex - 1].valid;
+        }
+        console.log('canGoToStep', toState.name, canGoToStep);
+        
+        // Stop state changing if the previous state is invalid
+        if(!canGoToStep) {
+            // Abort going to step
+            event.preventDefault();
+        }
+    });
+	
 }]);

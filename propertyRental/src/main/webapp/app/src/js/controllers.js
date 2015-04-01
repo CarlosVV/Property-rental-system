@@ -86,7 +86,7 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	}
 	
 }]);
-propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
+propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL","addPropFormSteps",function($scope,$timeout,$state,PropertyService,$upload,API_URL,addPropFormSteps){
 	$scope.property = $scope.property || new PropertyService.property;
 	$scope.property.userAccount = $scope.property.userAccount || {username:localStorage.currentUsername};
 	$scope.property.imagePaths = $scope.property.imagePaths || [];
@@ -96,6 +96,7 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 	$scope.propertyFacilities = $scope.propertyFacilities || PropertyService.propertyFacilities.query();
 	$scope.photosToUpload = $scope.photosToUpload || [];
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+	$scope.streetNumber = $scope.streetNumber || "";
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
 			administrative_area_level_1: 'short_name',
@@ -114,6 +115,14 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 		route:'street',
 		street_number:'street_number'
 	};
+	$scope.resetQuery = function(){
+		console.log("RESETING");
+		$scope.property.city = "";
+		$scope.property.administrativeArea = "";
+		$scope.property.country = "";
+		$scope.property.postalCode = "";
+		$scope.streetNumber = "";
+	}
 	//get address details for property
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
@@ -131,6 +140,8 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 					}
 				}
 			}
+			$scope.streetNumber = streetNumber;
+			console.log("SRSLY",$scope.streetNumber);
 			$scope.property.address = street+streetNumber;
 			
 			$scope.marker.coords.latitude = newVal.geometry.location.k;
@@ -246,7 +257,52 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 	};
 	$scope.$watch('property.propertyFacilities',function(newVal){
 		console.log("OK NEW VAL ",$scope.property.propertyFacilities);
-	})
+	});
+	$scope.formStepSubmitted=false;
+	var nextState=function(currentState) {
+      switch (currentState) {
+          case 'addProperty.mainDetails':
+              return 'addProperty.sizing'
+              break;
+          case 'addProperty.sizing':
+              return 'addProperty.detailedDesc'
+              break;
+          case 'addProperty.detailedDesc':
+              return 'addProperty.photos'
+              break;
+          default:
+              alert('Did not match any switch');
+      }
+    };
+	var updateValidityOfCurrentStep=function(updatedValidity) {
+		console.log(addPropFormSteps);
+      var currentStateIndex = _.findIndex(addPropFormSteps, function(formStep) {
+    	  console.log(addPropFormSteps);
+    	  console.log($state.current.name);
+    	  console.log(formStep.uiSref);
+          return formStep.uiSref === $state.current.name;
+        });
+      console.log(currentStateIndex);
+      addPropFormSteps[currentStateIndex].valid = updatedValidity;
+    };
+	$scope.goToNextSection=function(isFormValid) {
+	      // set to true to show all error messages (if there are any)
+	      $scope.formStepSubmitted = true;
+	      if(isFormValid) {
+	        // reset this for next form
+	        $scope.formStepSubmitted = false;
+
+	        // mark the step as valid so we can navigate to it via the links
+	        updateValidityOfCurrentStep(true /*valid */);
+
+	        // we only go to the next step if the form is valid
+	        console.log($state.current.name);
+	        $state.go(nextState($state.current.name));
+	      } else {
+	        // mark the step as valid so we can navigate to it via the links
+	        updateValidityOfCurrentStep(false /*not valid */);
+	      }
+	};
 }]);
 propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter","AccountService",function($scope,PropertyService,$state,$filter,AccountService){
 	$scope.test = function(){
@@ -298,9 +354,11 @@ propertyController.controller("HomeController",["$scope","PropertyService","$sta
 		});
 	}
 	$scope.resetQuery = function(){
+		console.log("execute pls");
 		$scope.query.city = "";
 		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
+		console.log($scope.query.city);
 	}
 	//old way, should use directive instead!
 	//moreover it is incorrect to use such method! cuz i am changing value of the variable but datepicker consumes moment object not string!
