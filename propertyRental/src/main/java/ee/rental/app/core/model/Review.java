@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@reviewId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atreviewId")
 public class Review {
 	@Id @GeneratedValue
 	private Long id;

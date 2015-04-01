@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@userAccountId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atuserAccountId")
 public class UserAccount {
 	
 
@@ -26,6 +26,7 @@ public class UserAccount {
 	@JsonIgnore
 	private String password;
 	@OneToMany(mappedBy="userAccount")
+	@JsonIgnore
 	private List<Booking> bookings;
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Authority authority;

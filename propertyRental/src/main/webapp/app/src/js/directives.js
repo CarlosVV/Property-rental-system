@@ -143,7 +143,7 @@ propertyDirective.directive('filterDate', function($filter){
 //from http://stackoverflow.com/questions/14514461/how-can-angularjs-bind-to-list-of-checkbox-values
 propertyDirective.directive('checkList',["$parse",function($parse){
 	return{
-		restrict:'E',
+		restrict:'A',
 		scope:{
 			list:'=checkList',
 			value:'@'

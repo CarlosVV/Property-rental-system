@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@messageId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atmessageId")
 public class Message {
 	@Id @GeneratedValue
 	private Long id;

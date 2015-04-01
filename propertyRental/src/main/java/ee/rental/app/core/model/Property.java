@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@propertyId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atpropertyId")
 public class Property {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -77,7 +77,7 @@ public class Property {
 	@OneToMany(mappedBy="property")
 	@JsonIgnore
 	private List<Review> reviews;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.MERGE)
 	private List<PropertyFacility> propertyFacilities;
 	@OneToMany(mappedBy="property")
 	private List<ImagePath> imagePaths;

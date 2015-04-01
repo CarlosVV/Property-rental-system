@@ -37,7 +37,7 @@
 				<li ng-show="isLoggedIn()"><a ui-sref="showMyProperties">Show my props</a></li>
 				<li ng-show="isLoggedIn()"><a ui-sref="updateProperty({propertyId:1})">Update prop 1</a></li>
 				<li><a ui-sref="showProperty({propertyId:1})">Show prop 1</a></li>
-				<li ng-show="isLoggedIn()"><a ui-sref="addProperty">Add property</a></li>
+				<li ng-show="isLoggedIn()"><a ui-sref="addProperty.mainDetails">Add property</a></li>
                 <li ng-show="!isLoggedIn()"><a ui-sref="login">Login</a></li>
                 <li ng-show="!isLoggedIn()"><a ui-sref="register">Register</a></li>
                 <li ng-show="isLoggedIn()"><a href=''>Hi, {{currentUsername}}</a></li>

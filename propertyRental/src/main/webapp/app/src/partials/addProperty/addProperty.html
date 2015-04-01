@@ -1,0 +1,14 @@
+<div class="container">
+	<h2>Add a property</h2>
+	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && addProperty()">
+		<div id="status-buttons" class="text-center">
+             <a ui-sref-active="active" ui-sref=".mainDetails"><span>1</span> Main details</a>
+             <a ui-sref-active="active" ui-sref=".sizing"><span>2</span> Sizing</a>
+             <a ui-sref-active="active" ui-sref=".detailedDesc"><span>3</span> Description</a>
+             <a ui-sref-active="active" ui-sref=".photos"><span>4</span> Photos</a>
+         </div>
+		<div ui-view></div>
+		
+	</form>
+	
+</div>

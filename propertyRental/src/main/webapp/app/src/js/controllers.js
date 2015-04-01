@@ -87,14 +87,14 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	
 }]);
 propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
-	$scope.property = new PropertyService.property;
-	$scope.property.userAccount = {username:localStorage.currentUsername};
-	$scope.property.imagePaths = [];
-	$scope.property.propertyFacilities = [];
-	$scope.details={};
-	$scope.propertyTypes = PropertyService.propertyTypes.query();
-	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
-	$scope.photosToUpload = [];
+	$scope.property = $scope.property || new PropertyService.property;
+	$scope.property.userAccount = $scope.property.userAccount || {username:localStorage.currentUsername};
+	$scope.property.imagePaths = $scope.property.imagePaths || [];
+	$scope.property.propertyFacilities = $scope.property.propertyFacilities || [];
+	$scope.details= $scope.details || {};
+	$scope.propertyTypes = $scope.propertyTypes || PropertyService.propertyTypes.query();
+	$scope.propertyFacilities = $scope.propertyFacilities || PropertyService.propertyFacilities.query();
+	$scope.photosToUpload = $scope.photosToUpload || [];
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
@@ -148,8 +148,8 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
-	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
-	$scope.marker = {
+	$scope.map = $scope.map || { center: { latitude: 0, longitude: 0 }, zoom: 8 };
+	$scope.marker = $scope.marker || {
 			id: 0,
 		      coords: {
 		        latitude: 45,
@@ -378,6 +378,7 @@ propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService
 	//:country/:city/:admArea/:checkIn/:checkOut
 }]);
 propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","$stateParams","API_URL","$timeout","$upload",function($scope,PropertyService,$stateParams,API_URL,$timeout,$upload){
+	$scope.uploadingPhotos = false;
 	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 16 };
 	$scope.property = {};
 	$scope.photosToUpload = [];
@@ -385,7 +386,10 @@ propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","
 	$scope.property.propertyFacilities = [];
 	$scope.details={};
 	$scope.propertyTypes = PropertyService.propertyTypes.query();
-	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
+	$scope.propertyFacilities = PropertyService.propertyFacilities.query(function(){
+		console.log($scope.propertyFacilities);
+		
+	});
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
@@ -472,7 +476,11 @@ propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","
 	};
 
 	$scope.updateProperty = function(){
-		console.log("updating",$scope.property);
+		console.log("updating",$scope.property.propertyFacilities);
+		//some bug that spring mvc refuses to save object with added property facility (400 (Bad Request))
+		for(var i=0;i<$scope.property.propertyFacilities.length;i++){
+			delete $scope.property.propertyFacilities[i]["atpropertyFacilityId"];
+		}
 		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
@@ -491,12 +499,21 @@ propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","
 			//$scope.property.imagePaths = $scope.photosToUpload;
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
 				if(typeof $scope.photosToUpload[i].path === 'undefined'){
+					$scope.uploadingPhotos = true;
 					console.log("UPLOADING",$scope.photosToUpload[i]);
 					uploadPhoto($scope.photosToUpload[i]);
 				}else{
 					$scope.property.imagePaths.push($scope.photosToUpload[i]);
 				}
             }
+			if(!$scope.uploadingPhotos){
+				$scope.property.$update({id:$scope.property.id},function(data){
+					console.log("COMPLETED",data);
+					$state.go("showProperty",{
+						propertyId:$scope.property.id
+					});
+				});
+			}
 		}
 	};
 	function uploadPhoto(photo){

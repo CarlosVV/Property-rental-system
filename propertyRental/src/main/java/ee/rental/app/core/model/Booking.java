@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@bookingId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atbookingId")
 public class Booking {
 	@Id @GeneratedValue
 	private Long id;

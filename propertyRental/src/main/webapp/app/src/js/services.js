@@ -65,8 +65,9 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                "&password=" + data.password, {
 	                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 	                } ).then(function(data2) {
-	                    alert("login successful");
+	                    //alert("login successful");
 	                    localStorage.setItem("currentUsername", data.username);
+	                    $rootScope.currentUsername = localStorage.getItem("currentUsername");
 	                    localStorage.setItem("authority",data2.data.authority);
 	                    $state.go("login");
 	                }, function(data2) {
@@ -77,13 +78,15 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 		logout : function(){
 			console.log("logout");
 			$http.post(API_URL+"logout", {}).success(function() {
-			    alert("logout successful");
+			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");
 				localStorage.removeItem("authority");
+				delete $rootScope.currentUsername;
 				$state.go("home");
 			  }).error(function(data) {
 				localStorage.removeItem("currentUsername");
 				localStorage.removeItem("authority");
+				delete $rootScope.currentUsername;
 				$state.go("home");
 			  });
 		}

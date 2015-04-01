@@ -2,8 +2,8 @@
 INSERT INTO Authority(id,name,description) VALUES(1,'ROLE_USER','Every registered users have this role.');
 INSERT INTO Authority(id,name,description) VALUES(2,'ROLE_ADMIN','Only admins have this role.');
 
-INSERT INTO UserAccount(username,password,authority_id) VALUES('FirstUser','f',1);
-INSERT INTO UserAccount(username,password,authority_id) VALUES('SecondUser','s',1);
+INSERT INTO UserAccount(username,password,authority_id) VALUES('fuser','u',1);
+INSERT INTO UserAccount(username,password,authority_id) VALUES('suser','s',1);
 
 INSERT INTO PropertyType(id,name,description) VALUES(1,'Apartment','Apartment desc');
 INSERT INTO PropertyType(id,name,description) VALUES(2,'Studio','Studio desc');

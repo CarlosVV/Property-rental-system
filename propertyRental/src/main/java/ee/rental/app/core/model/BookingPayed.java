@@ -14,11 +14,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="@bookingPayedId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atbookingPayedId")
 public class BookingPayed {
 	@Id @GeneratedValue
 	private Long id;
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	//@PrimaryKeyJoinColumn
 	@JsonIgnore
 	private Booking booking;

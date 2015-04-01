@@ -52,16 +52,41 @@ rentalApp.config(
                 }
 			})
 			.state("addProperty",{
+				abstract:true,
 				url:"/addProperty",
 				views:{
 					"mainView":{
-						templateUrl:"partials/addProperty.html",
+						templateUrl:"partials/addProperty/addProperty.html",
 						controller:"AddPropertyCtrl"
 					}
 				},
                 data : {
                     	authorities:['ROLE_USER']
                 }
+			})
+			.state("addProperty.mainDetails",{
+				url:"",
+				parent:"addProperty",
+				controller:"AddPropertyCtrl",
+				templateUrl:"partials/addProperty/mainDetails.html"
+			})
+			.state("addProperty.sizing",{
+				url:"/sizing",
+				parent:"addProperty",
+				controller:"AddPropertyCtrl",
+				templateUrl:"partials/addProperty/propSize.html"
+			})
+			.state("addProperty.detailedDesc",{
+				url:"/detailedDesc",
+				parent:"addProperty",
+				controller:"AddPropertyCtrl",
+				templateUrl:"partials/addProperty/detailedDesc.html"
+			})
+			.state("addProperty.photos",{
+				url:"/photos",
+				parent:"addProperty",
+				controller:"AddPropertyCtrl",
+				templateUrl:"partials/addProperty/propPhotos.html"
 			})
 			.state("updateProperty",{
 				url:"/updateProperty/{propertyId}",
@@ -161,7 +186,7 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 					case 403:
 						localStorage.removeItem("currentUsername");
 						localStorage.removeItem("authority");
-						$location.path('/login');
+						$location.path('/accessDenied');
 						break;
 					default:
 						//$location.path('/error');
@@ -184,14 +209,11 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
 	}
-	$rootScope.currentUsername = localStorage.getItem("currentUsername");
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams){
 		//console.log("toState",toState);
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
-        console.log("current auth:",localStorage.getItem("authority"));
         //if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
-        console.log($rootScope.toState.data.authorities);
         if(!$rootScope.isLoggedIn() && $rootScope.toState.data.authorities.length != 0){
         	console.log("should check");
 	        $rootScope.returnToState = toState;
