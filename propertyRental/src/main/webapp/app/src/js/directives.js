@@ -58,7 +58,11 @@ propertyDirective.directive('checkDate', function () {
         link:function (scope, elm, attrs, ngModelCtrl) {
             ngModelCtrl.$parsers.unshift(function (viewValue) {
             	attrs.$observe('checkDate',function(actualValue){
-            		ngModelCtrl.$setValidity('validDate', isValid(viewValue,scope.$eval(actualValue)));
+            		var unDatesArray = scope.$eval(actualValue);
+            		if(unDatesArray.length){
+            			console.log("CHECKIN DATE");
+            			ngModelCtrl.$setValidity('validDate', isValid(viewValue,unDatesArray));
+            		}
             	});
         		return viewValue;
             });
@@ -66,7 +70,11 @@ propertyDirective.directive('checkDate', function () {
             	//it is for checking whether the variable is passed to directive or not
             	//http://stackoverflow.com/questions/16232917/angularjs-how-to-pass-scope-variables-to-a-directive
             	attrs.$observe('checkDate',function(actualValue){
-            		ngModelCtrl.$setValidity('validDate', isValid(modelValue,scope.$eval(actualValue)));
+            		var unDatesArray = scope.$eval(actualValue);
+            		if(unDatesArray.length){
+            			console.log("CHECKIN DATE");
+            			ngModelCtrl.$setValidity('validDate', isValid(modelValue,unDatesArray));
+            		}
             	});
             	return modelValue;
             });

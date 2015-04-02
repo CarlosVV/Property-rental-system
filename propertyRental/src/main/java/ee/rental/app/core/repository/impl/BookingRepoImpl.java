@@ -55,4 +55,25 @@ public class BookingRepoImpl implements BookingRepo{
 		
 	}
 
+	public List<Booking> findBookingsByYearAndProperty(
+			Integer year, Long propertyId) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId AND to_char(b.checkIn,'YYYY') = :year");
+		query.setParameter("propertyId", propertyId);
+		query.setParameter("year", year);
+		List<Booking> result = (List<Booking>) query.list();
+		session.flush();
+		return result;
+	}
+
+	public List<Booking> findBookingsByProperty(Long propertyId) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId");
+		query.setParameter("propertyId", propertyId);
+		List<Booking> result = (List<Booking>) query.list();
+		session.flush();
+		return result;
+	}
+
+
 }

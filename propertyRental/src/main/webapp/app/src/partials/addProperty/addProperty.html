@@ -1,13 +1,158 @@
 <div class="container">
 	<h2>Add a property</h2>
+	<ul class="nav nav-tabs">
+	    <li ng-repeat="step in steps" ng-class="{active: $index==currentStep}">
+	      <a href="javascript:void(0)" ng-click="goToStep($index)">{{step}}</a>
+	    </li>
+	</ul>
 	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && addProperty()">
-		<div id="status-buttons" class="text-center">
-             <a ui-sref-active="active" ui-sref=".mainDetails"><span>1</span> Main details</a>
-             <a ui-sref-active="active" ui-sref=".sizing"><span>2</span> Sizing</a>
-             <a ui-sref-active="active" ui-sref=".detailedDesc"><span>3</span> Description</a>
-             <a ui-sref-active="active" ui-sref=".photos"><span>4</span> Photos</a>
-         </div>
-		<div ui-view></div>
+		
+		<div ng-show="currentStep == 0" class="row">
+			<div class="col-md-6">
+				<div class="row">
+						<div class="form-group col-md-11">
+							<label for="title">Property title:</label>
+							<input type="text" class="form-control" name="title" ng-model="property.title" required>
+						</div>
+						</div>
+						<div class="row">
+						<div class="form-group col-md-11">
+							<label for="propertyType">Property type:</label>
+							<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType.id" required></select>
+						</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-11">
+								<label for="address">Address:</label>
+								<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete
+								details="details" placeholder="{{property.address}}" ng-model="address" class="form-control" ng-change="resetQuery()" check-query="{{streetNumber}}" required/>
+								<p ng-if="map.center.latitude != 0">Pro tip: drag the marker to specify the location!</p>
+								<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
+									<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+								</ui-gmap-google-map>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="form-group col-md-11">
+								<label for="size">Price per night:</label>
+								<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-11">
+								<label for="size">Minimum length of stay:</label>
+								<div class="input-group">
+									<input type="number" class="form-control" name="minimumNights" ng-model="property.minimumNights" required>
+									<span class="input-group-addon">nights</span>
+				  				</div>
+							</div>
+						</div>
+				</div>
+				<div class="col-md-6">
+					<label>Property facilities:</label>
+					<div ng-repeat="facility in propertyFacilities">
+						<br/><label class='facility'><input type="checkbox" name="facility" value="{{facility}}" check-list="property.propertyFacilities" /> <strong>{{facility.name}}</strong> - {{facility.description}}</label>
+					</div>
+				</div>
+		</div>
+		<div ng-show="currentStep == 1">
+			<div class="row">
+				<div class="form-group col-md-6">
+					<label for="size">Property size:</label>
+					<div class="input-group">
+					<input type="number" class="form-control" name="size" ng-model="property.size" required>
+		  			<span class="input-group-addon">m^2</span>
+		  			</div>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="guestCount">Guest count:</label>
+					<input type="number" class="form-control" name="guestCount" ng-model="property.guestCount" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-6">
+					<label for="bedCount">Bedroom count:</label>
+					<input type="number" class="form-control" name="bedCount" ng-model="property.bedCount" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="bedroomCount">Bedroom count:</label>
+					<input type="number" class="form-control" name="bedroomCount" ng-model="property.bedroomCount" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="form-group col-md-6">
+					<label for="bathroomCount">Bathroom count:</label>
+					<input type="number" class="form-control" name="bathroomCount" ng-model="property.bathroomCount" required>
+				</div>
+				<div class="col-md-3"></div>
+			</div>
+		</div>
+		
+		<div ng-show="currentStep == 2">
+			<div class="row">
+				<div class="form-group col-md-6">
+					<label for="description">Property description:</label>
+					<textarea rows="10" class="form-control" name="description"
+						ng-model="property.description" required></textarea>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="rules">Your rules:</label>
+					<textarea rows="8" class="form-control" name="rules"
+						ng-model="property.rules" required></textarea>
+				</div>
+			</div>
+		</div>
+		
+		<div ng-show="currentStep == 3">
+			<div class="row">
+				<div class="form-group col-md-6">
+					<label for="photos">Property photos:</label>
+					<div ng-file-drop ng-file-select ng-model="photos" class="drop-box" 
+				        drag-over-class="dragover" ng-multiple="true" allow-dir="true"
+				        accept="image/*">Drop photos here or click to upload</div>
+				    <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
+				    <div ng-show="photosToUpload.length > 0" class="photoList col-md-8">
+						<div class="row" ng-repeat="p in photosToUpload">
+							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							</button>
+							<img ng-show="p.dataUrl" ng-src="{{p.dataUrl}}" class="thumbnail">
+							
+								<div class="progress" ng-show="p.progress >= 0">
+								  <div class="progress-bar" ng-class="{'progress-bar-danger': p.error}" role="progressbar" aria-valuenow="{{p.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{p.progress}}%;">
+								    {{p.progressMsg}}
+								  </div>
+								</div>
+							<button class="btn btn-default" ng-click="p.upload.abort();p.upload.aborted=true" 
+									ng-show="p.upload != null && p.progress < 100 && !p.upload.aborted">Abort</button>
+							
+							{{p.name}} - size: {{p.size}}B
+							<hr/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div class="row">
+			<ul class="pager">
+			    <li ng-class="{disabled: !hasPreviousStep}">
+			      <a href="javascript:void(0);" ng-click="previousStep()">&larr; Previous Step</a>
+			    </li>
+			    <li ng-class="{disabled: !hasNextStep}">
+			      <a href="javascript:void(0);" ng-click="nextStep()">Next Step &rarr;</a>
+			    </li>
+			  </ul>
+		  </div>
+		<div class="row">
+			<div class="pager">
+				<input type="submit" value="Add a property" class="btn btn-default" ng-disabled="propertyForm.$invalid" />
+			</div>
+		</div>
+		
 		
 	</form>
 	

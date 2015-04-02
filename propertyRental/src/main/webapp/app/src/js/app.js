@@ -52,7 +52,6 @@ rentalApp.config(
                 }
 			})
 			.state("addProperty",{
-				abstract:true,
 				url:"/addProperty",
 				views:{
 					"mainView":{
@@ -63,30 +62,6 @@ rentalApp.config(
                 data : {
                     	authorities:['ROLE_USER']
                 }
-			})
-			.state("addProperty.mainDetails",{
-				url:"",
-				parent:"addProperty",
-				controller:"AddPropertyCtrl",
-				templateUrl:"partials/addProperty/mainDetails.html"
-			})
-			.state("addProperty.sizing",{
-				url:"/sizing",
-				parent:"addProperty",
-				controller:"AddPropertyCtrl",
-				templateUrl:"partials/addProperty/propSize.html"
-			})
-			.state("addProperty.detailedDesc",{
-				url:"/detailedDesc",
-				parent:"addProperty",
-				controller:"AddPropertyCtrl",
-				templateUrl:"partials/addProperty/detailedDesc.html"
-			})
-			.state("addProperty.photos",{
-				url:"/photos",
-				parent:"addProperty",
-				controller:"AddPropertyCtrl",
-				templateUrl:"partials/addProperty/propPhotos.html"
 			})
 			.state("updateProperty",{
 				url:"/updateProperty/{propertyId}",
@@ -168,15 +143,6 @@ rentalApp.config(
             });
 	}
 );
-/*
- * For multi step form
- */
-rentalApp.value('addPropFormSteps', [
-                     {uiSref: 'addProperty.mainDetails', valid: false},
-                     {uiSref: 'addProperty.sizing', valid: false},
-                     {uiSref: 'addProperty.detailedDesc', valid: false},
-                     {uiSref: 'addProperty.photos', valid: false}
-]);
 //to intercept all 403 errors
 rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 		function($q, $location) {
@@ -206,10 +172,10 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 				}
 			};
 }]);
-rentalApp.config([ '$httpProvider', function($httpProvider) {
+rentalApp.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 } ]);
-rentalApp.run(["$rootScope","$state","addPropFormSteps",function($rootScope, $state,addPropFormSteps){
+rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
 		//console.log("controlling....",result);
@@ -218,6 +184,7 @@ rentalApp.run(["$rootScope","$state","addPropFormSteps",function($rootScope, $st
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
 	}
+	$rootScope.currentUsername = localStorage.getItem("currentUsername");
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
 		//console.log("toState",toState);
         $rootScope.toState = toState;
@@ -236,28 +203,5 @@ rentalApp.run(["$rootScope","$state","addPropFormSteps",function($rootScope, $st
 	            $state.go('login');
 	        }
         }
-        
-        //for multistep form:
-        var canGoToStep = false;
-        // only go to next if previous is valid
-        var toStateIndex = _.findIndex(addPropFormSteps, function(formStep) {
-        	console.log(toState.name);
-          return formStep.uiSref === toState.name;
-        });
-        console.log('toStateIndex',toStateIndex)
-        if(toStateIndex === 0) {
-          canGoToStep = true;
-        } else {
-        	console.log(toStateIndex - 1);
-          canGoToStep = addPropFormSteps[toStateIndex - 1].valid;
-        }
-        console.log('canGoToStep', toState.name, canGoToStep);
-        
-        // Stop state changing if the previous state is invalid
-        if(!canGoToStep) {
-            // Abort going to step
-            event.preventDefault();
-        }
     });
-	
 }]);

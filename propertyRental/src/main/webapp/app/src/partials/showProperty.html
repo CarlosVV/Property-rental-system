@@ -20,7 +20,7 @@
 						    </div>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-						    <datetimepicker ng-if="unavailableDates.length" data-ng-model="booking.checkIn" 
+						    <datetimepicker ng-if="unavailableDates.$resolved" data-ng-model="booking.checkIn" 
 						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
 						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown1' }"/>
 						</ul>
@@ -38,7 +38,7 @@
 						    </div>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-						    <datetimepicker ng-if="unavailableDates.length" data-ng-model="booking.checkOut" 
+						    <datetimepicker ng-if="unavailableDates.$resolved" data-ng-model="booking.checkOut" 
 						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
 						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
 						</ul>

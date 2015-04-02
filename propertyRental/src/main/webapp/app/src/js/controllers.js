@@ -62,22 +62,31 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
 		}
 	}
-	$scope.unavailableDates = new PropertyService.unavailableDates.query({id:1}, function(){
+	$scope.unavailableDates = new PropertyService.unavailableDates.query({id:$stateParams.propertyId}, function(){
 		console.log($scope.unavailableDates);
 	});
 	$scope.bookApartment = function(){
 		
 	};
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
-		for(var i=0;i<$dates.length;i++){
-			var compare = moment($dates[i].utcDateValue);
-			for(var j=0;j<$scope.unavailableDates.length;j++){
-				var start = moment($scope.unavailableDates[j].startDate);
-				var end = moment($scope.unavailableDates[j].endDate);
-				if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
+		if($scope.unavailableDates.length > 0){
+			console.log("hm");
+			for(var i=0;i<$dates.length;i++){
+				var compare = moment($dates[i].utcDateValue);
+				if(moment().diff(compare,'days') < 0){
+					for(var j=0;j<$scope.unavailableDates.length;j++){
+						var start = moment($scope.unavailableDates[j].startDate);
+						var end = moment($scope.unavailableDates[j].endDate);
+						if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
+							$dates[i].selectable = false;
+						}
+					}
+				}else{
 					$dates[i].selectable = false;
 				}
 			}
+		}else{
+			console.log("nothing");
 		}
 	}
 	$scope.bookApartment = function(){
@@ -86,17 +95,58 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	}
 	
 }]);
-propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL","addPropFormSteps",function($scope,$timeout,$state,PropertyService,$upload,API_URL,addPropFormSteps){
-	$scope.property = $scope.property || new PropertyService.property;
-	$scope.property.userAccount = $scope.property.userAccount || {username:localStorage.currentUsername};
-	$scope.property.imagePaths = $scope.property.imagePaths || [];
-	$scope.property.propertyFacilities = $scope.property.propertyFacilities || [];
-	$scope.details= $scope.details || {};
-	$scope.propertyTypes = $scope.propertyTypes || PropertyService.propertyTypes.query();
-	$scope.propertyFacilities = $scope.propertyFacilities || PropertyService.propertyFacilities.query();
-	$scope.photosToUpload = $scope.photosToUpload || [];
+propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
+	$scope.property = new PropertyService.property;
+	$scope.property.userAccount = {username:localStorage.currentUsername};
+	$scope.property.imagePaths = [];
+	$scope.property.propertyFacilities = [];
+	$scope.details= {};
+	$scope.propertyTypes = PropertyService.propertyTypes.query();
+	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
+	$scope.photosToUpload = [];
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
-	$scope.streetNumber = $scope.streetNumber || "";
+	
+	$scope.steps = [
+	                "Main details",
+	                "Sizing",
+	                "Description",
+	                "Photos"
+	                ];
+	$scope.currentStep = 0;
+	$scope.hasNextStep = true;
+	$scope.hasPreviousStep = false;
+	$scope.nextStep = function() {
+		$scope.goToStep($scope.currentStep+1);
+		$scope.hasNextStep = $scope.checkNextStep();
+		$scope.hasPreviousStep = $scope.checkPreviousStep();
+	};
+	$scope.previousStep = function() {
+		$scope.goToStep($scope.currentStep-1);
+		$scope.hasPreviousStep = $scope.checkPreviousStep();
+		$scope.hasNextStep = $scope.checkNextStep();
+	};
+	$scope.goToStep = function(index) {
+	    if(typeof $scope.steps[index] !== 'undefined'){
+	      $scope.currentStep = index;
+	    }
+	};
+	$scope.checkNextStep = function(){
+		if(typeof $scope.steps[$scope.currentStep+1] !== 'undefined'){
+			return true;
+		}
+		return false;
+	};
+	$scope.checkPreviousStep = function(){
+		if(typeof $scope.steps[$scope.currentStep-1] !== 'undefined'){
+			return true;
+		}
+		return false;
+	};
+	
+	
+	
+	
+	
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
 			administrative_area_level_1: 'short_name',
@@ -122,7 +172,21 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 		$scope.property.country = "";
 		$scope.property.postalCode = "";
 		$scope.streetNumber = "";
-	}
+	};
+	$scope.$watch('address',function(newVal){
+		if(typeof $scope.address !== 'undefined'){
+			if($scope.address == ""){
+				console.log("new Val is empty set to",$scope.addressBackup);
+				$scope.address = $scope.addressBackup;
+			}else{
+				$scope.addressBackup = $scope.address;
+				console.log("newVal is ok",$scope.addressBackup);
+			}
+		}else{
+			console.log("pls",$scope.addressBackup);
+			$scope.address = $scope.addressBackup;
+		}
+	});
 	//get address details for property
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
@@ -159,8 +223,8 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
-	$scope.map = $scope.map || { center: { latitude: 0, longitude: 0 }, zoom: 8 };
-	$scope.marker = $scope.marker || {
+	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
+	$scope.marker = {
 			id: 0,
 		      coords: {
 		        latitude: 45,
@@ -255,54 +319,7 @@ propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","P
 			}
 		}
 	};
-	$scope.$watch('property.propertyFacilities',function(newVal){
-		console.log("OK NEW VAL ",$scope.property.propertyFacilities);
-	});
-	$scope.formStepSubmitted=false;
-	var nextState=function(currentState) {
-      switch (currentState) {
-          case 'addProperty.mainDetails':
-              return 'addProperty.sizing'
-              break;
-          case 'addProperty.sizing':
-              return 'addProperty.detailedDesc'
-              break;
-          case 'addProperty.detailedDesc':
-              return 'addProperty.photos'
-              break;
-          default:
-              alert('Did not match any switch');
-      }
-    };
-	var updateValidityOfCurrentStep=function(updatedValidity) {
-		console.log(addPropFormSteps);
-      var currentStateIndex = _.findIndex(addPropFormSteps, function(formStep) {
-    	  console.log(addPropFormSteps);
-    	  console.log($state.current.name);
-    	  console.log(formStep.uiSref);
-          return formStep.uiSref === $state.current.name;
-        });
-      console.log(currentStateIndex);
-      addPropFormSteps[currentStateIndex].valid = updatedValidity;
-    };
-	$scope.goToNextSection=function(isFormValid) {
-	      // set to true to show all error messages (if there are any)
-	      $scope.formStepSubmitted = true;
-	      if(isFormValid) {
-	        // reset this for next form
-	        $scope.formStepSubmitted = false;
-
-	        // mark the step as valid so we can navigate to it via the links
-	        updateValidityOfCurrentStep(true /*valid */);
-
-	        // we only go to the next step if the form is valid
-	        console.log($state.current.name);
-	        $state.go(nextState($state.current.name));
-	      } else {
-	        // mark the step as valid so we can navigate to it via the links
-	        updateValidityOfCurrentStep(false /*not valid */);
-	      }
-	};
+	
 }]);
 propertyController.controller("HomeController",["$scope","PropertyService","$state","$filter","AccountService",function($scope,PropertyService,$state,$filter,AccountService){
 	$scope.test = function(){
@@ -623,7 +640,7 @@ propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","
 		}
 	};
 }]);
-propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService", function($scope, PropertyService){
+propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","BookingService", function($scope, PropertyService,BookingService){
 	/*PropertyService.apartment.save($scope.query, function(){
 	console.log("DATA SENT YAY");
 	});*/
@@ -631,6 +648,12 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 	$scope.$watch('properties',function(newVal){
 		console.log($scope.properties);
 	});
+	$scope.showPropertyBookedDays = function(id, chosenYear){
+		$scope.propertyBookedDays = new BookingService.propertyBookedDays.get({id:id,year:chosenYear},function(){
+			console.log($scope.propertyBookedDays);
+			$scope.showChart = true;
+		});
+	}
 }]);
 propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
 	console.log($scope.returnToState);
@@ -660,6 +683,7 @@ propertyController.controller("RegisterCtrl",["$scope","AccountService","$state"
 			});
 		});
 	};
+	
 }]);
 propertyController.controller('LogoutCtrl', ["$scope","AccountService","$state","$rootScope",function($scope,AccountService,$state,$rootScope){
     $scope.service = new AccountService.logout();
@@ -669,4 +693,6 @@ propertyController.controller("ShowMyBookingsCtrl",["$scope","BookingService",fu
 	$scope.$watch('bookings',function(newVal){
 		console.log($scope.bookings);
 	});
+	
+	
 }]);

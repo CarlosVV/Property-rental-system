@@ -1,14 +1,27 @@
 package ee.rental.app.core.service.impl;
 
+import java.awt.print.Book;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+
+
+
 
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
@@ -59,5 +72,32 @@ public class BookingServiceImpl implements BookingService{
 	}
 	public BookingStatus findBookingStatusById(long statusId){
 		return bookingRepo.findBookingStatusById(statusId);
+	}
+	public Map<Integer,Integer> findBookedDaysPerMonthsInYearByProp(
+			Integer year, Long propertyId) {
+		List<Booking> bookings = bookingRepo.findBookingsByYearAndProperty(year, propertyId);
+		Map<Integer,Integer> result = new HashMap<Integer,Integer>();
+		Calendar cal = Calendar.getInstance();
+		for(Booking b : bookings){
+			cal.setTime(b.getCheckIn());
+			int ciMonth = cal.get(Calendar.MONTH);
+			int ciDay = cal.get(Calendar.DAY_OF_MONTH);
+			cal.setTime(b.getCheckOut());
+			int coMonth = cal.get(Calendar.MONTH);
+			int coDay = cal.get(Calendar.DAY_OF_MONTH);
+			LocalDate checkIn = LocalDate.of(year, ciMonth+1, ciDay);
+			LocalDate checkOut = LocalDate.of(year, coMonth+1, coDay);
+			Long daysLong = ChronoUnit.DAYS.between(checkIn, checkOut);
+			
+			int days = daysLong.intValue() + 1;
+			//starts from 0
+			if(result.containsKey(ciMonth)){
+				int temp = result.get(ciMonth);
+				result.put(ciMonth, temp + days);
+			}else{
+				result.put(ciMonth, days);
+			}
+		}
+		return result;
 	}
 }

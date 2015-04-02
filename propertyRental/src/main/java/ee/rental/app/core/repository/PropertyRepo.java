@@ -3,6 +3,7 @@ package ee.rental.app.core.repository;
 import java.util.Date;
 import java.util.List;
 
+import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.ImagePath;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyFacility;

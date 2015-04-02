@@ -2,12 +2,14 @@ package ee.rental.app.rest.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +38,7 @@ public class BookingController {
         }
 	}
 	@RequestMapping(value="/myBookings",method=RequestMethod.GET)
-	public ResponseEntity<List<BookingWrapper>> showMyBookings(){
+	public List<BookingWrapper> showMyBookings(){
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		List<Booking> bookings = bookingService.findBookingsByAccount(principal.getUsername());
 		//System.out.println("hey there "+bookings);
@@ -56,6 +58,11 @@ public class BookingController {
 			bw.setPrice(b.getPrice());
 			result.add(bw);
 		}
-		return new ResponseEntity<List<BookingWrapper>>(result,HttpStatus.OK);
+		return result;
+	}
+	@RequestMapping(value="/bookedDays/{id}/{year}")
+	public Map<Integer,Integer> showBookedDaysByMonth(@PathVariable Long id,@PathVariable Integer year){
+		Map<Integer, Integer> result = bookingService.findBookedDaysPerMonthsInYearByProp(year, id);
+		return result;
 	}
 }

@@ -13,4 +13,6 @@ public interface BookingRepo {
 	public Booking findBooking(Long id);
 	public List<Booking> findBookingsByAccount(String username);
 	public BookingStatus findBookingStatusById(Long statusId);
+	public List<Booking> findBookingsByProperty(Long propertyId);
+	public List<Booking> findBookingsByYearAndProperty(Integer year,Long propertyId);
 }

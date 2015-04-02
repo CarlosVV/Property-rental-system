@@ -44,7 +44,8 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 				isArrays:true,
 				url:API_URL+"bookings/myPropertysBookings/:propertyId/"
 			}
-		})
+		}),
+		propertyBookedDays : $resource(API_URL+"bookings/bookedDays/:id/:year",{})
 	};
 	return bookingService;
 }]);

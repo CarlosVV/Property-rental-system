@@ -41,6 +41,7 @@ INSERT INTO UnavailableDate(property_id,startDate,endDate) VALUES(1,'2015-04-03'
 
 INSERT INTO BookingStatus(id,name,description) VALUES(1,'Created','The booking has been created');
 INSERT INTO BookingStatus(id,name,description) VALUES(2,'Payed','The booking has been payed');
+INSERT INTO BookingStatus(id,name,description) VALUES(3,'Cancelled by owner','The booking has been cancelled by the owner');
 
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,1,'2015-05-01','2015-05-10',1000,2);
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,2,1,'2015-06-01','2015-06-10',1300,2);
