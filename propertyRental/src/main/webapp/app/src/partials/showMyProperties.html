@@ -7,10 +7,27 @@
 		<a ui-sref="updateProperty({propertyId:property.id})" class='editPropButton'>
 			<button class='btn btn-default'>Edit property</button>
 		</a>
-		<button class='btn btn-default editPropButton' ng-click="showPropertyBookedDays(property.id,2015)">
+		<button class='btn btn-default editPropButton' ng-click="showPropertyBookedDays(property.id,true)">
 			Show property booked days by months
 		</button>
-
+		<button class="btn btn-default" ng-click="showPropertyBookings(property.id)">
+			Show bookings
+		</button>
+		<select ng-options="year as year for year in property.availableYears" 
+			ng-if="selectedChartId == property.id" ng-model="$parent.$parent.selectedYear" ng-change="showPropertyBookedDays(property.id,false)"
+			ng-init="selectedYear = property.availableYears[property.availableYears.length-1]" 
+			class="form-control" name="propertyType"></select>				
+		<highchart ng-if="selectedChartId == property.id" config="chartConfig"></highchart>
+		<div class="row" ng-repeat="booking in propertyBookings" ng-if="selectedBookingsPropertyId == property.id">
+			<div class="col-md-12 apartmentBlock">
+				<div class="apartmentTitle">Booked by - <a ui-sref='showUser({id:booking.userAccountId})'>{{booking.userAccountUsername}}</a></div>
+				<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
+				<div class="bookingPrice">{{booking.price}} EUR</div>
+				<div class="bookingStatus">Status: <i class="bookingCreated">{{booking.bookingStatus}}</i></div>
+				<select ng-options="status.id as status.name for status in bookingsStatuses" class="form-control" name="bookingStatus" ng-model="booking.bookingStatusId" required></select>
+				<button class="btn btn-default" ng-click="saveBooking($index)"> Save booking</button>
+			<hr/>
+		</div>
 		<hr/>
 	</div>
 </div>

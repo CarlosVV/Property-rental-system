@@ -35,12 +35,15 @@ public class BookingRepoImpl implements BookingRepo{
 	}
 
 	public Booking findBooking(Long id) {
-		return (Booking) sessionFactory.getCurrentSession().get(Booking.class, id);
+		Session session = sessionFactory.getCurrentSession();
+		Booking booking = (Booking)session.get(Booking.class, id);
+		session.flush();
+		return  booking;
 	}
 
 	public List<Booking> findBookingsByAccount(String username) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.userAccount.username=:username");
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.userAccount.username=:username ORDER BY id DESC");
 		query.setParameter("username", username);
 		List<Booking> result = (List<Booking>) query.list();
 		session.flush();
@@ -55,10 +58,11 @@ public class BookingRepoImpl implements BookingRepo{
 		
 	}
 
-	public List<Booking> findBookingsByYearAndProperty(
-			Integer year, Long propertyId) {
+	public List<Booking> findBookingsByYearAndProperty(Integer year,Long propertyId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId AND to_char(b.checkIn,'YYYY') = :year");
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId "
+				+ "AND to_char(b.checkIn,'YYYY') = :year "
+				+ "AND b.bookingStatus.name = 'Accepted'");
 		query.setParameter("propertyId", propertyId);
 		query.setParameter("year", year);
 		List<Booking> result = (List<Booking>) query.list();
@@ -73,6 +77,21 @@ public class BookingRepoImpl implements BookingRepo{
 		List<Booking> result = (List<Booking>) query.list();
 		session.flush();
 		return result;
+	}
+
+	public List<BookingStatus> findBookingStatuses() {
+		Session session =  sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT bs FROM BookingStatus bs");
+		List<BookingStatus> result = (List<BookingStatus>) query.list();
+		session.flush();
+		return result;
+	}
+
+	public void updateBookingStatus(Booking booking, BookingStatus bookingStatus) {
+		Session session =  sessionFactory.getCurrentSession();
+		booking.setBookingStatus(bookingStatus);
+		session.update(booking);
+		session.flush();
 	}
 
 

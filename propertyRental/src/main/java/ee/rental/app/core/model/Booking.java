@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,8 +22,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Booking {
 	@Id @GeneratedValue
 	private Long id;
-	@OneToOne
-	@JsonIgnore
+	@OneToOne(fetch=FetchType.EAGER)
 	private UserAccount userAccount;
 	@OneToOne
 	private Property property;

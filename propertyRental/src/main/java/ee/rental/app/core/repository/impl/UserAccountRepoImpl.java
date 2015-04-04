@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ee.rental.app.core.model.Authority;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.repository.UserAccountRepo;
 @Repository
@@ -21,6 +22,9 @@ public class UserAccountRepoImpl implements UserAccountRepo{
 	private SessionFactory sessionFactory;
 	public UserAccount createUserAccount(UserAccount userAccount) {
 		Session session = sessionFactory.getCurrentSession();
+		userAccount.setAuthority((Authority)session.get(Authority.class, 1L));
+		session.flush();
+		System.out.println("PLS DUDE"+userAccount);
 		session.save(userAccount);
 		session.flush();
 		return userAccount;

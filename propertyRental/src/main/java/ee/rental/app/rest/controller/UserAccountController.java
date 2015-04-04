@@ -29,6 +29,7 @@ public class UserAccountController {
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<UserAccount> registerAccount(@RequestBody UserAccount userAccount){
 		try{
+			System.out.println("WTF"+userAccount);
 			UserAccount user = userAccountService.createUserAccount(userAccount);
 			return new ResponseEntity<UserAccount>(user,HttpStatus.CREATED);
 		}catch(UserAccountExistsException e){

@@ -41,13 +41,16 @@ propertyDirective.directive('checkQuery', function () {
     };
 });
 //check whether date is allowed
-propertyDirective.directive('checkDate', function () {
+/*propertyDirective.directive('checkDate', function () {
     var isValid = function(date,unavailableDates) {
     	var compare = moment(date,"DD/MM/YYYY");
     	for(var j=0;j<unavailableDates.length;j++){
 			var start = moment(unavailableDates[j].startDate);
 			var end = moment(unavailableDates[j].endDate);
 			if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
+				return false;
+			}
+			if(compare.isBefore(moment(),'day') || compare.isSame(moment(),'day')){
 				return false;
 			}
 		}
@@ -80,7 +83,7 @@ propertyDirective.directive('checkDate', function () {
             });
         }
     };
-});
+});*/
 propertyDirective.directive('checkDatesMatch', function () {
     var isValid = function(name,date1,date2) {
 		if(typeof date1 === 'undefined' || typeof date2 === 'undefined')
@@ -103,17 +106,47 @@ propertyDirective.directive('checkDatesMatch', function () {
     	//console.log("EVERYTHING IS OK");
     	return true;
     };
+    var isNotUnavailable = function(date,unavailableDates) {
+    	if(!angular.isUndefined(unavailableDates)){
+	    	var compare = moment(date,"DD/MM/YYYY");
+	    	for(var j=0;j<unavailableDates.length;j++){
+				var start = moment(unavailableDates[j].startDate);
+				var end = moment(unavailableDates[j].endDate);
+				if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
+					return false;
+				}
+				if(compare.isBefore(moment(),'day') || compare.isSame(moment(),'day')){
+					return false;
+				}
+			}
+			return true;
+    	}else{
+    		return true;
+    	}
+    };
     return {
         require:'ngModel',
+        scope:{
+        	unavailableDates : "=checkDate"
+        },
         link:function (scope, elm, attrs, ngModelCtrl) {
             ngModelCtrl.$parsers.unshift(function (viewValue) {
             	//observe other input (they are in pairs)
             	//if other input changes(passed value to this directive changes, eg query.checkIn), we should check it (in observe)
             	//after that we check current input
+            	//in a criss-cross manner validation 
+            	//it seems that checkDatesMatch - reference to another input lol
             	attrs.$observe('checkDatesMatch',function(actualValue){
-            		//console.log("currentlyActual:",attrs.name);
             		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,viewValue,scope.$eval(actualValue)));
             	});
+            	//if no watch and it doesn't have true, unavailableDates will be undefined.
+            	scope.$watch('unavailableDates',function(){
+            		//console.log(scope.unavailableDates);
+                	var result = isNotUnavailable(viewValue,scope.unavailableDates);
+            		var finalResult = result && isValid(attrs.name,viewValue,scope.$eval(attrs.checkDatesMatch));
+            		//console.log(result);
+            		ngModelCtrl.$setValidity('valid'+attrs.name, finalResult);
+            	},true);//very important http://stackoverflow.com/questions/11135864/scope-watch-is-not-updating-value-fetched-from-resource-on-custom-directive
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,viewValue,scope.$eval(attrs.checkDatesMatch)));
         		return viewValue;
             });
@@ -121,9 +154,15 @@ propertyDirective.directive('checkDatesMatch', function () {
             	//it is for checking whether the variable is passed to directive or not
             	//http://stackoverflow.com/questions/16232917/angularjs-how-to-pass-scope-variables-to-a-directive
             	attrs.$observe('checkDatesMatch',function(actualValue){
-            		//console.log("currentlyView:",attrs.name);
             		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(actualValue)));
             	});
+            	scope.$watch('unavailableDates',function(){
+            		//console.log(scope.unavailableDates);
+                	var result = isNotUnavailable(modelValue,scope.unavailableDates);
+            		var finalResult = result && isValid(attrs.name,modelValue,scope.$eval(attrs.checkDatesMatch));
+            		//console.log(result);
+            		ngModelCtrl.$setValidity('valid'+attrs.name, finalResult);
+            	},true);
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(attrs.checkDatesMatch)));
             	return modelValue;
             });
@@ -221,7 +260,7 @@ propertyDirective.directive('countBookingPrice',function(){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
 					   var difference = endDate.diff(startDate,'days')+1;
-					   console.log(difference);
+					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;
@@ -235,7 +274,7 @@ propertyDirective.directive('countBookingPrice',function(){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
 					   var difference = endDate.diff(startDate,'days')+1;
-					   console.log(difference);
+					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;

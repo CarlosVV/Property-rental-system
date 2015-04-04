@@ -1,5 +1,6 @@
 package ee.rental.app.core.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,16 +11,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property="atuserAccountId")
 public class UserAccount {
-	
-
 	@Id @GeneratedValue
 	private Long id;
 	private String username;
@@ -31,6 +32,13 @@ public class UserAccount {
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Authority authority;
 	
+	@Override
+	public String toString() {
+		return "UserAccount [id=" + id + ", username=" + username
+				+ ", password=" + password 
+				+ ", authority=" + authority + "]";
+	}
+
 	public Authority getAuthority() {
 		return authority;
 	}
@@ -64,10 +72,11 @@ public class UserAccount {
 		this.username = username;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}

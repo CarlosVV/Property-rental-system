@@ -1,6 +1,7 @@
 package ee.rental.app.core.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -25,6 +27,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Property {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
+	private Date createdDate;
 	
 	@Override
 	public String toString() {
@@ -219,6 +223,12 @@ public class Property {
 	}
 	public void setAdministrativeArea(String administrativeArea) {
 		this.administrativeArea = administrativeArea;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 	

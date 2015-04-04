@@ -10,18 +10,18 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
-
-
 
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
@@ -29,10 +29,13 @@ import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.UnavailableDate;
+import ee.rental.app.core.model.wrapper.BookedDaysWrapper;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.core.repository.BookingRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.BookingService;
+import ee.rental.app.core.service.exception.BookingNotFoundException;
+import ee.rental.app.core.service.exception.BookingStatusNotFoundException;
 import ee.rental.app.core.service.exception.PropertyNotFoundException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 
@@ -73,31 +76,61 @@ public class BookingServiceImpl implements BookingService{
 	public BookingStatus findBookingStatusById(long statusId){
 		return bookingRepo.findBookingStatusById(statusId);
 	}
-	public Map<Integer,Integer> findBookedDaysPerMonthsInYearByProp(
-			Integer year, Long propertyId) {
+	public List<BookedDaysWrapper> findBookedDaysPerMonthsInYearByProp(Integer year,Long propertyId) {
 		List<Booking> bookings = bookingRepo.findBookingsByYearAndProperty(year, propertyId);
-		Map<Integer,Integer> result = new HashMap<Integer,Integer>();
-		Calendar cal = Calendar.getInstance();
+		List<LocalDate> totalDates = new ArrayList<LocalDate>();
 		for(Booking b : bookings){
-			cal.setTime(b.getCheckIn());
-			int ciMonth = cal.get(Calendar.MONTH);
-			int ciDay = cal.get(Calendar.DAY_OF_MONTH);
-			cal.setTime(b.getCheckOut());
-			int coMonth = cal.get(Calendar.MONTH);
-			int coDay = cal.get(Calendar.DAY_OF_MONTH);
-			LocalDate checkIn = LocalDate.of(year, ciMonth+1, ciDay);
-			LocalDate checkOut = LocalDate.of(year, coMonth+1, coDay);
-			Long daysLong = ChronoUnit.DAYS.between(checkIn, checkOut);
-			
-			int days = daysLong.intValue() + 1;
-			//starts from 0
-			if(result.containsKey(ciMonth)){
-				int temp = result.get(ciMonth);
-				result.put(ciMonth, temp + days);
-			}else{
-				result.put(ciMonth, days);
+			LocalDate start = b.getCheckIn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate end = b.getCheckOut().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			while(!start.isAfter(end)){
+				totalDates.add(start);
+				start = start.plusDays(1);
 			}
 		}
-		return result;
+		Map<Integer,Integer> daysInMonths = new HashMap<Integer,Integer>();
+		for(LocalDate d : totalDates){
+			int month = d.getMonth().getValue();
+			if(daysInMonths.containsKey(month)){
+				int temp = daysInMonths.get(month);
+				daysInMonths.put(month, temp+1);
+			}else{
+				daysInMonths.put(month, 1);
+			}
+		}
+		List<BookedDaysWrapper> finalResult = new ArrayList<BookedDaysWrapper>();
+		for (Map.Entry<Integer, Integer> entry : daysInMonths.entrySet()) {
+			Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
+			finalResult.add(new BookedDaysWrapper(entry.getKey(), new Integer(temp.intValue())));
+		}
+		//for those months which dont have booked days
+		for(Integer i=1;i<=12;i++){
+			if(!daysInMonths.containsKey(i)){
+				finalResult.add(new BookedDaysWrapper(i,0));
+			}
+		}
+		Collections.sort(finalResult,new Comparator<BookedDaysWrapper>() {
+			public int compare(BookedDaysWrapper b1, BookedDaysWrapper b2){
+				return b1.getMonth().compareTo(b2.getMonth());
+			}
+		});
+		return finalResult;
+	}
+
+	public List<Booking> findBookingsByProperty(Long propertyId) {
+		return bookingRepo.findBookingsByProperty(propertyId);
+	}
+	public List<BookingStatus> findBookingStatuses() {
+		return bookingRepo.findBookingStatuses();
+	}
+	public boolean updateBookingStatus(Long bookingId, Long statusId) {
+		Booking booking = findBooking(bookingId);
+		if(booking == null)
+			throw new BookingNotFoundException();
+		BookingStatus bookingStatus = findBookingStatusById(statusId);
+		if(bookingStatus == null)
+			throw new BookingStatusNotFoundException();
+		bookingRepo.updateBookingStatus(booking,bookingStatus);
+		return true;
+		
 	}
 }

@@ -100,6 +100,7 @@ public class PropertyController {
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		logger.info(""+principal);
         if(property.getUserAccount().getUsername().equals(principal.getUsername())){
+        	property.setCreatedDate(new Date());
 			Property createdProperty = propertyService.addProperty(property);
 			return new ResponseEntity<Property>(createdProperty,HttpStatus.CREATED);
         }else{

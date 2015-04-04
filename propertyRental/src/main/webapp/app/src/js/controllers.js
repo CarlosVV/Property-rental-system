@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 var propertyController = angular.module("PropertyController",[]);
 
 propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resource","$stateParams","BookingService","$state",function($scope,PropertyService,$resource,$stateParams,BookingService,$state){
@@ -15,7 +13,7 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
 	}
 	console.log(checkInTemp);
-	
+	$scope.unavailableDatesBetween = false;
 	$scope.booking = new BookingService.booking;
 	$scope.booking.checkIn = checkInTemp;
 	$scope.booking.checkOut = checkOutTemp;
@@ -65,12 +63,8 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	$scope.unavailableDates = new PropertyService.unavailableDates.query({id:$stateParams.propertyId}, function(){
 		console.log($scope.unavailableDates);
 	});
-	$scope.bookApartment = function(){
-		
-	};
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
 		if($scope.unavailableDates.length > 0){
-			console.log("hm");
 			for(var i=0;i<$dates.length;i++){
 				var compare = moment($dates[i].utcDateValue);
 				if(moment().diff(compare,'days') < 0){
@@ -90,8 +84,31 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		}
 	}
 	$scope.bookApartment = function(){
-		$scope.booking.$save();
-		$state.go("showMyBookings");
+		//$scope.booking.userAccount.username = localStorage.getItem("currentUsername");
+		console.log("CHEC");
+		var thereAreErrors = false;
+		if(!angular.isUndefined($scope.booking.checkOut) && !angular.isUndefined($scope.booking.checkIn)){
+			console.log("OKAY");
+			for(var i=0;i<$scope.unavailableDates.length;i++){
+				var start = moment($scope.unavailableDates[i].startDate);
+				var end = moment($scope.unavailableDates[i].endDate);
+				console.log("LOOP",i);
+				if(start.isBetween($scope.booking.checkIn,$scope.booking.checkOut) || end.isBetween($scope.booking.checkIn,$scope.booking.checkOut)){
+					console.log("YAY");
+					thereAreErrors = true;
+					//$scope.unavailableDatesBetween = true;
+				}
+	    	}
+		}
+		if(!thereAreErrors){
+			console.log("should not",$scope.booking);
+			$scope.booking.$save();
+			$state.go("showMyBookings");
+		}else{
+			$scope.bookingForm.checkIn.$setValidity("validcheckIn", false);
+			$scope.bookingForm.checkOut.$setValidity("validcheckOut", false);
+			console.log("ERRORS");
+		}
 	}
 	
 }]);
@@ -644,16 +661,66 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 	/*PropertyService.apartment.save($scope.query, function(){
 	console.log("DATA SENT YAY");
 	});*/
-	$scope.properties = PropertyService.property.findMyProperties();
-	$scope.$watch('properties',function(newVal){
-		console.log($scope.properties);
+	$scope.bookingsStatuses = BookingService.propertyBookingsStatuses.query();
+	$scope.selectedChartId = 0;
+	$scope.selectedBookingsPropertyId = 0;
+	$scope.selectedYear = moment().year();
+	$scope.properties = PropertyService.property.findMyProperties(function(){
+		var currentTime = moment();
+		for(var i=0;i<$scope.properties.length;i++){
+			var createdYear = moment($scope.properties[i].createdDate).year();
+			$scope.properties[i].availableYears = [];
+			var difference = currentTime.year() - createdYear;
+			for(var j=0;j<=difference;j++){
+				$scope.properties[i].availableYears.push(createdYear+j);
+			}
+		}
 	});
-	$scope.showPropertyBookedDays = function(id, chosenYear){
-		$scope.propertyBookedDays = new BookingService.propertyBookedDays.get({id:id,year:chosenYear},function(){
-			console.log($scope.propertyBookedDays);
-			$scope.showChart = true;
-		});
-	}
+	$scope.showPropertyBookedDays = function(id,closable){
+		if(id == $scope.selectedChartId && closable){
+			$scope.selectedChartId = 0;
+		}else{
+			console.log($scope.selectedYear);
+			$scope.propertyBookedDays = new BookingService.propertyBookedDays.query({id:id,year:$scope.selectedYear},function(){
+				
+				var dataToShow = [];
+				for(var i=0;i<$scope.propertyBookedDays.length;i++){
+					var month = moment([2015,$scope.propertyBookedDays[i].month-1]).format("MMMM");
+					dataToShow.push([month,$scope.propertyBookedDays[i].bookedDaysPercent]);
+				}
+				console.log(dataToShow);
+				$scope.chartConfig = {
+					options:{
+						title:{
+							text:"% of booked days in each month"
+						}
+					},
+					series:[],
+					xAxis:{
+						title:{text:"Months"},
+						categories:[]
+					}
+				};
+				$scope.chartConfig.series.push({data:dataToShow});
+				console.log($scope.propertyBookedDays);
+				$scope.selectedChartId = id;
+				$scope.showChart = true;
+			});
+		}
+	};
+	$scope.showPropertyBookings = function(id){
+		if(id == $scope.selectedBookingsPropertyId){
+			$scope.selectedBookingsPropertyId = 0;
+		}else{
+			$scope.propertyBookings = BookingService.booking.myPropertiesBookings({propertyId:id},function(){
+				$scope.selectedBookingsPropertyId = id;
+				console.log($scope.propertyBookings);
+			});
+		}
+	};
+	$scope.saveBooking = function(bookingPosition){
+		console.log("pos:",bookingPosition);
+	};
 }]);
 propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
 	console.log($scope.returnToState);
@@ -674,8 +741,10 @@ propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$
 propertyController.controller("RegisterCtrl",["$scope","AccountService","$state",function($scope,AccountService,$state){
 	$scope.userAccount = new AccountService.account;
 	$scope.register = function(){
+		var password = $scope.userAccount.password;
 		console.log($scope.userAccount);
 		$scope.userAccount.$save(function(returneData){
+			$scope.userAccount.password = password;
 			AccountService.login($scope.userAccount).then(function(data){
 				console.log("WTF");
 				console.log(data);

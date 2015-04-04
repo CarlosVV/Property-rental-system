@@ -14,7 +14,7 @@
 						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#">
 						    <div class="input-group">
 						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="booking.checkIn" 
-								class="form-control" filter-date check-date="{{unavailableDates}}" 
+								class="form-control" ng-if="unavailableDates.$resolved" filter-date check-date="unavailableDates" 
 								check-dates-match="{{booking.checkOut}}" required />
 							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
 						    </div>
@@ -32,7 +32,7 @@
 						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#">
 		    				<div class="input-group">
 		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="booking.checkOut" 
-								class="form-control" filter-date check-date="{{unavailableDates}}" 
+								class="form-control" ng-if="unavailableDates.$resolved" filter-date check-date="unavailableDates" 
 								check-dates-match="{{booking.checkIn}}" required/>
 							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
 						    </div>

@@ -41,11 +41,12 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 			},
 			myPropertiesBookings:{
 				method:"GET",
-				isArrays:true,
-				url:API_URL+"bookings/myPropertysBookings/:propertyId/"
+				isArray:true,
+				url:API_URL+"bookings/myPropertysBookings/:propertyId"
 			}
 		}),
-		propertyBookedDays : $resource(API_URL+"bookings/bookedDays/:id/:year",{})
+		propertyBookedDays : $resource(API_URL+"bookings/bookedDays/:id/:year",{}),
+		propertyBookingsStatuses : $resource(API_URL+"bookings/bookingStatuses",{})
 	};
 	return bookingService;
 }]);
