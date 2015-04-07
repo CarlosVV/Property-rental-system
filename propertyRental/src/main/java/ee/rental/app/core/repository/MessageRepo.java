@@ -7,5 +7,7 @@ import ee.rental.app.core.model.Message;
 import ee.rental.app.core.model.UserAccount;
 
 public interface MessageRepo {
-	public List<Message> findMessages(Long senderId, Long receiverId, Long bookingId);
+	public List<Message> findMessages(Long senderId);
+
+	public Message addMessage(Message message);
 }

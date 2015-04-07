@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -37,10 +38,14 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
 import ee.rental.app.core.model.Message;
+import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
+import ee.rental.app.core.model.wrapper.ReviewWrapper;
+import ee.rental.app.core.model.wrapper.UnavailableDatesForPublic;
+import ee.rental.app.core.service.BookingService;
 import ee.rental.app.core.service.PropertyService;
 import ee.rental.app.core.service.MessageService;
 import ee.rental.app.core.service.UserAccountService;
@@ -62,6 +67,8 @@ public class PropertyController {
 	private UserAccountService userAccountService;
 	@Autowired
 	private PropertyService propertyService;
+	@Autowired
+	private BookingService bookingService;
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Property getProperty(@PathVariable("id") Long id){
@@ -75,15 +82,18 @@ public class PropertyController {
 		}
 	}
 	@RequestMapping(value = "/myProperties", method = RequestMethod.GET)
-	public List<Property> getPropertiesByOwner(){
+	public List<PropertyWrapper> getPropertiesByOwner() throws ParseException{
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		logger.info(""+principal);
         if(principal instanceof UserDetails) {
 	        UserDetails details = (UserDetails)principal;
 	    	logger.info("and "+details);
 			List<Property> properties = propertyService.findPropertiesByOwner(details.getUsername());
-			logger.info("WORKING "+properties);
-			return properties;
+			List<PropertyWrapper> result = new ArrayList<PropertyWrapper>();
+			for(Property p : properties){
+				result.add(new PropertyWrapper(p));
+			}
+			//logger.info("WORKING "+properties);
+			return result;
 	    }else{
 	    	throw new ForbiddenException();
 	    }
@@ -91,8 +101,14 @@ public class PropertyController {
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public Property updateProperty(@PathVariable("id") Long id, @RequestBody Property property){
 			logger.info("OKAY UPDATING "+property);
-			propertyService.updateProperty(property);
-			return property;
+			UserDetails principal = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Property checkProperty = propertyService.findProperty(property.getId());
+			if(principal.getUsername().equals(checkProperty.getUserAccount().getUsername())){
+				propertyService.updateProperty(property);
+				return property;
+			}else{
+				throw new ForbiddenException();
+			}
 		
 	}
 	@RequestMapping(method=RequestMethod.POST)
@@ -120,15 +136,35 @@ public class PropertyController {
 	@RequestMapping(value = "/propertyTypes", method = RequestMethod.GET)
 	public List<PropertyType> getApartmentTypes(){
 		List<PropertyType> result = propertyService.findAllPropertyTypes();
-		logger.info("ANSWER:"+result);
 		return result;
 	}
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/unavailableDates/{id}", method = RequestMethod.GET)
-	public List<UnavailableDate> queryApartments(@PathVariable("id") Long id){
-		List<UnavailableDate> result = propertyService.findUnavailableDates(id);
-		logger.info("ANSWER:"+result);
+	public List<UnavailableDatesForPublic> findUnavailableDates(@PathVariable("id") Long id) throws ParseException{
+		List<UnavailableDatesForPublic> result = propertyService.findUnavailableDates(id);
 		return result;
+	}
+	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.GET)
+	public List<UnavailableDate> findOnlyUnavailableDates(@PathVariable("id") Long id) throws ParseException{
+		List<UnavailableDate> result = propertyService.findOnlyUnavailableDates(id);
+		return result;
+	}
+	@RequestMapping(value = "/onlyBookedDates/{id}", method = RequestMethod.GET)
+	public List<UnavailableDatesForPublic> findOnlyBookedDates(@PathVariable("id") Long id) throws ParseException{
+		List<UnavailableDatesForPublic> result = propertyService.findOnlyBookedDates(id);
+		return result;
+	}
+	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.PUT)
+	public void updateOnlyUnavailableDates(@PathVariable("id") Long id,@RequestBody List<Date> dates) throws ParseException{
+		System.out.println("WE GOT"+dates);
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Property property = propertyService.findProperty(id);
+		logger.info(""+principal);
+        if(property.getUserAccount().getUsername().equals(principal.getUsername())){
+        	propertyService.updatePropertyUnavailableDates(dates,id);
+        }else{
+        	throw new ForbiddenException();
+        }
 	}
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyFacilities", method = RequestMethod.GET)
@@ -194,4 +230,30 @@ public class PropertyController {
     	System.out.println(" EMPTY");
         return new ResponseEntity<ErrorResponse>(new ErrorResponse("Not file sent"),HttpStatus.BAD_REQUEST);
     }
+	@PreAuthorize("permitAll")
+	@RequestMapping(value = "/reviews/{id}", method = RequestMethod.GET)
+	public List<ReviewWrapper> showPropertyReviews(@PathVariable Long id){
+		List<Review> reviews = propertyService.findReviewsByPropertyId(id);
+		List<ReviewWrapper> result = new ArrayList<ReviewWrapper>();
+		for(Review review : reviews){
+			result.add(new ReviewWrapper(review));
+		}
+		return result;
+	}
+	@RequestMapping(value = "/reviews/{id}", method = RequestMethod.POST)
+	public ReviewWrapper addPropertyReview(@PathVariable Long id,@RequestBody ReviewWrapper review){
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(review.getParentReviewId() != null){
+			Review r = propertyService.findReviewById(review.getParentReviewId());
+			if(r == null || !bookingService.canSendReviews(principal.getUsername(), id)){
+				throw new BadRequestException();
+			}
+		}
+		review.setUsername(principal.getUsername());
+		review.setPropertyId(id);
+		return new ReviewWrapper(propertyService.addReview(review));
+	}
+	
+	
+	
 }

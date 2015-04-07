@@ -99,8 +99,8 @@ public class BookingServiceImpl implements BookingService{
 		}
 		List<BookedDaysWrapper> finalResult = new ArrayList<BookedDaysWrapper>();
 		for (Map.Entry<Integer, Integer> entry : daysInMonths.entrySet()) {
-			Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
-			finalResult.add(new BookedDaysWrapper(entry.getKey(), new Integer(temp.intValue())));
+			//Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
+			finalResult.add(new BookedDaysWrapper(entry.getKey(),entry.getValue()));
 		}
 		//for those months which dont have booked days
 		for(Integer i=1;i<=12;i++){
@@ -132,5 +132,15 @@ public class BookingServiceImpl implements BookingService{
 		bookingRepo.updateBookingStatus(booking,bookingStatus);
 		return true;
 		
+	}
+	public boolean canSendReviews(String username, Long propertyId) {
+		List<Booking> bookings = bookingRepo.findBookingsByAccountAndProperty(username,propertyId);
+		Property property = propertyRepo.findProperty(propertyId);
+		if(bookings.size() > 0 || property.getUserAccount().getUsername().equals(username))
+			return true;
+		return false;
+	}
+	public List<Booking> findPropertiesBookingsByYear(String username) {
+		return bookingRepo.findAllPropertiesBookings(username);
 	}
 }

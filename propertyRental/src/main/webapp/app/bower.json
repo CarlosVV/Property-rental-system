@@ -21,6 +21,7 @@
 	"ngAutocomplete":"1.0.0",
     "angular-bootstrap-datetimepicker": "0.3.12",
 	"ng-file-upload":"3.2.4",
-	"highcharts-ng":"0.0.8"
+	"highcharts-ng":"0.0.8",
+	"bootstrap-datepicker":"1.4.0"
   }
 }

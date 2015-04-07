@@ -12,6 +12,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -24,40 +25,25 @@ public class UnavailableDate {
 	//@PrimaryKeyJoinColumn
 	@JsonIgnore
 	private Property property;
-	private Date startDate;
-	private Date endDate;
-	public UnavailableDate(){}
-	public UnavailableDate(Date startDate, Date endDate) {
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
+	private Date when;
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
+	@JsonIgnore
 	public Property getProperty() {
 		return property;
 	}
+	@JsonProperty
 	public void setProperty(Property property) {
 		this.property = property;
 	}
-	public Date getStartDate() {
-		return startDate;
+	public Date getWhen() {
+		return when;
 	}
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-	public Date getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-	@Override
-	public String toString() {
-		return "UnavailableDate [id=" + id + ", property=" + property
-				+ ", startDate=" + startDate + ", endDate=" + endDate + "]";
+	public void setWhen(Date when) {
+		this.when = when;
 	}
 }

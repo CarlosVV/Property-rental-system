@@ -158,9 +158,37 @@ For elements with both the ng-valid and ng-dirty classes
 	text-align:right;
 	padding:6px 0 0 0;
 }
-.bookingCreated{
-	color:red;
-}
 .bookingPricePadding{
 	padding:7px 0 0 7px;
+}
+.statusDesc{
+	font-size:13px;
+}
+.statusCreated{
+	color:rgb(153, 12, 161);
+}
+.statusAccepted{
+	color:green;
+}
+.statusCancelled{
+	color:red;
+}
+.paddingLeft{
+	padding:0 0 0 30px;
+}
+.review{
+	margin:20px;
+}
+.reviewHeader{
+	font-size:20px;
+}
+.reviewBody{
+	font-size:15px;
+}
+.nav-header{
+	display:block;
+	font-size:15px;
+	font-weight:bold;
+	color:#606060;
+	padding: 3px 0 3px 15px;
 }

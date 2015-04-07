@@ -59,6 +59,15 @@
 				</form>
 			</div>
 		</div>
+		<div class="row" ng-show="(bookingForm.checkIn.$touched && bookingForm.checkOut.$touched) && 
+		(bookingForm.checkIn.$error.validcheckIn || bookingForm.checkOut.$error.validcheckOut)">
+			<div class="alert alert-danger" role="alert">
+			  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			  <span class="sr-only">Error:</span>
+			  	Check if your length of stay is greater or equal than property's minimum length of stay.<br/>
+			  	Check if your booking overlaps unavailable dates.
+			</div>
+		</div>
 	</div>
 </div>
 <div class="fullWidthContainer">
@@ -77,6 +86,16 @@
 		    <img ng-src="../uploads/photos/{{img.path}}" ng-click="setImg(img)" ng-class="{imgBorder:img.path == mainImgUrl}">
 		  </li>
 		</ul>
+		<div class="row">
+			<h4>Description</h4>
+			<p>{{property.description | truncate : maxLength : showMoreDesc}}</p>
+			<a href='javascript:void(0);' ng-click="showMoar('desc')">{{showMoreDesc}}</a>
+		</div>
+		<div class="row">
+			<h4>Owner's rules</h4>
+			<p>{{property.rules | truncate : maxLength : showMoreRules}}</p>
+			<a href='javascript:void(0);' ng-click="showMoar('rules')">{{showMoreRules}}</a>
+		</div>
 	</div>
 </div>
 <ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom' options="mapOptions">
@@ -84,5 +103,36 @@
        </ui-gmap-marker>
 </ui-gmap-google-map>
 <div class="container">
-	{{property.address}}
+	<h3>Reviews:</h3>
+	<div ng-repeat="review in reviews">
+		<div ng-if="review.parentReviewId == null" class="review">
+			<div class="reviewHeader">Wrote {{review.username}}:</div>
+			<div class="reviewBody">{{review.review}}</div>
+			<div class="reviewBody">Stars: {{review.stars}}/5</div>
+			<div ng-repeat="answer in reviews">
+				<div ng-if="review.id == answer.parentReviewId" class="review">
+					<div class="reviewHeader">Answer from the host:</div>
+					<div class="reviewBody">{{answer.review}}</div>
+				</div>
+			</div>
+			<a href="" ng-if="currentUser == property.userAccount.username" ng-click="commentReview(review.id)">Comment this review</a>
+			<div class="row" ng-if="reviewToComment == review.id">
+				<form novalidate name="commentForm" ng-submit="addReview(review.id,commentForm)">
+					<div class="col-md-5">
+						<p>Your comment:</p>
+						<textarea ng-model="comment.review" rows="5" class="form-control" required></textarea>
+					   	<input type="submit" value="Add a comment" class="btn btn-default"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<form novalidate name="reviewForm" ng-if="canSendReviews.allowed" ng-submit="reviewForm.$valid && addReview(0,reviewForm)">
+		<div class="col-md-5">
+			<p>Please add a review:</p>
+			<textarea name="review" ng-model="newReview.review" rows="5" class="form-control" required></textarea>
+		   	Stars: <select name="stars" ng-options="star as star for star in stars" ng-model="newReview.stars" class="form-control" required></select> 
+			<input type="submit" class="btn btn-default" value="Add a review"/>
+		</div>
+	</form>
 </div>

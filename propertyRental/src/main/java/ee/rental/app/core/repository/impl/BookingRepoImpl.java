@@ -62,7 +62,7 @@ public class BookingRepoImpl implements BookingRepo{
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId "
 				+ "AND to_char(b.checkIn,'YYYY') = :year "
-				+ "AND b.bookingStatus.name = 'Accepted'");
+				+ "AND b.bookingStatus.name = 'Payed and accepted'");
 		query.setParameter("propertyId", propertyId);
 		query.setParameter("year", year);
 		List<Booking> result = (List<Booking>) query.list();
@@ -72,7 +72,7 @@ public class BookingRepoImpl implements BookingRepo{
 
 	public List<Booking> findBookingsByProperty(Long propertyId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId");
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.id=:propertyId ORDER BY b.id DESC");
 		query.setParameter("propertyId", propertyId);
 		List<Booking> result = (List<Booking>) query.list();
 		session.flush();
@@ -92,6 +92,27 @@ public class BookingRepoImpl implements BookingRepo{
 		booking.setBookingStatus(bookingStatus);
 		session.update(booking);
 		session.flush();
+	}
+
+	public List<Booking> findBookingsByAccountAndProperty(String username,
+			Long propertyId) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.userAccount.username=:username AND b.property.id=:propertyId");
+		query.setParameter("username", username);
+		query.setParameter("propertyId", propertyId);
+		List<Booking> result = (List<Booking>) query.list();
+		session.flush();
+		return result;
+	}
+
+	public List<Booking> findAllPropertiesBookings(String username) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.property.userAccount.username=:username "
+				+ "ORDER BY id DESC");
+		query.setParameter("username", username);
+		List<Booking> result = (List<Booking>) query.list();
+		session.flush();
+		return result;
 	}
 
 

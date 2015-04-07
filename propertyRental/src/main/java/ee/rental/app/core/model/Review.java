@@ -10,6 +10,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -18,15 +19,23 @@ public class Review {
 	@Id @GeneratedValue
 	private Long id;
 	//@JoinColumn(name="accountId")
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	//@PrimaryKeyJoinColumn
 	private UserAccount author;
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	//@PrimaryKeyJoinColumn
 	@JsonIgnore
 	private Property property;
+	@OneToOne
+	private Review parentReview;
 	private String review;
-	private int stars;
+	private Integer stars;
+	public Review getParentReview() {
+		return parentReview;
+	}
+	public void setParentReview(Review parentReview) {
+		this.parentReview = parentReview;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -45,15 +54,17 @@ public class Review {
 	public void setReview(String review) {
 		this.review = review;
 	}
-	public int getStars() {
+	public Integer getStars() {
 		return stars;
 	}
-	public void setStars(int stars) {
+	public void setStars(Integer stars) {
 		this.stars = stars;
 	}
+	@JsonIgnore
 	public Property getProperty() {
 		return property;
 	}
+	@JsonProperty
 	public void setProperty(Property property) {
 		this.property = property;
 	}

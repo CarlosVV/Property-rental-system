@@ -17,4 +17,7 @@ public interface BookingRepo {
 	public List<Booking> findBookingsByYearAndProperty(Integer year,Long propertyId);
 	public List<BookingStatus> findBookingStatuses();
 	public void updateBookingStatus(Booking booking, BookingStatus bookingStatus);
+	public List<Booking> findBookingsByAccountAndProperty(String username,
+			Long propertyId);
+	public List<Booking> findAllPropertiesBookings(String username);
 }

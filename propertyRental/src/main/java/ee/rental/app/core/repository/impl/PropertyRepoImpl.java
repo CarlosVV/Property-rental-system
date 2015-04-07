@@ -1,6 +1,8 @@
 package ee.rental.app.core.repository.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,8 @@ import javax.persistence.PersistenceContextType;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +27,12 @@ import ee.rental.app.core.model.ImagePath;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.PropertyType;
+import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.PropertyQueryWrapper;
 import ee.rental.app.core.model.wrapper.PropertyWrapper;
+import ee.rental.app.core.model.wrapper.UnavailableDatesForPublic;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
@@ -129,16 +135,27 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return property;
 	}
 
-	public List<UnavailableDate> findBookedDates(Long id) {
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT new UnavailableDate(b.checkIn,b.checkOut) FROM Booking b"
-				+ " WHERE b.property.id=?");
+	public List<UnavailableDatesForPublic> findBookedDates(Long id) throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = dateFormat.parse(dateFormat.format(new Date()));
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT new ee.rental.app.core.model.wrapper.UnavailableDatesForPublic(b.checkIn,b.checkOut) FROM Booking b"
+				+ " WHERE b.property.id=? AND b.checkOut >= ?");
 		query.setParameter(0, id);
-		return query.list();
+		query.setParameter(1, today);
+		List<UnavailableDatesForPublic> result = (List<UnavailableDatesForPublic>) query.list();
+		session.flush();
+		return result;
 	}
-	public List<UnavailableDate> findUnavailabilityDates(Long id){
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT u FROM UnavailableDate u WHERE u.property.id=?");
+	public List<UnavailableDate> findUnavailabeDates(Long id) throws ParseException{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = dateFormat.parse(dateFormat.format(new Date()));
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT u FROM UnavailableDate u WHERE u.property.id=? AND u.when >= ?");
 		query.setParameter(0, id);
-		return query.list();
+		query.setParameter(1, today);
+		List<UnavailableDate> result = (List<UnavailableDate>) query.list();
+		return result;
 	}
 
 	public List<PropertyFacility> findPropertyFacilities() {
@@ -146,12 +163,50 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return query.list();
 	}
 
-	/*public void addImagePaths(List<ImagePath> imagePaths) {
+	public void deleteUnavailableDates(Long id) {
 		Session session = sessionFactory.getCurrentSession();
-	    session.save(imagePaths.get(0));
-        session.flush();
-        session.clear();
-	}*/
+		Query query = session.createQuery("DELETE FROM UnavailableDate ud WHERE ud.property.id=:id");
+		query.setParameter("id", id);
+		query.executeUpdate();
+		session.flush();
+	}
+
+	public void addUnavailableDates(List<Date> dates, Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		Property property = findProperty(id);
+		for(Date date : dates){
+			UnavailableDate unavailableDate = new UnavailableDate();
+			unavailableDate.setProperty(property);
+			unavailableDate.setWhen(date);
+			session.save(unavailableDate);
+		}
+		session.flush();
+	}
+
+	public List<Review> findReviewsByPropertyId(Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT r FROM Review r"
+				+ " WHERE r.property.id=?");
+		query.setParameter(0, id);
+		List<Review> result = (List<Review>) query.list();
+		session.flush();
+		return result;
+		
+	}
+
+	public Review findReviewById(Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		Review result = (Review) session.get(Review.class, id);
+		session.flush();
+		return result;
+	}
+
+	public Review addReview(Review review) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(review);
+		session.flush();
+		return review;
+	}
 
 
 

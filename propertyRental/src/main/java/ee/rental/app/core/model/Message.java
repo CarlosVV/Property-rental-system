@@ -15,6 +15,7 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -43,9 +44,11 @@ public class Message {
 	public void setSentDate(Date sentDate) {
 		this.sentDate = sentDate;
 	}
+	@JsonIgnore
 	public Booking getBooking() {
 		return booking;
 	}
+	@JsonProperty
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}

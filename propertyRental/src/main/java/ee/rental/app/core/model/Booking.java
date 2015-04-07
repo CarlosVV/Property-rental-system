@@ -34,6 +34,13 @@ public class Booking {
 	private Date checkOut;
 	private Integer guestNumber;
 	private BigDecimal price;
+	private Date bookedDate;
+	public Date getBookedDate() {
+		return bookedDate;
+	}
+	public void setBookedDate(Date bookedDate) {
+		this.bookedDate = bookedDate;
+	}
 	@Override
 	public String toString() {
 		return "Booking [id=" + id + ", userAccount=" + userAccount

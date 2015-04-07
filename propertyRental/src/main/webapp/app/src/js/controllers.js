@@ -20,6 +20,44 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	$scope.booking.guestNumber = parseInt($stateParams.guestNumber);
 	$scope.booking.userAccount = {username:$scope.currentUser};
 	$scope.booking.property = {id:$stateParams.propertyId};
+	
+	$scope.newReview = {};
+	$scope.comment = {};
+	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+		console.log("WE GOT DEM REVIEWS", $scope.reviews);
+	});
+	$scope.stars = [1,2,3,4,5];
+	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId},function(){
+		console.log("soooo",$scope.canSendReviews);
+	});
+	$scope.reviewToComment = 0;
+	$scope.commentReview = function(reviewId){
+		if($scope.reviewToComment == reviewId){
+			$scope.reviewToComment = 0;
+		}else{
+			$scope.reviewToComment = reviewId;
+		}
+	};
+	$scope.addReview = function(parentReviewId,formObject){
+		if(parentReviewId == 0){
+			console.log($scope.newReview);
+			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
+				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+				$scope.newReview = {};
+				formObject.$setPristine();
+			});
+		}else{
+			$scope.comment.parentReviewId = parentReviewId;
+			console.log($scope.newReview.parentReviewId);
+			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.comment,function(data){
+				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+				$scope.comment = {};
+				$scope.reviewToComment = 0;
+				formObject.$setPristine();
+			});
+		}
+	};
+	
 	console.log($scope.booking);
 	/*{
 			checkIn:checkInTemp,
@@ -41,6 +79,13 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 		$scope.currentIndx = 0;
 		$scope.mainImgUrl = $scope.property.imagePaths[0].path;
 		$scope.maxGuests = $scope.property.guestCount;
+		//for filter
+		if($scope.maxLength < $scope.property.description.length){
+			$scope.showMoreDesc = "Show more";
+		}
+		if($scope.maxLength < $scope.property.rules.length){
+			$scope.showMoreRules = "Show more";
+		}
 	});
 	$scope.setImg = function(img){
 		$scope.mainImgUrl = img.path;
@@ -86,19 +131,28 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	$scope.bookApartment = function(){
 		//$scope.booking.userAccount.username = localStorage.getItem("currentUsername");
 		console.log("CHEC");
+		//part of validation moved here
 		var thereAreErrors = false;
 		if(!angular.isUndefined($scope.booking.checkOut) && !angular.isUndefined($scope.booking.checkIn)){
 			console.log("OKAY");
-			for(var i=0;i<$scope.unavailableDates.length;i++){
-				var start = moment($scope.unavailableDates[i].startDate);
-				var end = moment($scope.unavailableDates[i].endDate);
-				console.log("LOOP",i);
-				if(start.isBetween($scope.booking.checkIn,$scope.booking.checkOut) || end.isBetween($scope.booking.checkIn,$scope.booking.checkOut)){
-					console.log("YAY");
-					thereAreErrors = true;
-					//$scope.unavailableDatesBetween = true;
-				}
-	    	}
+		   var startDate = moment($scope.booking.checkIn);
+		   var endDate = moment($scope.booking.checkOut);
+		   var difference = endDate.diff(startDate,'days')+1;
+		   console.log("DIF",difference);
+		   if(difference >= $scope.property.minimumNights){
+				for(var i=0;i<$scope.unavailableDates.length;i++){
+					var start = moment($scope.unavailableDates[i].startDate);
+					var end = moment($scope.unavailableDates[i].endDate);
+					console.log("LOOP",i);
+					if(start.isBetween($scope.booking.checkIn,$scope.booking.checkOut) || end.isBetween($scope.booking.checkIn,$scope.booking.checkOut)){
+						console.log("YAY");
+						thereAreErrors = true;
+					}
+		    	}
+		   }else{
+			   //too few days booked!
+				thereAreErrors = true;
+		   }
 		}
 		if(!thereAreErrors){
 			console.log("should not",$scope.booking);
@@ -110,6 +164,32 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 			console.log("ERRORS");
 		}
 	}
+	//filter
+	$scope.showMoreDesc = "";
+	$scope.showMoreRules = "";
+	$scope.maxLength = 100;
+	$scope.showMoar = function(whichText){
+		var showMore = "Show more";
+		var showLess = "Show less";
+		if(whichText == 'desc'){
+			if($scope.maxLength < $scope.property.description.length){
+				if($scope.showMoreDesc == showMore){
+					$scope.showMoreDesc = showLess;
+				}else{
+					$scope.showMoreDesc = showMore;
+				}
+			}
+		}else{
+			if($scope.maxLength < $scope.property.description.length){
+				if($scope.showMoreRules == showMore){
+					$scope.showMoreRules = showLess;
+				}else{
+					$scope.showMoreRules = showMore;
+				}
+			}
+		}
+	};
+	//Reviews
 	
 }]);
 propertyController.controller("AddPropertyCtrl",["$scope","$timeout","$state","PropertyService","$upload","API_URL",function($scope,$timeout,$state,PropertyService,$upload,API_URL){
@@ -469,7 +549,7 @@ propertyController.controller("SearchPropertiesCtrl",["$scope", "PropertyService
 	}
 	//:country/:city/:admArea/:checkIn/:checkOut
 }]);
-propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","$stateParams","API_URL","$timeout","$upload",function($scope,PropertyService,$stateParams,API_URL,$timeout,$upload){
+propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","$stateParams","API_URL","$timeout","$upload","$state",function($scope,PropertyService,$stateParams,API_URL,$timeout,$upload,$state){
 	$scope.uploadingPhotos = false;
 	$scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 16 };
 	$scope.property = {};
@@ -503,20 +583,24 @@ propertyController.controller("UpdatePropertyCtrl",["$scope","PropertyService","
 	};
 	
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
-		$scope.photosToUpload = $scope.photosToUpload.concat($scope.property.imagePaths);
-		console.log($scope.photosToUpload);
-		console.log("GOT IT",$scope.property);
-		$scope.map.center.latitude = $scope.property.latitude;
-		$scope.map.center.longitude = $scope.property.longitude;
-		$scope.marker = {
-				id: 0,
-			      coords: {
-			        latitude: $scope.property.latitude,
-			        longitude: $scope.property.longitude
-			      },
-			      options: { draggable: true }
-		};
-		$scope.address = $scope.property.address;
+		if($scope.property.userAccount.username != localStorage.getItem("currentUsername")){
+			$state.go("accessDenied");
+		}else{
+			$scope.photosToUpload = $scope.photosToUpload.concat($scope.property.imagePaths);
+			console.log($scope.photosToUpload);
+			console.log("GOT IT",$scope.property);
+			$scope.map.center.latitude = $scope.property.latitude;
+			$scope.map.center.longitude = $scope.property.longitude;
+			$scope.marker = {
+					id: 0,
+				      coords: {
+				        latitude: $scope.property.latitude,
+				        longitude: $scope.property.longitude
+				      },
+				      options: { draggable: true }
+			};
+			$scope.address = $scope.property.address;
+		}
 	});
 	
 	//get address for property
@@ -661,11 +745,14 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 	/*PropertyService.apartment.save($scope.query, function(){
 	console.log("DATA SENT YAY");
 	});*/
-	$scope.bookingsStatuses = BookingService.propertyBookingsStatuses.query();
-	$scope.selectedChartId = 0;
-	$scope.selectedBookingsPropertyId = 0;
+	$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
+	//$scope.propertyUnavailable
+	$scope.selectedChartId;
+	$scope.selectedBookingsPropertyId;
 	$scope.selectedYear = moment().year();
 	$scope.properties = PropertyService.property.findMyProperties(function(){
+		//generating data for select statistics
+		console.log("HMMM",$scope.properties);
 		var currentTime = moment();
 		for(var i=0;i<$scope.properties.length;i++){
 			var createdYear = moment($scope.properties[i].createdDate).year();
@@ -686,13 +773,13 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 				var dataToShow = [];
 				for(var i=0;i<$scope.propertyBookedDays.length;i++){
 					var month = moment([2015,$scope.propertyBookedDays[i].month-1]).format("MMMM");
-					dataToShow.push([month,$scope.propertyBookedDays[i].bookedDaysPercent]);
+					dataToShow.push([month,$scope.propertyBookedDays[i].bookedDays]);
 				}
 				console.log(dataToShow);
 				$scope.chartConfig = {
 					options:{
 						title:{
-							text:"% of booked days in each month"
+							text:"Booked days in each month"
 						}
 					},
 					series:[],
@@ -718,8 +805,98 @@ propertyController.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService
 			});
 		}
 	};
-	$scope.saveBooking = function(bookingPosition){
-		console.log("pos:",bookingPosition);
+	$scope.lastActionBookingId;
+	$scope.lastStatus;
+	$scope.setBookingStatusPayed = function(bookingId){
+		var currentBookingId;//null if not found
+		var currentBookingPosition;
+		for(var i=0;i<$scope.propertyBookings.length;i++){
+			if($scope.propertyBookings[i].bookingId == bookingId){
+				currentBookingId = bookingId;
+				currentBookingPosition = i;
+			}
+		}
+		if(currentBookingId != null && currentBookingPosition != null){
+			$scope.lastStatus = $scope.propertyBookings[currentBookingPosition].bookingStatusId;
+			BookingService.bookingsStatuses.updateBookingStatus({bookingId:bookingId,statusId:2},function(){
+				$scope.propertyBookings[currentBookingPosition].bookingStatusId = 2;
+			});
+			$scope.lastActionBookingId = bookingId;
+		}
+	};
+	$scope.cancelBooking = function(bookingId){
+		var currentBookingId;//null if not found
+		var currentBookingPosition;
+		for(var i=0;i<$scope.propertyBookings.length;i++){
+			if($scope.propertyBookings[i].bookingId == bookingId){
+				currentBookingId = bookingId;
+				currentBookingPosition = i;
+			}
+		}
+		if(currentBookingId != null && currentBookingPosition != null){
+			$scope.lastStatus = $scope.propertyBookings[currentBookingPosition].bookingStatusId;
+			BookingService.bookingsStatuses.updateBookingStatus({bookingId:bookingId,statusId:3},function(){
+				$scope.propertyBookings[currentBookingPosition].bookingStatusId = 3;
+			});
+			$scope.lastActionBookingId = bookingId;
+		}
+	};
+	$scope.annulLastAction = function(bookingId){
+		if($scope.lastActionBookingId == bookingId && $scope.lastStatus != null){
+			var currentBookingPosition;
+			for(var i=0;i<$scope.propertyBookings.length;i++){
+				if($scope.propertyBookings[i].bookingId == bookingId){
+					currentBookingId = bookingId;
+					currentBookingPosition = i;
+				}
+			}
+			BookingService.bookingsStatuses.updateBookingStatus({bookingId:bookingId,statusId:$scope.lastStatus},function(){
+				$scope.propertyBookings[currentBookingPosition].bookingStatusId = $scope.lastStatus;
+				$scope.lastActionBookingId = 0;
+				$scope.lastStatus = 0;
+			});
+		}
+	};
+	//unavailable dates:
+	$scope.selectedUnDatesPropertyId;
+	$scope.currentUnDates;
+	$scope.currentBookedDates;
+	$scope.datesUpdated = true;
+	$scope.$watch('newUnDates',function(){
+		console.log("PLS",$scope.newUnDates);
+	});
+	//to prevent from $scope.datesUpdated = false; and $apply (digest in progress error)
+	var firstTime;
+	$scope.showPropertyUnavailableDates = function(propertyId){
+		if($scope.selectedUnDatesPropertyId != propertyId){
+			firstTime = true;
+			$scope.datesUpdated = true;
+			$scope.selectedUnDatesPropertyId = propertyId;
+			$scope.currentUnDates = new PropertyService.onlyUnavailableDays.query({id:propertyId});
+			$scope.currentBookedDates = new PropertyService.onlyBookedDays.query({id:propertyId});
+		}else{
+			$scope.selectedUnDatesPropertyId = 0;
+		}
+	};
+	$scope.newUnDates;
+	$scope.updateUnDates = function(dates){
+		//it's executed once on datepicker startup
+		if(!firstTime){
+			$scope.newUnDates = dates;
+			$scope.datesUpdated = false;
+			//should update!
+			$scope.$apply();
+			console.log("WHAT SCOPE OMG",$scope);
+		}else{
+			firstTime = false;
+		}
+	};
+	$scope.sendUnDates = function(){
+		console.log("UPDATING",$scope.currentUnDates);
+		PropertyService.onlyUnavailableDays.update({id:$scope.selectedUnDatesPropertyId},$scope.newUnDates,function(){
+			console.log("UPdated");
+			$scope.datesUpdated = true;
+		});
 	};
 }]);
 propertyController.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
@@ -762,6 +939,43 @@ propertyController.controller("ShowMyBookingsCtrl",["$scope","BookingService",fu
 	$scope.$watch('bookings',function(newVal){
 		console.log($scope.bookings);
 	});
-	
-	
+}]);
+propertyController.controller("ConversationsCtrl",["$scope","BookingService",function($scope,BookingService){
+	$scope.myBookings = new BookingService.booking.myBookings(function(){
+		console.log($scope.myBookings);
+	});
+	$scope.myPropertiesBookings = new BookingService.booking.allMyPropertiesBookings();
+}]);
+propertyController.controller("ChatCtrl",["$scope","ConversationService","$stateParams",function($scope,ConversationService,$stateParams){
+	console.log("YO DAWG");
+	$scope.message = {};
+	$scope.messages = new ConversationService.conversation.query({bookingId:$stateParams.bookingId},function(){
+		console.log($scope.messages);
+	});
+	$scope.sendMessage = function(formObject){
+		if($stateParams.myBooking == 'true'){
+			angular.forEach($scope.myBookings, function(booking) {
+				if(booking.bookingId == $stateParams.bookingId){
+					$scope.message.receiverUsername = booking.propertyAccountUsername;
+					$scope.message.senderUsername = localStorage.getItem("currentUsername");
+				}
+			});
+		}else{
+			angular.forEach($scope.myPropertiesBookings, function(booking) {
+				if(booking.bookingId == $stateParams.bookingId){
+					console.log(booking.userAccountUsername);
+					$scope.message.receiverUsername = booking.userAccountUsername;
+					$scope.message.senderUsername = localStorage.getItem("currentUsername");
+				}
+			});
+		}
+		$scope.message.bookingId = $stateParams.bookingId;
+		$scope.message.senderUsername = localStorage.getItem("currentUsername");
+		ConversationService.conversation.save({},$scope.message,function(data){
+			console.log($scope.messages);
+			$scope.messages = new ConversationService.conversation.query({bookingId:$stateParams.bookingId});
+			$scope.message = {};
+			formObject.$setPristine();
+		});
+	};
 }]);

@@ -19,7 +19,7 @@ INSERT INTO PropertyFacility(id,name,description) VALUES(7,'Pets not allowed','P
 INSERT INTO PropertyFacility(id,name,description) VALUES(8,'TV','TV is provided');
 INSERT INTO PropertyFacility(id,name,description) VALUES(9,'Elevator','There is an elevator in the building');
 
-INSERT INTO Property(userAccount_id,country,city,administrativeArea,postalCode,address,title,propertyType_id,size,bathroomCount,bedroomCount,pricePerNight,minimumNights,description,rules,longitude,latitude,guestCount,bedCount,createdDate) VALUES(1,'Estonia','Tallinn','Harju maakond','13618','Liikuri 40','Pretty large apartment',1,50,3,2,505,2,'first apartment desc','no smoking plix plox',24.820325499999967,59.4410596,3,2,'2013-01-05');
+INSERT INTO Property(userAccount_id,country,city,administrativeArea,postalCode,address,title,propertyType_id,size,bathroomCount,bedroomCount,pricePerNight,minimumNights,description,rules,longitude,latitude,guestCount,bedCount,createdDate) VALUES(1,'Estonia','Tallinn','Harju maakond','13618','Liikuri 40','Pretty large apartment',1,50,3,2,505,2,'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.','no smoking plix plox',24.820325499999967,59.4410596,3,2,'2013-01-05');
 INSERT INTO Property(userAccount_id,country,city,administrativeArea,postalCode,address,title,propertyType_id,size,bathroomCount,bedroomCount,pricePerNight,minimumNights,description,rules,longitude,latitude,guestCount,bedCount,createdDate) VALUES(1,'Estonia','Tallinn','Harju maakond','11912','Rebasesaba tee 10','Magnificent beach house',3,50,3,1,505,2,'first apartment desc','no smoking plix plox',24.847988299999997,59.47842519999999,3,2,'2012-02-01');
 
 INSERT INTO ImagePath(property_id,path) VALUES(1,'eaton0506_468x311.jpg');
@@ -36,18 +36,32 @@ INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(
 INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(2,3);
 INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(2,5);
 
-INSERT INTO UnavailableDate(property_id,startDate,endDate) VALUES(1,'2015-03-01','2015-03-02');
-INSERT INTO UnavailableDate(property_id,startDate,endDate) VALUES(1,'2015-04-03','2015-04-20');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-20');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-21');
+
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-12');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-13');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-14');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-15');
+
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-05');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-06');
+
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-03');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-04');
 
 INSERT INTO BookingStatus(id,name,description) VALUES(1,'Created','The booking has been created');
-INSERT INTO BookingStatus(id,name,description) VALUES(2,'Accepted','The booking has been accepted by the owner');
-INSERT INTO BookingStatus(id,name,description) VALUES(3,'Payed','The booking has been payed');
-INSERT INTO BookingStatus(id,name,description) VALUES(4,'Cancelled by owner','The booking has been cancelled by the owner');
+INSERT INTO BookingStatus(id,name,description) VALUES(2,'Payed and accepted','The booking had been payed by the customer and owner accepted it');
+INSERT INTO BookingStatus(id,name,description) VALUES(3,'Cancelled by owner','The booking has been cancelled by the owner');
 
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,3,'2015-05-01','2015-05-10',1000,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,3,'2015-07-01','2015-07-10',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,3,'2014-03-01','2014-03-23',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,3,'2014-08-06','2014-08-15',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,2,3,'2015-06-01','2015-06-10',1300,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2014-04-01','2014-04-12',1400,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2014-08-06','2014-08-15',1400,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2015-05-01','2015-05-10',1000,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2015-07-01','2015-07-10',1400,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,2,2,'2015-06-01','2015-06-10',1300,2);
+
+INSERT INTO Review(author_id,property_id,review,stars) VALUES(2,1,'VERY NICE PROPERTY 10/10',5);
+INSERT INTO Review(author_id,property_id,review,stars) VALUES(2,1,'Didnt like it',2);
+INSERT INTO Review(author_id,property_id,review,parentReview_id) VALUES(1,1,'Thank you for good review!',1);
 
 INSERT INTO Message(sentDate,message,sender_id,receiver_id,booking_id) VALUES('2011-03-15','dgsaigs',1,2,1);

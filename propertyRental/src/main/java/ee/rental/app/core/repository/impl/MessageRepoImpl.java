@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,17 +22,19 @@ public class MessageRepoImpl implements MessageRepo{
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	public List<Message> findMessages(Long senderId, Long receiverId, Long bookingId){
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT m FROM Message m "
-				+ "WHERE ("
-				+ "(m.sender.id=? AND m.receiver.id=?) OR "
-				+ "(m.sender.id=? AND m.receiver.id=?)"
-				+ ") AND m.booking.id=:bookingId");
-		query.setParameter(0, senderId);
-		query.setParameter(1, receiverId);
-		query.setParameter(2, receiverId);
-		query.setParameter(3, senderId);
+	public List<Message> findMessages(Long bookingId){
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT m FROM Message m "
+				+ "WHERE m.booking.id=:bookingId");
 		query.setParameter("bookingId", bookingId);
-		return query.list();
+		List<Message> result = (List<Message>) query.list();
+		session.flush();
+		return result;
+	}
+	public Message addMessage(Message message) {
+		Session session = sessionFactory.getCurrentSession();
+		session.persist(message);
+		session.flush();
+		return message;
 	}
 }

@@ -1,6 +1,7 @@
 package ee.rental.app.rest.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,6 +9,7 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.BookedDaysWrapper;
 import ee.rental.app.core.model.wrapper.BookingWrapper;
+import ee.rental.app.core.model.wrapper.CanSendReviews;
 import ee.rental.app.core.service.BookingService;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.BookingStatusNotFoundException;
@@ -41,6 +44,7 @@ public class BookingController {
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		System.out.println(booking.getUserAccount().getUsername()+" hm "+principal.getUsername());
         if(booking.getUserAccount().getUsername().equals(principal.getUsername())){
+        	booking.setBookedDate(new Date());
         	Booking createdBooking = bookingService.createBooking(booking);
 			return new ResponseEntity<Booking>(createdBooking,HttpStatus.CREATED);
         }else{
@@ -54,23 +58,28 @@ public class BookingController {
 		//System.out.println("hey there "+bookings);
 		List<BookingWrapper> result = new ArrayList<BookingWrapper>();
 		for(Booking b : bookings){
-			BookingWrapper bw = new BookingWrapper();
-			bw.setPropertyId(b.getProperty().getId());
-			bw.setPropertyTitle(b.getProperty().getTitle());
-			bw.setCountry(b.getProperty().getCountry());
-			bw.setCity(b.getProperty().getCity());
-			bw.setAdministrativeArea(b.getProperty().getAdministrativeArea());
-			bw.setBookingStatus(b.getBookingStatus().getName());
-			//bw.setBookingPayed(bw.getBookingPayed());
-			bw.setCheckIn(b.getCheckIn());
-			bw.setCheckOut(b.getCheckOut());
-			bw.setGuestNumber(b.getGuestNumber());
-			bw.setPrice(b.getPrice());
+			BookingWrapper bw = new BookingWrapper(b);
 			result.add(bw);
 		}
 		return result;
 	}
-	@RequestMapping(value="/bookedDays/{id}/{year}")
+	/**
+	 * For messaging service
+	 * @param year
+	 * @return
+	 */
+	@RequestMapping(value="/myPropertiesBookings",method=RequestMethod.GET)
+	public List<BookingWrapper> myPropertiesBookings(){
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<Booking> bookings = bookingService.findPropertiesBookingsByYear(principal.getUsername());
+		List<BookingWrapper> result = new ArrayList<BookingWrapper>();
+		for(Booking b : bookings){
+			BookingWrapper bw = new BookingWrapper(b);
+			result.add(bw);
+		}
+		return result;
+	}
+	@RequestMapping(value="/bookedDaysStatistics/{id}/{year}")
 	public List<BookedDaysWrapper> showBookedDaysByMonth(@PathVariable Long id,@PathVariable Integer year){
 		List<BookedDaysWrapper> result = bookingService.findBookedDaysPerMonthsInYearByProp(year, id);
 		return result;
@@ -80,24 +89,9 @@ public class BookingController {
 		List<Booking> bookings = bookingService.findBookingsByProperty(propertyId);
 		List<BookingWrapper> result = new ArrayList<BookingWrapper>();
 		for(Booking b : bookings){
-			BookingWrapper bw = new BookingWrapper();
-			bw.setPropertyId(b.getProperty().getId());
-			bw.setPropertyTitle(b.getProperty().getTitle());
-			bw.setCountry(b.getProperty().getCountry());
-			bw.setCity(b.getProperty().getCity());
-			bw.setAdministrativeArea(b.getProperty().getAdministrativeArea());
-			bw.setBookingStatus(b.getBookingStatus().getName());
-			bw.setBookingStatusId(b.getBookingStatus().getId());
-			//bw.setBookingPayed(bw.getBookingPayed());
-			bw.setUserAccountId(b.getUserAccount().getId());
-			bw.setUserAccountUsername(b.getUserAccount().getUsername());
-			bw.setCheckIn(b.getCheckIn());
-			bw.setCheckOut(b.getCheckOut());
-			bw.setGuestNumber(b.getGuestNumber());
-			bw.setPrice(b.getPrice());
+			BookingWrapper bw = new BookingWrapper(b);
 			result.add(bw);
 		}
-		System.out.println("PLS PLS"+result);
 		return result;
 	}
 	@RequestMapping(value="/bookingStatuses")
@@ -108,7 +102,7 @@ public class BookingController {
 	@RequestMapping(value="/bookingStatus/{bookingId}/{statusId}",method=RequestMethod.GET)
 	public boolean updateBookingStatus(@PathVariable Long bookingId,@PathVariable Long statusId){
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(principal.getUsername().equals(bookingService.findBooking(bookingId).getUserAccount().getUsername())){
+		if(principal.getUsername().equals(bookingService.findBooking(bookingId).getProperty().getUserAccount().getUsername())){
 			boolean result = false;
 			try{
 				result = bookingService.updateBookingStatus(bookingId,statusId);
@@ -119,5 +113,15 @@ public class BookingController {
 		}else{
 			throw new ForbiddenException();
 		}
+	}
+	@PreAuthorize("permitAll")
+	@RequestMapping(value = "/canSendReviews/{propertyId}", method = RequestMethod.GET)
+	public CanSendReviews canSendReviews(@PathVariable Long propertyId){
+		Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal instanceof UserDetails){
+			UserDetails account = (UserDetails) principal;
+			return new CanSendReviews(bookingService.canSendReviews(account.getUsername(),propertyId));
+		}
+		return new CanSendReviews(false);
 	}
 }

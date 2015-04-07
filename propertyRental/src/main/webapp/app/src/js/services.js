@@ -27,7 +27,17 @@ propertyService.factory("PropertyService", [ "$resource", "API_URL", function($r
 		}),
 		propertyTypes: $resource(API_URL+'properties/propertyTypes', {}),
 		propertyFacilities : $resource(API_URL+'properties/propertyFacilities',{}),
-		unavailableDates : $resource(API_URL+'properties/unavailableDates/:id', {})
+		unavailableDates : $resource(API_URL+'properties/unavailableDates/:id', {}),
+		onlyBookedDays : $resource(API_URL+"properties/onlyBookedDates/:id"),
+		onlyUnavailableDays : $resource(API_URL+"properties/onlyUnavailableDates/:id",{},{
+			update:{method:"PUT"}
+		}),
+		reviews : $resource(API_URL+"properties/reviews/:id",{},{
+			canSendReviews:{
+				method:"GET",
+				url:API_URL+"bookings/canSendReviews/:propertyId"
+			}
+		})
 	};
 	return propertyService;
 }]);
@@ -43,12 +53,28 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 				method:"GET",
 				isArray:true,
 				url:API_URL+"bookings/myPropertysBookings/:propertyId"
+			},
+			allMyPropertiesBookings:{
+				method:"GET",
+				isArray:true,
+				url:API_URL+"bookings/myPropertiesBookings"
 			}
 		}),
-		propertyBookedDays : $resource(API_URL+"bookings/bookedDays/:id/:year",{}),
-		propertyBookingsStatuses : $resource(API_URL+"bookings/bookingStatuses",{})
+		propertyBookedDays : $resource(API_URL+"bookings/bookedDaysStatistics/:id/:year",{}),
+		bookingsStatuses : $resource(API_URL+"bookings/bookingStatuses",{},{
+			updateBookingStatus:{
+				method:"GET",
+				url:API_URL+"bookings/bookingStatus/:bookingId/:statusId"
+			}
+		})
 	};
 	return bookingService;
+}]);
+propertyService.factory("ConversationService",["$resource","API_URL",function($resource,API_URL){
+	var conversationService = {
+			conversation: $resource(API_URL+"messages/:bookingId")
+	};
+	return conversationService;
 }]);
 /*propertyService.factory("SessionService",["$resource","API_URL",function($resource,API_URL){
 	var sessionService = {

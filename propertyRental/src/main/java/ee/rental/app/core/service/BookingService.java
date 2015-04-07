@@ -19,4 +19,6 @@ public interface BookingService {
 	public List<Booking> findBookingsByProperty(Long propertyId);
 	public List<BookingStatus> findBookingStatuses();
 	public boolean updateBookingStatus(Long bookingId, Long statusId);
+	public boolean canSendReviews(String username, Long propertyId);
+	public List<Booking> findPropertiesBookingsByYear(String username);
 }

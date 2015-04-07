@@ -2,7 +2,7 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','PropertyService','PropertyController','PropertyDirective']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','PropertyService','PropertyController','PropertyDirective','PropertyFilters']);
 
 rentalApp.constant('API_URL',"/propertyRental/");
 
@@ -136,14 +136,38 @@ rentalApp.config(
 			})
 			.state("accessDenied",{
                 url : "/accessDenied",
-                templateUrl: "partials/accessDenied.html",
+                views:{
+					"mainView":{
+						templateUrl: "partials/accessDenied.html"
+					}
+				},
                 data : {
                 	authorities:[]
+                }
+            })
+            .state("conversations",{
+            	url:"/conversations",
+            	views:{
+            		"mainView":{
+            			templateUrl:"partials/conversations.html",
+            			controller:"ConversationsCtrl"
+            		}
+            	},
+                data : {
+                	authorities:['ROLE_USER']
+                }
+            })
+            .state("conversations.chat",{
+            	url:"/{bookingId}/{myBooking}",
+            	templateUrl:"partials/chat.html",
+            	controller:"ChatCtrl",
+                data : {
+                	authorities:['ROLE_USER']
                 }
             });
 	}
 );
-//to intercept all 403 errors
+//to intercept both 401 and 403 errors
 rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 		function($q, $location) {
 			return {
@@ -159,8 +183,6 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 						$location.path('/login');
 						break;
 					case 403:
-						localStorage.removeItem("currentUsername");
-						localStorage.removeItem("authority");
 						$location.path('/accessDenied');
 						break;
 					default:
@@ -185,6 +207,7 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 		return localStorage.getItem("authority");
 	}
 	$rootScope.currentUsername = localStorage.getItem("currentUsername");
+	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
 		//console.log("toState",toState);
         $rootScope.toState = toState;
