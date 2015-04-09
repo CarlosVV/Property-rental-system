@@ -343,7 +343,9 @@ propertyDirective.directive("myDatepicker",function(){
 				.on("changeDate",function(e){
 					//console.log("heey",e.dates);
 					scope.updateUnDates({dates:e.dates});
-					
+					$("#datepicker_data_input").val(
+						$(".datepicker").datepicker("getFormattedDate")	
+					);
 				});
 				$('.datepicker').datepicker("setDates",unavailableDates);
 			});

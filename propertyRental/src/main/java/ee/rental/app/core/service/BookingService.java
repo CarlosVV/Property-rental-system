@@ -8,7 +8,11 @@ import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.UnavailableDate;
-import ee.rental.app.core.model.wrapper.BookedDaysWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookedDaysWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingAvgLength;
+import ee.rental.app.core.model.wrapper.statistics.BookingGuestCountWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingLengthCount;
+import ee.rental.app.core.model.wrapper.statistics.ReviewStarsWrapper;
 
 public interface BookingService {
 	public Booking createBooking(Booking booking);
@@ -21,4 +25,9 @@ public interface BookingService {
 	public boolean updateBookingStatus(Long bookingId, Long statusId);
 	public boolean canSendReviews(String username, Long propertyId);
 	public List<Booking> findPropertiesBookingsByYear(String username);
+	public List<BookingGuestCountWrapper> findBookingGuestCountPerMonthsInYearByProp(
+			Integer year, Long id);
+	public List<ReviewStarsWrapper> findReviewsAvgStars(Integer year,
+			Long id);
+	public List<BookingLengthCount> findBookingAvgLength(Integer year, Long id);
 }

@@ -49,6 +49,7 @@ public class MessageServiceImpl implements MessageService{
 		message.setBooking(booking);
 		message.setMessage(m.getMessage());
 		message.setSentDate(new Date());
+		message.setReceiverRead(false);
 		if(firstCombination){
 			message.setReceiver(booking.getUserAccount());
 			message.setSender(booking.getProperty().getUserAccount());
@@ -57,6 +58,19 @@ public class MessageServiceImpl implements MessageService{
 			message.setSender(booking.getUserAccount());
 		}
 		return messageRepo.addMessage(message);
+	}
+	public List<Message> findUnreadMessages(String username) {
+		return messageRepo.findUnreadMessages(username);
+	}
+	public List<Message> findMessagesByReceiverAndBooking(Long bookingId,String username){
+		return messageRepo.findMessagesByReceiver(bookingId,username);
+	}
+	public void markReadMessages(Long bookingId,String username) {
+		Booking booking = bookingRepo.findBooking(bookingId);
+		if(booking == null)
+			throw new BookingNotFoundException();
+		List<Message> messages = findMessagesByReceiverAndBooking(bookingId,username);
+		messageRepo.markMessagesRead(messages);
 	}
 
 }

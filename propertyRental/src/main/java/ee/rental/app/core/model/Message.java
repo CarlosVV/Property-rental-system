@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Message {
 	@Id @GeneratedValue
 	private Long id;
+	@Lob
 	private String message;
 	//@JoinColumn(name="senderId")
 	@OneToOne(cascade=CascadeType.ALL)
@@ -38,6 +40,14 @@ public class Message {
 	@JsonIgnore
 	private Booking booking;
 	private Date sentDate;
+	private Boolean receiverRead;
+	
+	public Boolean getReceiverRead() {
+		return receiverRead;
+	}
+	public void setReceiverRead(Boolean receiverRead) {
+		this.receiverRead = receiverRead;
+	}
 	public Date getSentDate() {
 		return sentDate;
 	}

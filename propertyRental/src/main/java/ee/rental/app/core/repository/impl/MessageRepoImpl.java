@@ -37,4 +37,31 @@ public class MessageRepoImpl implements MessageRepo{
 		session.flush();
 		return message;
 	}
+	public List<Message> findUnreadMessages(String username) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT m FROM Message m "
+				+ "WHERE m.receiver.username = :username AND m.receiverRead = false");
+		query.setParameter("username", username);
+		List<Message> result = (List<Message>) query.list();
+		session.flush();
+		return result;
+	}
+	public List<Message> findMessagesByReceiver(Long bookingId,String username) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT m FROM Message m "
+				+ "WHERE m.booking.id=:bookingId AND m.receiver.username = :username");
+		query.setParameter("bookingId", bookingId);
+		query.setParameter("username", username);
+		List<Message> result = (List<Message>) query.list();
+		session.flush();
+		return result;
+	}
+	public void markMessagesRead(List<Message> messages) {
+		Session session = sessionFactory.getCurrentSession();
+		for(Message m : messages){
+			m.setReceiverRead(true);
+			session.update(m);
+		}
+		session.flush();
+	}
 }

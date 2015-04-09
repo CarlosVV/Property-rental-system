@@ -87,6 +87,17 @@
 		  </li>
 		</ul>
 		<div class="row">
+			<h4>Pricing:</h4>
+			<p>Minimum nights: {{property.minimumNights}}</p>
+			<p>Price per night: {{property.pricePerNight}} EUR</p>
+			<h4>Sizing:</h4>
+			<p>Maximum guest count: {{property.guestCount}}</p>
+			<p>Bathroom count: {{property.bathroomCount}}</p>
+			<p>Bedroom count: {{property.bedroomCount}}</p>
+			<p>Bed count: {{property.bedCount}}</p>
+			<p>Size: {{property.size}} m^2</p>
+		</div>
+		<div class="row">
 			<h4>Description</h4>
 			<p>{{property.description | truncate : maxLength : showMoreDesc}}</p>
 			<a href='javascript:void(0);' ng-click="showMoar('desc')">{{showMoreDesc}}</a>
@@ -95,6 +106,14 @@
 			<h4>Owner's rules</h4>
 			<p>{{property.rules | truncate : maxLength : showMoreRules}}</p>
 			<a href='javascript:void(0);' ng-click="showMoar('rules')">{{showMoreRules}}</a>
+		</div>
+		<div class="row">
+			<h4>Location:</h4>
+			<p>Country: {{property.country}}</p>
+			<p>Administrative area: {{property.administrativeArea}}</p>
+			<p>City: {{property.city}}</p>
+			<p>Address:{{property.address}}</p>
+			<p>Postal code: {{property.postalCode}}</p>
 		</div>
 	</div>
 </div>
@@ -106,16 +125,24 @@
 	<h3>Reviews:</h3>
 	<div ng-repeat="review in reviews">
 		<div ng-if="review.parentReviewId == null" class="review">
+			<button ng-if="currentUsername == review.username" ng-click="deleteReview(review.id)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			</button>
 			<div class="reviewHeader">Wrote {{review.username}}:</div>
 			<div class="reviewBody">{{review.review}}</div>
 			<div class="reviewBody">Stars: {{review.stars}}/5</div>
+			<hr/>
 			<div ng-repeat="answer in reviews">
 				<div ng-if="review.id == answer.parentReviewId" class="review">
+					<button ng-if="currentUsername == answer.username" ng-click="deleteReview(answer.id)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
+					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</button>
 					<div class="reviewHeader">Answer from the host:</div>
 					<div class="reviewBody">{{answer.review}}</div>
+					<hr/>
 				</div>
 			</div>
-			<a href="" ng-if="currentUser == property.userAccount.username" ng-click="commentReview(review.id)">Comment this review</a>
+			<a href="" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
 			<div class="row" ng-if="reviewToComment == review.id">
 				<form novalidate name="commentForm" ng-submit="addReview(review.id,commentForm)">
 					<div class="col-md-5">
@@ -126,6 +153,9 @@
 				</form>
 			</div>
 		</div>
+	</div>
+	<div class="row" ng-if="!reviews.length">
+		<h4>There are no reviews</h4>
 	</div>
 	<form novalidate name="reviewForm" ng-if="canSendReviews.allowed" ng-submit="reviewForm.$valid && addReview(0,reviewForm)">
 		<div class="col-md-5">

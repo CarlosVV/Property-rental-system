@@ -61,6 +61,9 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 			}
 		}),
 		propertyBookedDays : $resource(API_URL+"bookings/bookedDaysStatistics/:id/:year",{}),
+		propertyAvgBookingGuestCount : $resource(API_URL+"bookingAvgGuestCountStatistics/:id/:year",{}),
+		propertyAvgStars : $resource(API_URL+"bookingAvgStarsStatistics/:id/:year",{}),
+		propertyAvgBookingLength : $resource(API_URL+"bookingAvgLengthStatistics/:id/:year",{}),
 		bookingsStatuses : $resource(API_URL+"bookings/bookingStatuses",{},{
 			updateBookingStatus:{
 				method:"GET",
@@ -72,7 +75,12 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 }]);
 propertyService.factory("ConversationService",["$resource","API_URL",function($resource,API_URL){
 	var conversationService = {
-			conversation: $resource(API_URL+"messages/:bookingId")
+			conversation: $resource(API_URL+"messages/:bookingId",{},{
+				markRead:{
+					method:"GET",
+					url:API_URL+"messages/markRead/:bookingId"
+				}
+			})
 	};
 	return conversationService;
 }]);
@@ -82,7 +90,7 @@ propertyService.factory("ConversationService",["$resource","API_URL",function($r
 	};
 	return sessionService;
 }]);*/
-propertyService.factory("AccountService",["$resource","API_URL","$http","$rootScope","$state",function($resource,API_URL,$http,$rootScope,$state){
+propertyService.factory("AccountService",["$resource","API_URL","$http","$rootScope","$state","ConversationService",function($resource,API_URL,$http,$rootScope,$state,ConversationService){
 	// /accounts POST - register
 	// /accounts/:id GET - get account by id
 	// /accounts GET + parameters username and password - get account by username and password
@@ -97,6 +105,8 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                    localStorage.setItem("currentUsername", data.username);
 	                    $rootScope.currentUsername = localStorage.getItem("currentUsername");
 	                    localStorage.setItem("authority",data2.data.authority);
+	                    //check if new msgs are available
+	                    $rootScope.newMsgs = new ConversationService.conversation.query({});
 	                    $state.go("login");
 	                }, function(data2) {
 	                    $state.go("login");

@@ -29,4 +29,5 @@ public interface PropertyService {
 	public List<Review> findReviewsByPropertyId(Long id);
 	public Review findReviewById(Long id);
 	public Review addReview(ReviewWrapper review);
+	public void deleteReview(Long id, String username);
 }

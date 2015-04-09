@@ -140,7 +140,7 @@ public class PropertyRepoImpl implements PropertyRepo{
 		Date today = dateFormat.parse(dateFormat.format(new Date()));
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("SELECT new ee.rental.app.core.model.wrapper.UnavailableDatesForPublic(b.checkIn,b.checkOut) FROM Booking b"
-				+ " WHERE b.property.id=? AND b.checkOut >= ?");
+				+ " WHERE b.property.id=? AND (b.bookingStatus.id=1 OR b.bookingStatus.id=2) AND b.checkOut >= ?");
 		query.setParameter(0, id);
 		query.setParameter(1, today);
 		List<UnavailableDatesForPublic> result = (List<UnavailableDatesForPublic>) query.list();
@@ -206,6 +206,25 @@ public class PropertyRepoImpl implements PropertyRepo{
 		session.save(review);
 		session.flush();
 		return review;
+	}
+
+	public void deleteReview(Review review) {
+		Session session = sessionFactory.getCurrentSession();
+		Query queryChildReview = session.createQuery("SELECT r FROM Review r WHERE r.parentReview.id=:parentId");
+		queryChildReview.setParameter("parentId", review.getId());
+		Review childReview = (Review) queryChildReview.uniqueResult();
+		if(childReview != null){
+			Query query = session.createQuery("DELETE FROM Review r WHERE r.id IN (:id,:childId)");
+			query.setParameter("id", review.getId());
+			query.setParameter("parentId", childReview.getId());
+			query.executeUpdate();
+			session.flush();
+		}else{
+			Query query = session.createQuery("DELETE FROM Review r WHERE r.id = :id");
+			query.setParameter("id", review.getId());
+			query.executeUpdate();
+			session.flush();
+		}
 	}
 
 

@@ -49,6 +49,7 @@ import ee.rental.app.core.service.BookingService;
 import ee.rental.app.core.service.PropertyService;
 import ee.rental.app.core.service.MessageService;
 import ee.rental.app.core.service.UserAccountService;
+import ee.rental.app.core.service.exception.NotAllowedException;
 import ee.rental.app.core.service.exception.PropertyNotFoundException;
 import ee.rental.app.core.service.exception.PropertiesNotFoundException;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
@@ -252,6 +253,15 @@ public class PropertyController {
 		review.setUsername(principal.getUsername());
 		review.setPropertyId(id);
 		return new ReviewWrapper(propertyService.addReview(review));
+	}
+	@RequestMapping(value="/reviews/{id}",method=RequestMethod.DELETE)
+	public void deletePropertyReview(@PathVariable Long id){
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		try{
+			propertyService.deleteReview(id,principal.getUsername());
+		}catch(NotAllowedException e){
+			throw new ForbiddenException();
+		}
 	}
 	
 	

@@ -33,4 +33,5 @@ public interface PropertyRepo {
 	public List<Review> findReviewsByPropertyId(Long id);
 	public Review findReviewById(Long id);
 	public Review addReview(Review review);
+	public void deleteReview(Review review);
 }

@@ -3,6 +3,7 @@ package ee.rental.app.core.repository;
 import java.util.List;
 
 import ee.rental.app.core.model.BookingStatus;
+import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
@@ -20,4 +21,5 @@ public interface BookingRepo {
 	public List<Booking> findBookingsByAccountAndProperty(String username,
 			Long propertyId);
 	public List<Booking> findAllPropertiesBookings(String username);
+	public List<Review> findReviewsByPropertyAndYear(Integer year, Long id);
 }

@@ -192,3 +192,21 @@ For elements with both the ng-valid and ng-dirty classes
 	color:#606060;
 	padding: 3px 0 3px 15px;
 }
+.msgColor{
+	color:rgb(136, 252, 238);
+}
+.smallInfo{
+	font-size:12px;
+}
+.relParent{
+	position:relative;
+}
+.msgPopup{
+	position:absolute;
+	background:#f3f3f3;
+	width:400px;
+	min-height:150px;
+	color:black;
+	font-size:17px;
+	border:1pxp solid black;
+}

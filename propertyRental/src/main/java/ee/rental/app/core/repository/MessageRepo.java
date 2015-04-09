@@ -10,4 +10,10 @@ public interface MessageRepo {
 	public List<Message> findMessages(Long senderId);
 
 	public Message addMessage(Message message);
+
+	public List<Message> findUnreadMessages(String username);
+
+	public List<Message> findMessagesByReceiver(Long bookingId,String username);
+
+	public void markMessagesRead(List<Message> messages);
 }

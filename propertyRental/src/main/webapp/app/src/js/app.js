@@ -76,15 +76,31 @@ rentalApp.config(
                 }
 			})
 			.state("showMyProperties",{
+				abstract:true,
 				url:"/showMyProperties",
 				views:{
 					"mainView":{
-						templateUrl:"partials/showMyProperties.html",
+						templateUrl:"partials/myProperties/showMyProperties.html",
 						controller:"ShowMyPropertiesCtrl"
 					}
 				},
                 data : {
                     	authorities:['ROLE_USER']
+                }
+			})
+            .state("showMyProperties.pleaseSelect",{
+            	url:"",
+            	templateUrl:"partials/myProperties/pleaseSelect.html",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+            })
+			.state("showMyProperties.detail",{
+				url:"/showMyProperties/{propertyId}",
+				templateUrl:"partials/myProperties/showMyPropertiesDetail.html",
+				controller:"ShowMyPropertyCtrl",
+                data : {
+                	authorities:['ROLE_USER']
                 }
 			})
 			.state("showMyBookings",{
@@ -146,10 +162,11 @@ rentalApp.config(
                 }
             })
             .state("conversations",{
+            	abstract:true,
             	url:"/conversations",
             	views:{
             		"mainView":{
-            			templateUrl:"partials/conversations.html",
+            			templateUrl:"partials/conversations/conversations.html",
             			controller:"ConversationsCtrl"
             		}
             	},
@@ -157,9 +174,16 @@ rentalApp.config(
                 	authorities:['ROLE_USER']
                 }
             })
+            .state("conversations.pleaseSelect",{
+            	url:"",
+            	templateUrl:"partials/conversations/pleaseSelect.html",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+            })
             .state("conversations.chat",{
-            	url:"/{bookingId}/{myBooking}",
-            	templateUrl:"partials/chat.html",
+            	url:"/{bookingId}",
+            	templateUrl:"partials/conversations/chat.html",
             	controller:"ChatCtrl",
                 data : {
                 	authorities:['ROLE_USER']
@@ -177,7 +201,6 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 				responseError : function error(response) {
 					switch (response.status) {
 					case 401:
-						console.log("DOES IT EVEN WORK?)");
 						localStorage.removeItem("currentUsername");
 						localStorage.removeItem("authority");
 						$location.path('/login');
@@ -197,7 +220,7 @@ rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
 rentalApp.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 } ]);
-rentalApp.run(["$rootScope","$state",function($rootScope, $state){
+rentalApp.run(["$rootScope","$state","ConversationService","$interval",function($rootScope, $state,ConversationService,$interval){
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
 		//console.log("controlling....",result);
@@ -205,8 +228,22 @@ rentalApp.run(["$rootScope","$state",function($rootScope, $state){
 	};
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
-	}
+	};
 	$rootScope.currentUsername = localStorage.getItem("currentUsername");
+	//although it's checked on login but when user hard refeshs page it should check anyway
+	if($rootScope.isLoggedIn()){
+		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
+			console.log("OKAY WE GOT",$rootScope.newMsgs);
+		});
+	}
+	//checking messages every 10 sec
+	/*var checkNewMsgs = $interval(function(){
+		if($rootScope.isLoggedIn()){
+			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
+				console.log("OKAY WE GOT",$rootScope.newMsgs);
+			});
+		}
+	},5000);*/
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
 		//console.log("toState",toState);

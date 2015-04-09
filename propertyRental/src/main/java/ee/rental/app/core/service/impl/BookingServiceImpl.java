@@ -26,10 +26,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
+import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.UnavailableDate;
-import ee.rental.app.core.model.wrapper.BookedDaysWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookedDaysWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingAvgLength;
+import ee.rental.app.core.model.wrapper.statistics.BookingCount;
+import ee.rental.app.core.model.wrapper.statistics.BookingGuestCountWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingLengthCount;
+import ee.rental.app.core.model.wrapper.statistics.ReviewStarsWrapper;
+import ee.rental.app.core.model.wrapper.util.MonthComparator;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.core.repository.BookingRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
@@ -108,11 +115,7 @@ public class BookingServiceImpl implements BookingService{
 				finalResult.add(new BookedDaysWrapper(i,0));
 			}
 		}
-		Collections.sort(finalResult,new Comparator<BookedDaysWrapper>() {
-			public int compare(BookedDaysWrapper b1, BookedDaysWrapper b2){
-				return b1.getMonth().compareTo(b2.getMonth());
-			}
-		});
+		Collections.sort(finalResult,new MonthComparator());
 		return finalResult;
 	}
 
@@ -142,5 +145,100 @@ public class BookingServiceImpl implements BookingService{
 	}
 	public List<Booking> findPropertiesBookingsByYear(String username) {
 		return bookingRepo.findAllPropertiesBookings(username);
+	}
+	public List<BookingGuestCountWrapper> findBookingGuestCountPerMonthsInYearByProp(
+			Integer year, Long id) {
+		List<Booking> bookings = bookingRepo.findBookingsByYearAndProperty(year, id);
+		Map<Integer, Integer> monthBookingCount = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> monthAmountOfGuests = new HashMap<Integer, Integer>();
+		for(Booking b : bookings){
+			LocalDate bookingStart = b.getCheckIn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			Integer month = bookingStart.getMonthValue();
+			if(monthAmountOfGuests.containsKey(month)){
+				Integer tempGuestCount = monthAmountOfGuests.get(month);
+				monthAmountOfGuests.put(month, tempGuestCount + b.getGuestNumber());
+				Integer tempBookingCount = monthBookingCount.get(month);
+				monthBookingCount.put(month, tempBookingCount+1);
+			}else{
+				monthAmountOfGuests.put(month, b.getGuestNumber());
+				monthBookingCount.put(month, 1);
+			}
+		}
+		List<BookingGuestCountWrapper> result = new ArrayList<BookingGuestCountWrapper>();
+		for (Map.Entry<Integer, Integer> entry : monthBookingCount.entrySet()) {
+			//Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
+			Float calculation = monthAmountOfGuests.get(entry.getKey()).floatValue() / entry.getValue();
+			result.add(new BookingGuestCountWrapper(entry.getKey(),calculation));
+		}
+		for(Integer i=1;i<=12;i++){
+			if(!monthBookingCount.containsKey(i)){
+				result.add(new BookingGuestCountWrapper(i,0F));
+			}
+		}
+		Collections.sort(result,new MonthComparator());
+		return result;
+	}
+	public List<ReviewStarsWrapper> findReviewsAvgStars(Integer year,
+			Long id) {
+		List<Review> reviews = bookingRepo.findReviewsByPropertyAndYear(year,id);
+		Map<Integer, Integer> monthReviewCount = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> monthReviewStars = new HashMap<Integer, Integer>(); 
+		for(Review r : reviews){
+			LocalDate reviewDate = r.getAddingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			Integer month = reviewDate.getMonthValue();
+			if(monthReviewStars.containsKey(month)){
+				Integer tempStarsCount = monthReviewStars.get(month);
+				monthReviewStars.put(month, tempStarsCount + r.getStars());
+				Integer tempReviewsCount = monthReviewCount.get(month);
+				monthReviewCount.put(month, tempReviewsCount+1);
+			}else{
+				monthReviewStars.put(month, r.getStars());
+				monthReviewCount.put(month, 1);
+			}
+		}
+		List<ReviewStarsWrapper> result = new ArrayList<ReviewStarsWrapper>();
+		for (Map.Entry<Integer, Integer> entry : monthReviewCount.entrySet()) {
+			//Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
+			Float calculation = monthReviewStars.get(entry.getKey()).floatValue() / entry.getValue();
+			result.add(new ReviewStarsWrapper(entry.getKey(),calculation));
+		}
+		for(Integer i=1;i<=12;i++){
+			if(!monthReviewCount.containsKey(i)){
+				result.add(new ReviewStarsWrapper(i,0F));
+			}
+		}
+		Collections.sort(result,new MonthComparator());
+		return result;
+	}
+	public List<BookingLengthCount> findBookingAvgLength(Integer year, Long id) {
+		List<Booking> bookings = bookingRepo.findBookingsByYearAndProperty(year, id);
+		Map<Integer, Integer> monthBookingCount = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> monthBookingLength = new HashMap<Integer, Integer>();
+		for(Booking b : bookings){
+			LocalDate start = b.getCheckIn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate end = b.getCheckOut().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			int duration = (int) ChronoUnit.DAYS.between(start, end);
+			Integer month = start.getMonthValue();
+			if(monthBookingLength.containsKey(month)){
+				Integer tempBookingsDuration = monthBookingLength.get(month);
+				monthBookingLength.put(month, tempBookingsDuration + duration);
+				Integer tempBookingCount = monthBookingCount.get(month);
+				monthBookingCount.put(month, tempBookingCount+1);
+			}else{
+				monthBookingLength.put(month, duration);
+				monthBookingCount.put(month, 1);
+			}
+		}
+		List<BookingAvgLength> bookingAvgLengthByMonth = new ArrayList<BookingAvgLength>();
+		List<BookingCount> bookingCountByMonth = new ArrayList<BookingCount>();
+		for (Map.Entry<Integer, Integer> entry : monthBookingCount.entrySet()) {
+			//Double temp = new Double((entry.getValue().doubleValue() / 30) * 100);
+			Integer calculation = (int) (monthBookingLength.get(entry.getKey()).floatValue() / entry.getValue());
+			bookingAvgLengthByMonth.add(new BookingAvgLength(entry.getKey(),calculation));
+			bookingCountByMonth.add(new BookingCount(entry.getKey(), entry.getValue()));
+		}
+		List<BookingLengthCount> result = new ArrayList<BookingLengthCount>();
+		result.add(new BookingLengthCount(bookingAvgLengthByMonth,bookingCountByMonth));
+		return result;
 	}
 }

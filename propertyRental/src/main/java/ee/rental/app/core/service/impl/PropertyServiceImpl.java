@@ -30,6 +30,7 @@ import ee.rental.app.core.repository.BookingRepo;
 import ee.rental.app.core.repository.PropertyRepo;
 import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.PropertyService;
+import ee.rental.app.core.service.exception.NotAllowedException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 
 @Service
@@ -126,7 +127,17 @@ public class PropertyServiceImpl implements PropertyService{
 		r.setProperty(propertyRepo.findProperty(review.getPropertyId()));
 		r.setReview(review.getReview());
 		r.setStars(review.getStars());
+		r.setAddingDate(new Date());
 		return propertyRepo.addReview(r);
+	}
+
+	public void deleteReview(Long id, String username) {
+		Review review = findReviewById(id);
+		if(review.getAuthor().getUsername().equals(username)){
+			propertyRepo.deleteReview(review);
+		}else{
+			throw new NotAllowedException();
+		}
 	}
 
 	

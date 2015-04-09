@@ -54,14 +54,14 @@ INSERT INTO BookingStatus(id,name,description) VALUES(1,'Created','The booking h
 INSERT INTO BookingStatus(id,name,description) VALUES(2,'Payed and accepted','The booking had been payed by the customer and owner accepted it');
 INSERT INTO BookingStatus(id,name,description) VALUES(3,'Cancelled by owner','The booking has been cancelled by the owner');
 
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2014-04-01','2014-04-12',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2014-08-06','2014-08-15',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2015-05-01','2015-05-10',1000,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,1,2,'2015-07-01','2015-07-10',1400,2);
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber) VALUES(2,2,2,'2015-06-01','2015-06-10',1300,2);
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2014-04-01','2014-04-12',1400,2,'2014-03-02');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2014-08-06','2014-08-15',1400,2,'2014-06-22');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-05-01','2015-05-10',1000,2,'2015-04-01');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,2,2,'2015-06-01','2015-06-10',1300,2,'2015-05-09');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-07-01','2015-07-10',1400,2,'2015-06-11');
 
-INSERT INTO Review(author_id,property_id,review,stars) VALUES(2,1,'VERY NICE PROPERTY 10/10',5);
-INSERT INTO Review(author_id,property_id,review,stars) VALUES(2,1,'Didnt like it',2);
-INSERT INTO Review(author_id,property_id,review,parentReview_id) VALUES(1,1,'Thank you for good review!',1);
+INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'VERY NICE PROPERTY 10/10',5,'2015-04-06');
+INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'Didnt like it',2,'2015-05-12');
+INSERT INTO Review(author_id,property_id,review,parentReview_id,addingDate) VALUES(1,1,'Thank you for good review!',1,'2015-05-16');
 
-INSERT INTO Message(sentDate,message,sender_id,receiver_id,booking_id) VALUES('2011-03-15','dgsaigs',1,2,1);
+INSERT INTO Message(sentDate,message,sender_id,receiver_id,booking_id,receiverRead) VALUES('2011-03-15','Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',1,2,1,false);

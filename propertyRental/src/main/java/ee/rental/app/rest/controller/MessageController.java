@@ -58,4 +58,25 @@ public class MessageController {
 			throw new ForbiddenException();
 		}
 	}
+	@RequestMapping(method=RequestMethod.GET)
+	public List<MessageWrapper> findUnreadMessages(){
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<Message> messages = messageService.findUnreadMessages(principal.getUsername());
+		List<MessageWrapper> result = new ArrayList<MessageWrapper>();
+		for(Message m : messages){
+			result.add(new MessageWrapper(m));
+		}
+		return result;
+	}
+	@RequestMapping(value="/markRead/{bookingId}",method=RequestMethod.GET)
+	public void markReadMessages(@PathVariable Long bookingId){
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		try{
+			messageService.markReadMessages(bookingId,principal.getUsername());
+		}catch(NotAllowedException e){
+			throw new ForbiddenException();
+		}catch(BookingNotFoundException e){
+			throw new NotFoundException();
+		}
+	}
 }

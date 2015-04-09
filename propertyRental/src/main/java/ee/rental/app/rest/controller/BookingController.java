@@ -22,9 +22,13 @@ import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.UserAccount;
-import ee.rental.app.core.model.wrapper.BookedDaysWrapper;
 import ee.rental.app.core.model.wrapper.BookingWrapper;
 import ee.rental.app.core.model.wrapper.CanSendReviews;
+import ee.rental.app.core.model.wrapper.statistics.BookedDaysWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingAvgLength;
+import ee.rental.app.core.model.wrapper.statistics.BookingGuestCountWrapper;
+import ee.rental.app.core.model.wrapper.statistics.BookingLengthCount;
+import ee.rental.app.core.model.wrapper.statistics.ReviewStarsWrapper;
 import ee.rental.app.core.service.BookingService;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.BookingStatusNotFoundException;
@@ -82,6 +86,21 @@ public class BookingController {
 	@RequestMapping(value="/bookedDaysStatistics/{id}/{year}")
 	public List<BookedDaysWrapper> showBookedDaysByMonth(@PathVariable Long id,@PathVariable Integer year){
 		List<BookedDaysWrapper> result = bookingService.findBookedDaysPerMonthsInYearByProp(year, id);
+		return result;
+	}
+	@RequestMapping(value="/bookingAvgGuestCountStatistics/{id}/{year}")
+	public List<BookingGuestCountWrapper> showBookingGuestCountByMonth(@PathVariable Long id,@PathVariable Integer year){
+		List<BookingGuestCountWrapper> result = bookingService.findBookingGuestCountPerMonthsInYearByProp(year,id);
+		return result;
+	}
+	@RequestMapping(value="/bookingAvgStarsStatistics/{id}/{year}")
+	public List<ReviewStarsWrapper> showBookingReviewStars(@PathVariable Long id,@PathVariable Integer year){
+		List<ReviewStarsWrapper> result = bookingService.findReviewsAvgStars(year,id);
+		return result;
+	}
+	@RequestMapping(value="/bookingAvgLengthStatistics/{id}/{year}")
+	public List<BookingLengthCount> showBookingAvgLength(@PathVariable Long id,@PathVariable Integer year){
+		List<BookingLengthCount> result = bookingService.findBookingAvgLength(year,id);
 		return result;
 	}
 	@RequestMapping(value="/myPropertysBookings/{propertyId}")

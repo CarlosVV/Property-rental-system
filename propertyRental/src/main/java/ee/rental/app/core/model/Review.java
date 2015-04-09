@@ -1,5 +1,7 @@
 package ee.rental.app.core.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +32,13 @@ public class Review {
 	private Review parentReview;
 	private String review;
 	private Integer stars;
+	private Date addingDate;
+	public Date getAddingDate() {
+		return addingDate;
+	}
+	public void setAddingDate(Date addingDate) {
+		this.addingDate = addingDate;
+	}
 	public Review getParentReview() {
 		return parentReview;
 	}
