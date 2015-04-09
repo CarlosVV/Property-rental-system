@@ -184,6 +184,9 @@ public class BookingServiceImpl implements BookingService{
 		Map<Integer, Integer> monthReviewCount = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> monthReviewStars = new HashMap<Integer, Integer>(); 
 		for(Review r : reviews){
+			//there might be property owner's comments!
+			if(r.getStars() == null)
+				continue;
 			LocalDate reviewDate = r.getAddingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			Integer month = reviewDate.getMonthValue();
 			if(monthReviewStars.containsKey(month)){
@@ -237,6 +240,14 @@ public class BookingServiceImpl implements BookingService{
 			bookingAvgLengthByMonth.add(new BookingAvgLength(entry.getKey(),calculation));
 			bookingCountByMonth.add(new BookingCount(entry.getKey(), entry.getValue()));
 		}
+		for(Integer i=1;i<=12;i++){
+			if(!monthBookingCount.containsKey(i)){
+				bookingCountByMonth.add(new BookingCount(i,0));
+				bookingAvgLengthByMonth.add(new BookingAvgLength(i,0));
+			}
+		}
+		bookingCountByMonth.sort(new MonthComparator());
+		bookingAvgLengthByMonth.sort(new MonthComparator());
 		List<BookingLengthCount> result = new ArrayList<BookingLengthCount>();
 		result.add(new BookingLengthCount(bookingAvgLengthByMonth,bookingCountByMonth));
 		return result;

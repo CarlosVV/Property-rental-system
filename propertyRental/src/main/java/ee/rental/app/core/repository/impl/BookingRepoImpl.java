@@ -119,7 +119,7 @@ public class BookingRepoImpl implements BookingRepo{
 	public List<Review> findReviewsByPropertyAndYear(Integer year, Long id) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("SELECT r FROM Review r WHERE r.property.id=:propertyId "
-				+ "AND to_char(r.createdDate,'YYYY') = :year ");
+				+ "AND to_char(r.addingDate,'YYYY') = :year ");
 		query.setParameter("propertyId", id);
 		query.setParameter("year", year);
 		List<Review> result = (List<Review>) query.list();

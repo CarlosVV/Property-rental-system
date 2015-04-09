@@ -259,7 +259,7 @@ propertyDirective.directive('countBookingPrice',function(){
 				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
-					   var difference = endDate.diff(startDate,'days')+1;
+					   var difference = endDate.diff(startDate,'days');
 					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
@@ -273,7 +273,7 @@ propertyDirective.directive('countBookingPrice',function(){
 				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
-					   var difference = endDate.diff(startDate,'days')+1;
+					   var difference = endDate.diff(startDate,'days');
 					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
@@ -287,7 +287,7 @@ propertyDirective.directive('countBookingPrice',function(){
 				   console.log(value);
 				   var startDate = moment(scope.checkIn);
 				   var endDate = moment(scope.checkOut);
-				   var difference = endDate.diff(startDate,'days')+1;
+				   var difference = endDate.diff(startDate,'days');
 				   console.log(difference);
 				   scope.totalPrice = difference*scope.nightPrice;
 			});
@@ -295,7 +295,7 @@ propertyDirective.directive('countBookingPrice',function(){
 				   console.log(value);
 				   var startDate = moment(scope.checkIn);
 				   var endDate = moment(scope.checkOut);
-				   var difference = endDate.diff(startDate,'days')+1;
+				   var difference = endDate.diff(startDate,'days');
 				   console.log(difference);
 				   scope.totalPrice = difference*scope.nightPrice;
 			});*/
