@@ -1,0 +1,26 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+			<ul class="nav nav-pills nav-stacked">
+				<li class="nav-header">My properties bookings:</li>
+				<li ng-repeat="booking in myPropertiesBookings" ui-sref-active="active">
+					<a ui-sref="conversations.chat({bookingId:booking.bookingId})">
+						<span ng-if="newMsgsAvailable(booking.bookingId)" class="glyphicon glyphicon-envelope"></span>
+						{{booking.propertyTitle}}<span class="smallInfo"> - booked {{booking.bookedDate | date:"dd/MM/yyyy"}}</span>
+					</a>
+				</li>
+				<li class="nav-header">My bookings:</li>
+				<li ng-repeat="booking in myBookings" ui-sref-active="active">
+					<a ui-sref="conversations.chat({bookingId:booking.bookingId})">
+						<span ng-if="newMsgsAvailable(booking.bookingId)" class="glyphicon glyphicon-envelope"></span>
+						{{booking.propertyTitle}}
+						<span class="smallInfo"> - booked {{booking.bookedDate | date:"dd/MM/yyyy"}}<br/></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-8">
+			<div ui-view></div>
+		</div>
+	</div>
+</div>

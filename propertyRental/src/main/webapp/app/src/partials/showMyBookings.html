@@ -1,0 +1,13 @@
+<div class="container">
+	<div class="row" ng-repeat="booking in bookings">
+		<div class="col-md-12 apartmentBlock">
+			<div class="apartmentTitle">Booked - <a ui-sref="showProperty({propertyId : booking.propertyId})">{{booking.propertyTitle}}</a></div>
+			<div class="apartmentLocation">{{booking.city}}, {{booking.administrativeArea}}, {{booking.country}}</div>
+			<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
+			<div class="bookingPrice">{{booking.price}} EUR</div>
+			<div class="bookingStatus">Status: <i class="bookingCreated">{{booking.bookingStatus}}</i></div>
+			<div class="bookingStatus"><a ui-sref="conversations.chat({bookingId : booking.bookingId})">Message host</a></div>
+		</a>
+		<hr/>
+	</div>
+</div>
