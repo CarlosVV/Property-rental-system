@@ -211,7 +211,6 @@ propertyDirective.directive('checkList',["$parse",function($parse){
 				          else scope.list.splice(index, 1);
 				    }
 				}
-				
 			};
 			//if there are any data on startup setupHandler takes it 
 			var setupHandler = handler.bind(null,true);

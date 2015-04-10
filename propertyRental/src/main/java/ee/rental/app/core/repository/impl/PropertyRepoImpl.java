@@ -66,7 +66,8 @@ public class PropertyRepoImpl implements PropertyRepo{
 
 	public void updateProperty(Property property) {
 		Session session =  sessionFactory.getCurrentSession();
-		session.update(property);
+		//session.update(property);
+		session.merge(property);
 		List<ImagePath> tempImgs = new ArrayList<ImagePath>(property.getImagePaths());
 		session.flush();
 		Query query = session.createQuery("delete ImagePath WHERE property_id = :id");

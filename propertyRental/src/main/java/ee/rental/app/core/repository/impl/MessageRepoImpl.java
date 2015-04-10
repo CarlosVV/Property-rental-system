@@ -33,14 +33,15 @@ public class MessageRepoImpl implements MessageRepo{
 	}
 	public Message addMessage(Message message) {
 		Session session = sessionFactory.getCurrentSession();
-		session.persist(message);
+		session.save(message);
 		session.flush();
 		return message;
 	}
 	public List<Message> findUnreadMessages(String username) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT m FROM Message m "
-				+ "WHERE m.receiver.username = :username AND m.receiverRead = false");
+		Query query = session.createQuery("SELECT m FROM Message m"
+				+ " WHERE m.receiver.username = :username AND m.receiverRead = false"
+				);
 		query.setParameter("username", username);
 		List<Message> result = (List<Message>) query.list();
 		session.flush();

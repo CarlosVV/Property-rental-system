@@ -2,7 +2,7 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','PropertyService','PropertyController','PropertyDirective','PropertyFilters']);
+var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','ui.bootstrap','PropertyService','PropertyController','PropertyDirective','PropertyFilters']);
 
 rentalApp.constant('API_URL',"/propertyRental/");
 
@@ -29,6 +29,11 @@ rentalApp.config(
 						templateUrl:"partials/propertyListByQuery.html",
 						controller:"SearchPropertiesCtrl"
 					}
+				},
+				params:{
+					checkIn:"",
+					checkOut:"",
+					guestNumber:""
 				},
                 data : {
                     	authorities:[]
@@ -96,9 +101,41 @@ rentalApp.config(
                 }
             })
 			.state("showMyProperties.detail",{
-				url:"/showMyProperties/{propertyId}",
+				url:"/{propertyId}",
 				templateUrl:"partials/myProperties/showMyPropertiesDetail.html",
 				controller:"ShowMyPropertyCtrl",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+			})
+			.state("showMyProperties.detail.bookings",{
+				url:"/bookings",
+				templateUrl:"partials/myProperties/showMyPropertyBookings.html",
+				controller:"ShowMyPropertyBookingsCtrl",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+			})
+			.state("showMyProperties.detail.statistics",{
+				url:"/statistics",
+				templateUrl:"partials/myProperties/showMyPropertyStatistics.html",
+				controller:"ShowMyPropertyStatisticsCtrl",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+			})
+			.state("showMyProperties.detail.update",{
+				url:"/update",
+				templateUrl:"partials/myProperties/updateProperty.html",
+				controller:"UpdatePropertyCtrl",
+                data : {
+                	authorities:['ROLE_USER']
+                }
+			})
+			.state("showMyProperties.detail.unDates",{
+				url:"/unavailableDates",
+				templateUrl:"partials/myProperties/unavailableDates.html",
+				controller:"UnavailableDatesCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
@@ -119,7 +156,7 @@ rentalApp.config(
 				url:"/login",
 				views:{
 					"mainView":{
-						templateUrl:"partials/login.html",
+						templateUrl:"partials/security/login.html",
 						controller:"LoginCtrl"
 					}
 				},
@@ -131,7 +168,7 @@ rentalApp.config(
 				url:"/register",
 				views:{
 					"mainView":{
-						templateUrl:"partials/register.html",
+						templateUrl:"partials/security/register.html",
 						controller:"RegisterCtrl"
 					}
 				},
@@ -154,7 +191,7 @@ rentalApp.config(
                 url : "/accessDenied",
                 views:{
 					"mainView":{
-						templateUrl: "partials/accessDenied.html"
+						templateUrl: "partials/security/accessDenied.html"
 					}
 				},
                 data : {
@@ -234,16 +271,22 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	if($rootScope.isLoggedIn()){
 		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
 			console.log("OKAY WE GOT",$rootScope.newMsgs);
+			if($rootScope.newMsgs.length){
+				$rootScope.$broadcast("newMessages");
+			}
 		});
 	}
 	//checking messages every 10 sec
-	/*var checkNewMsgs = $interval(function(){
+	var checkNewMsgs = $interval(function(){
 		if($rootScope.isLoggedIn()){
 			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
 				console.log("OKAY WE GOT",$rootScope.newMsgs);
+				if($rootScope.newMsgs.length){
+					$rootScope.$broadcast("newMessages");
+				}
 			});
 		}
-	},5000);*/
+	},5000);
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
 		//console.log("toState",toState);

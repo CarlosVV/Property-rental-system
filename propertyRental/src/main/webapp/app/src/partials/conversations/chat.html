@@ -3,6 +3,7 @@
 	<div class="apartmentTitle">Booked <a ui-sref="showProperty({propertyId : currentBooking.propertyId})">{{currentBooking.propertyTitle}}</a> by - <strong>{{currentBooking.userAccountUsername}}</strong></div>
 	<div class="bookingDates">{{currentBooking.checkIn | date:"dd/MM/yyyy"}} - {{currentBooking.checkOut | date:"dd/MM/yyyy"}}</div>
 	<div class="bookingPrice">{{currentBooking.price}} EUR</div>
+	<div class="bookingDates">Booked on: {{currentBooking.bookedDate | date:"dd/MM/yyyy"}}</div>
 	<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="currentBooking.bookingStatusId"></show-booking-status>
 	<hr/>
 </div>
@@ -12,7 +13,7 @@
 <div class="col-md-12" ng-repeat="message in messages">
 	<div class="col-md-10">
 		<h4 ng-if="message.senderUsername == currentUsername">You sent:</h4>
-		<h4 ng-if="message.receiverUsername == currentUsername">{{message.receiverUsername}} sent:</h4>
+		<h4 ng-if="message.receiverUsername == currentUsername">{{message.senderUsername}} sent:</h4>
 	</div>
 	<div class="col-md-2">
 		<h5><i>{{message.sentDate | date:"dd/MM/yyyy HH:MM"}}</i></h5>

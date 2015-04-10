@@ -20,6 +20,12 @@ public class MessageWrapper {
 		this.sentDate = m.getSentDate();
 		this.receiverRead = m.getReceiverRead();
 	}
+	public Boolean getReceiverRead() {
+		return receiverRead;
+	}
+	public void setReceiverRead(Boolean receiverRead) {
+		this.receiverRead = receiverRead;
+	}
 	public String getMessage() {
 		return message;
 	}

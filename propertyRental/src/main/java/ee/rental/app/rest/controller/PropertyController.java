@@ -127,11 +127,13 @@ public class PropertyController {
 	}
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
-	public List<Property> queryApartments(@RequestBody PropertyQueryWrapper query){
-		logger.info("GOT IT "+query);
+	public List<PropertyWrapper> queryApartments(@RequestBody PropertyQueryWrapper query){
 		List<Property> result = propertyService.queryProperties(query);
-		logger.info("ANSWER:"+result);
-		return result;
+		List<PropertyWrapper> finalResult = new ArrayList<PropertyWrapper>();
+		for(Property p : result){
+			finalResult.add(new PropertyWrapper(p));
+		}
+		return finalResult;
 	}
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyTypes", method = RequestMethod.GET)
@@ -152,8 +154,13 @@ public class PropertyController {
 	}
 	@RequestMapping(value = "/onlyBookedDates/{id}", method = RequestMethod.GET)
 	public List<UnavailableDatesForPublic> findOnlyBookedDates(@PathVariable("id") Long id) throws ParseException{
-		List<UnavailableDatesForPublic> result = propertyService.findOnlyBookedDates(id);
-		return result;
+		try{
+			UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			List<UnavailableDatesForPublic> result = propertyService.findOnlyBookedDates(id,principal.getUsername());
+			return result;
+		}catch(NotAllowedException e){
+			throw new ForbiddenException();
+		}
 	}
 	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.PUT)
 	public void updateOnlyUnavailableDates(@PathVariable("id") Long id,@RequestBody List<Date> dates) throws ParseException{

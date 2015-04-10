@@ -1,9 +1,11 @@
 package ee.rental.app.core.model.wrapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ee.rental.app.core.model.Property;
+import ee.rental.app.core.model.PropertyFacility;
 import ee.rental.app.core.model.UnavailableDate;
 
 public class PropertyWrapper {
@@ -14,9 +16,13 @@ public class PropertyWrapper {
 	private String country;
 	private String postalCode;
 	private String title;
+	private String pricePerNight;
+	private Integer minimumNights;
 	private Date createdDate;
+	private String propertyType;
 	private List<UnavailableDate> bookedDays;
 	private List<UnavailableDate> unavailableDates;
+	private List<PropertyFacilityWrapper> propertyFacilities;
 	public PropertyWrapper(){}
 	public PropertyWrapper(Property p){
 		this.id = p.getId();
@@ -27,6 +33,38 @@ public class PropertyWrapper {
 		this.postalCode = p.getPostalCode();
 		this.title = p.getTitle();
 		this.createdDate = p.getCreatedDate();
+		this.pricePerNight = p.getPricePerNight().toString();
+		this.minimumNights = p.getMinimumNights();
+		this.propertyFacilities = new ArrayList<PropertyFacilityWrapper>();
+		for(PropertyFacility f : p.getPropertyFacilities()){
+			this.propertyFacilities.add(new PropertyFacilityWrapper(f.getId(), f.getName(), f.getDescription()));
+		}
+		this.propertyType = p.getPropertyType().getName();
+	}
+	public String getPropertyType() {
+		return propertyType;
+	}
+	public void setPropertyType(String propertyType) {
+		this.propertyType = propertyType;
+	}
+	public String getPricePerNight() {
+		return pricePerNight;
+	}
+	public void setPricePerNight(String pricePerNight) {
+		this.pricePerNight = pricePerNight;
+	}
+	public Integer getMinimumNights() {
+		return minimumNights;
+	}
+	public void setMinimumNights(Integer minimumNights) {
+		this.minimumNights = minimumNights;
+	}
+	public List<PropertyFacilityWrapper> getPropertyFacilities() {
+		return propertyFacilities;
+	}
+	public void setPropertyFacilities(
+			List<PropertyFacilityWrapper> propertyFacilities) {
+		this.propertyFacilities = propertyFacilities;
 	}
 	public Date getCreatedDate() {
 		return createdDate;

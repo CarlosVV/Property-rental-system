@@ -102,8 +102,11 @@ public class PropertyServiceImpl implements PropertyService{
 		return propertyRepo.findUnavailabeDates(id);
 	}
 
-	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id) throws ParseException {
-		return propertyRepo.findBookedDates(id);
+	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id,String username) throws ParseException {
+		Property property = propertyRepo.findProperty(id);
+		if(property.getUserAccount().getUsername().equals(username))
+			return propertyRepo.findBookedDates(id);
+		throw new NotAllowedException();
 	}
 
 	public void updatePropertyUnavailableDates(List<Date> dates, Long id) {

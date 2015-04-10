@@ -87,6 +87,12 @@
 		  </li>
 		</ul>
 		<div class="row">
+			<h4>Provided facilities:</h4>
+			<ul>
+				<li ng-repeat="facility in property.propertyFacilities">{{facility.name}}</li>
+			</ul>
+		</div>
+		<div class="row">
 			<h4>Pricing:</h4>
 			<p>Minimum nights: {{property.minimumNights}}</p>
 			<p>Price per night: {{property.pricePerNight}} EUR</p>

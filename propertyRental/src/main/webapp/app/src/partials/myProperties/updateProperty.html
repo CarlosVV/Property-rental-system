@@ -17,7 +17,7 @@
 		<div class="form-group col-md-6">
 			<label>Property facilities:</label>
 			<div ng-repeat="facility in propertyFacilities">
-				<br/><label class='facility'><input type="checkbox" value="{{facility}}" check-list="property.propertyFacilities"/> <strong>{{facility.name}}</strong> - {{facility.description}}</label>
+				<label class='facility'><input type="checkbox" value="{{facility}}" check-list="property.propertyFacilities"/> <strong>{{facility.name}}</strong> - {{facility.description}}</label>
 			</div>
 		</div>
 		</div>
@@ -134,7 +134,7 @@
 		</div>
 		<div class="row">
 			<div class="form-group col-md-6">
-				<input type="submit" value="Add a property" class="btn btn-default"/>
+				<input type="submit" value="Add a property" class="btn btn-default" ng-disabled="propertyForm.$invalid"/>
 			</div>
 		</div>
 	</form>

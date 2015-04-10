@@ -86,4 +86,11 @@ public class Message {
 	public void setReceiver(UserAccount receiver) {
 		this.receiver = receiver;
 	}
+	@Override
+	public String toString() {
+		return "Message [id=" + id + ", message=" + message + ", sender="
+				+ sender + ", receiver=" + receiver + ", booking=" + booking
+				+ ", sentDate=" + sentDate + ", receiverRead=" + receiverRead
+				+ "]";
+	}
 }

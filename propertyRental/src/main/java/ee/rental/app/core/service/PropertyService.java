@@ -24,7 +24,7 @@ public interface PropertyService {
 	public List<PropertyFacility> findPropertyFacilities();
 	public void updateProperty(Property property);
 	public List<UnavailableDate> findOnlyUnavailableDates(Long id) throws ParseException;
-	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id) throws ParseException;
+	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id, String string) throws ParseException;
 	public void updatePropertyUnavailableDates(List<Date> dates, Long id);
 	public List<Review> findReviewsByPropertyId(Long id);
 	public Review findReviewById(Long id);

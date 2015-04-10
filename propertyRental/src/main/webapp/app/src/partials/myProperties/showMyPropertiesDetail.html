@@ -1,68 +1,15 @@
-<div class="row">
-	<my-datepicker class="col-md-12" ng-if="currentUnDates.$resolved && currentBookedDates.$resolved" 
-		update-un-dates="updateUnDates(dates)"
-		unavailable-dates="currentUnDates"
-		booked-dates="currentBookedDates"></my-datepicker>
-	<button class="btn btn-default col-md-3" ng-disabled="datesUpdated" ng-click="sendUnDates()">Save unavailable dates</button>
-</div>
-
-<div class="row">
-	<div class="col-md-1 formSection">Choose year</div>
-	<div class="col-md-2">
-		<select ng-options="year as year for year in currentProperty.availableYears" 
-			ng-model="bookedDaysYear" ng-change="showPropertyBookedDays()"
-			class="form-control" name="propertyType"></select>		
-	</div>
-	<div class="col-md-12">
-		<highchart config="chartConfigBookedDays"></highchart>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-1 formSection">Choose year</div>
-	<div class="col-md-2">
-		<select ng-options="year as year for year in currentProperty.availableYears" 
-			ng-model="avgGuestCountYear" ng-change="showPropertyAvgGuestCount()"
-			class="form-control" name="avgGuestCount"></select>		
-	</div>
-	<div class="col-md-12">
-		<highchart config="chartConfigAvgGuestCount"></highchart>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-1 formSection">Choose year</div>
-	<div class="col-md-2">
-		<select ng-options="year as year for year in currentProperty.availableYears" 
-			ng-model="avgStarsYear" ng-change="showPropertyAvgStars()"
-			class="form-control" name="avgStars"></select>		
-	</div>
-	<div class="col-md-12">
-		<highchart config="chartConfigAvgStars"></highchart>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-1 formSection">Choose year</div>
-	<div class="col-md-2">
-		<select ng-options="year as year for year in currentProperty.availableYears" 
-			ng-model="avgBookingsLengthYear" ng-change="showBookingsAvgLength()"
-			class="form-control" name="avgBookLength"></select>		
-	</div>
-	<div class="col-md-12">
-		<highchart config="chartConfigAvgBookingLength"></highchart>
-	</div>
-</div>
-
-<div class="row" ng-repeat="booking in propertyBookings">
-	<div class="col-md-12 apartmentBlock">
-		<div class="apartmentTitle">Booked by - <a ui-sref='conversations.chat({bookingId : booking.bookingId})'>{{booking.userAccountUsername}}</a></div>
-		<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
-		<div class="bookingPrice">{{booking.price}} EUR</div>
-		<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
-		<button class="btn btn-default" ng-disabled="booking.bookingStatusId == 2 || booking.bookingStatusId == 3" ng-click="setBookingStatusPayed(booking.bookingId)">Set status "payed and accepted"</button>
-		<button class="btn btn-default" ng-disabled="booking.bookingStatusId == 3" ng-click="cancelBooking(booking.bookingId)">Cancel booking</button>
-		<button class="btn btn-default" ng-if="lastActionBookingId == booking.bookingId" ng-click="annulLastAction(booking.bookingId)">Annul last action</button>
-		<hr/>
-	</div>
-</div>
+<ul class="nav nav-tabs">
+    <li  ui-sref-active="active">
+      <a ui-sref=".bookings">Bookings</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".statistics">Statistics</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".update">Edit property</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".unDates">Unavailable dates</a>
+    </li>
+</ul>
+<div ui-view></div>

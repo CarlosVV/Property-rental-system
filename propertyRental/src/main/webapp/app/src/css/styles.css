@@ -1,3 +1,7 @@
+/*
+Bug fix from angular ui bootstrap
+*/
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 .resetMarginPadding {
 	margin:0px;
 	padding:0px;
@@ -209,4 +213,10 @@ For elements with both the ng-valid and ng-dirty classes
 	color:black;
 	font-size:17px;
 	border:1pxp solid black;
+}
+.marginFromTabs{
+	margin-top:10px;
+}
+.propFacMiniList{
+	display:inline;
 }
