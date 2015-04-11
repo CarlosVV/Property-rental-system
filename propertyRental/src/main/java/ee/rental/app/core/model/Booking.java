@@ -28,8 +28,6 @@ public class Booking {
 	private Property property;
 	@OneToOne
 	private BookingStatus bookingStatus;
-	@OneToOne
-	private BookingPayed bookingPayed;
 	private Date checkIn;
 	private Date checkOut;
 	private Integer guestNumber;
@@ -45,7 +43,7 @@ public class Booking {
 	public String toString() {
 		return "Booking [id=" + id + ", userAccount=" + userAccount
 				+ ", property=" + property + ", bookingStatus=" + bookingStatus
-				+ ", bookingPayed=" + bookingPayed + ", checkIn=" + checkIn
+				+ ", checkIn=" + checkIn
 				+ ", checkOut=" + checkOut + ", guestNumber=" + guestNumber
 				+ "]";
 	}
@@ -96,11 +94,5 @@ public class Booking {
 	}
 	public void setBookingStatus(BookingStatus bookingStatus) {
 		this.bookingStatus = bookingStatus;
-	}
-	public BookingPayed getBookingPayed() {
-		return bookingPayed;
-	}
-	public void setBookingPayed(BookingPayed bookingPayed) {
-		this.bookingPayed = bookingPayed;
 	}
 }

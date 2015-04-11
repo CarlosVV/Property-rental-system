@@ -93,7 +93,7 @@ public class BookingController {
 		List<BookingGuestCountWrapper> result = bookingService.findBookingGuestCountPerMonthsInYearByProp(year,id);
 		return result;
 	}
-	@RequestMapping(value="/bookingAvgStarsStatistics/{id}/{year}")
+	@RequestMapping(value="/bookingAvgRatingStatistics/{id}/{year}")
 	public List<ReviewStarsWrapper> showBookingReviewStars(@PathVariable Long id,@PathVariable Integer year){
 		List<ReviewStarsWrapper> result = bookingService.findReviewsAvgStars(year,id);
 		return result;

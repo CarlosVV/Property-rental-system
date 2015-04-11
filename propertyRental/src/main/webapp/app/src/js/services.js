@@ -62,7 +62,7 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 		}),
 		propertyBookedDays : $resource(API_URL+"bookings/bookedDaysStatistics/:id/:year",{}),
 		propertyAvgBookingGuestCount : $resource(API_URL+"bookings/bookingAvgGuestCountStatistics/:id/:year",{}),
-		propertyAvgStars : $resource(API_URL+"bookings/bookingAvgStarsStatistics/:id/:year",{}),
+		propertyAvgStars : $resource(API_URL+"bookings/bookingAvgRatingStatistics/:id/:year",{}),
 		propertyAvgBookingLength : $resource(API_URL+"bookings/bookingAvgLengthStatistics/:id/:year",{}),
 		bookingsStatuses : $resource(API_URL+"bookings/bookingStatuses",{},{
 			updateBookingStatus:{

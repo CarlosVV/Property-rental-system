@@ -8,7 +8,6 @@ import java.util.Date;
 
 
 import ee.rental.app.core.model.Booking;
-import ee.rental.app.core.model.BookingPayed;
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.UserAccount;
 

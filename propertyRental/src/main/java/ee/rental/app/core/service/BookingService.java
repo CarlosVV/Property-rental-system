@@ -16,7 +16,6 @@ import ee.rental.app.core.model.wrapper.statistics.ReviewStarsWrapper;
 
 public interface BookingService {
 	public Booking createBooking(Booking booking);
-	public List<Booking> findAllBookings();
 	public Booking findBooking(Long id);
 	public List<Booking> findBookingsByAccount(String string);
 	public List<BookedDaysWrapper> findBookedDaysPerMonthsInYearByProp(Integer year, Long propertyId);

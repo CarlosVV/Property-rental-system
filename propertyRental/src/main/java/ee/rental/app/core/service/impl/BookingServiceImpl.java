@@ -71,9 +71,6 @@ public class BookingServiceImpl implements BookingService{
 		booking.setPrice(property.getPricePerNight().multiply(new BigDecimal(duration)));
 		return bookingRepo.createBooking(booking);
 	}
-	public List<Booking> findAllBookings() {
-		return bookingRepo.findAllBookings();
-	}
 	public Booking findBooking(Long id) {
 		return bookingRepo.findBooking(id);
 	}
