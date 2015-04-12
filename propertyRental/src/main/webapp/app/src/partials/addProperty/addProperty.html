@@ -1,5 +1,5 @@
 <div class="container">
-	<h2>Add a property</h2>
+	<h2>Add property</h2>
 	<ul class="nav nav-tabs">
 	    <li ng-repeat="step in steps" ng-class="{active: $index==currentStep}">
 	      <a href="javascript:void(0)" ng-click="goToStep($index)">{{step}}</a>
@@ -36,7 +36,10 @@
 						<div class="row">
 							<div class="form-group col-md-11">
 								<label for="size">Price per night:</label>
-								<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+								<div class="input-group">
+									<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+									<span class="input-group-addon">EUR</span>
+								</div>
 							</div>
 						</div>
 						<div class="row">
@@ -149,10 +152,9 @@
 		  </div>
 		<div class="row">
 			<div class="pager">
-				<input type="submit" value="Add a property" class="btn btn-success" ng-disabled="propertyForm.$invalid" />
+				<input type="submit" value="Add property" class="btn btn-success" ng-disabled="propertyForm.$invalid" />
 			</div>
 		</div>
-		
 		
 	</form>
 	

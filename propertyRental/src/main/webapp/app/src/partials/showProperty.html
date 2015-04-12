@@ -167,8 +167,8 @@
 		<div class="col-md-5">
 			<p>Please add a review:</p>
 			<textarea name="review" ng-model="newReview.review" rows="5" class="form-control" required></textarea>
-		   	Stars: <select name="stars" ng-options="star as star for star in stars" ng-model="newReview.stars" class="form-control" required></select> 
-			<input type="submit" class="btn btn-default" value="Add a review"/>
+		   	<p>Stars: <rating ng-model="newReview.stars" max="5" readonly="false"></rating><span ng-show="starsRequired" style="color:red;">Please rate your stay!</span></p>
+    		<input type="submit" class="btn btn-default" value="Add a review"/>
 		</div>
 	</form>
 </div>

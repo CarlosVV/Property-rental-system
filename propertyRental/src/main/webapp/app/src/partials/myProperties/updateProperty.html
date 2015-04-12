@@ -1,69 +1,69 @@
 <div class="container">
-	<h2>Edit the property</h2>
+	<h2>Edit property</h2>
 	<form novalidate name="propertyForm" ng-submit="propertyForm.$valid && updateProperty()">
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="title">Property title:</label>
-			<input type="text" class="form-control" name="title" ng-model="property.title" required>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="title">Property title:</label>
+				<input type="text" class="form-control" name="title" ng-model="property.title" required>
+			</div>
+			<div class="form-group">
+				<label for="propertyType">Property type:</label>
+				<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType.id" required></select>
+			</div>
+			<h4>Sizing:</h4>
+			<div class="form-group">
+				<label for="size">Property size:</label>
+				<div class="input-group">
+					<input type="number" class="form-control" name="size" ng-model="property.size" required>
+		  			<span class="input-group-addon">m^2</span>
+	  			</div>
+			</div>
+			<div class="form-group">
+				<label for="bedCount">Bed count:</label>
+				<input type="number" class="form-control" name="bedCount" ng-model="property.bedCount" required>
+			</div>
+			<div class="form-group">
+				<label for="bedroomCount">Bedroom count:</label>
+				<input type="number" class="form-control" name="bedroomCount" ng-model="property.bedroomCount" required>
+			</div>
+			<div class="form-group">
+				<label for="guestCount">Guest count:</label>
+				<input type="number" class="form-control" name="guestCount" ng-model="property.guestCount" required>
+			</div>
+			<div class="form-group">
+				<label for="bathroomCount">Bathroom count:</label>
+				<input type="number" class="form-control" name="bathroomCount" ng-model="property.bathroomCount" required>
+			</div>
+			<h4>Pricing:</h3>
+			<div class="form-group">
+				<label for="size">Minimum length of stay:</label>
+				<div class="input-group">
+					<input type="number" class="form-control" name="minimumNights" ng-model="property.minimumNights" required>
+					<span class="input-group-addon">nights</span>
+  				</div>
+			</div>
+			<div class="form-group">
+				<label for="size">Price per night:</label>
+				<div class="input-group">
+					<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+					<span class="input-group-addon">EUR</span>
+				</div>
+			</div>
 		</div>
-		</div>
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="propertyType">Property type:</label>
-			<select ng-options="propertyType.id as propertyType.name for propertyType in propertyTypes" class="form-control" name="propertyType" ng-model="property.propertyType.id" required></select>
-		</div>
-		</div>
-		<div class="row">
 		<div class="form-group col-md-6">
 			<label>Property facilities:</label>
 			<div ng-repeat="facility in propertyFacilities">
 				<label class='facility'><input type="checkbox" value="{{facility}}" check-list="property.propertyFacilities"/> <strong>{{facility.name}}</strong> - {{facility.description}}</label>
 			</div>
 		</div>
-		</div>
-		<div class="row">
 		<div class="form-group col-md-6">
-			<label for="size">Property size:</label>
-			<div class="input-group">
-			<input type="number" class="form-control" name="size" ng-model="property.size" required>
-  			<span class="input-group-addon">m^2</span>
-  			</div>
-		</div>
-		</div>
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="bedCount">Bed count:</label>
-			<input type="number" class="form-control" name="bedCount" ng-model="property.bedCount" required>
-		</div>
-		</div>
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="bedroomCount">Bedroom count:</label>
-			<input type="number" class="form-control" name="bedroomCount" ng-model="property.bedroomCount" required>
-		</div>
-		</div>
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="guestCount">Guest count:</label>
-			<input type="number" class="form-control" name="guestCount" ng-model="property.guestCount" required>
-		</div>
-		</div>
-		<div class="row">
-		<div class="form-group col-md-6">
-			<label for="bathroomCount">Bathroom count:</label>
-			<input type="number" class="form-control" name="bathroomCount" ng-model="property.bathroomCount" required>
-		</div>
-		</div>
-		<div class="row">
-			<div class="form-group col-md-6">
-				<label for="address">Address:</label>
-				<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete
-				details="details" ng-model="address" class="form-control" check-query="{{property.address}}"/>
-				<p ng-if="map.center.latitude != 0">Pro tip: drag the marker to specify the location!</p>
-				<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
-					<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
-				</ui-gmap-google-map>
-			</div>
+			<label for="address">Address:</label>
+			<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete
+			details="details" ng-model="address" class="form-control" check-query="{{property.address}}"/>
+			<p ng-if="map.center.latitude != 0">Pro tip: drag the marker to specify the location!</p>
+			<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
+				<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+			</ui-gmap-google-map>
 		</div>
 		<div class="row">
 			<div class="form-group col-md-6">
@@ -108,35 +108,22 @@
 		<div class="row">
 			<div class="form-group col-md-6">
 				<label for="description">Property description:</label>
-				<textarea rows="20" class="form-control" name="description" ng-model="property.description" required></textarea>
+				<textarea rows="10" class="form-control" name="description" ng-model="property.description" required></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="form-group col-md-6">
 				<label for="rules">Your rules:</label>
-				<textarea rows="15" class="form-control" name="rules" ng-model="property.rules" required></textarea>
+				<textarea rows="5" class="form-control" name="rules" ng-model="property.rules" required></textarea>
 			</div>
 		</div>
+			
 		<div class="row">
-			<div class="form-group col-md-6">
-				<label for="size">Price per night:</label>
-				<input type="number" class="form-control" name="pricePerNight" ng-model="property.pricePerNight" required>
+			<div class="form-group">
+				<input type="submit" value="Edit property" class="btn btn-default" ng-disabled="propertyForm.$invalid"/>
 			</div>
 		</div>
-		<div class="row">
-			<div class="form-group col-md-6">
-				<label for="size">Minimum length of stay:</label>
-				<div class="input-group">
-					<input type="number" class="form-control" name="minimumNights" ng-model="property.minimumNights" required>
-					<span class="input-group-addon">nights</span>
-  				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="form-group col-md-6">
-				<input type="submit" value="Add a property" class="btn btn-default" ng-disabled="propertyForm.$invalid"/>
-			</div>
-		</div>
+			
 	</form>
 	
 </div>

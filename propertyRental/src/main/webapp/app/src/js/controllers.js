@@ -41,11 +41,16 @@ propertyController.controller("ShowPropertyCtrl", ["$scope","PropertyService","$
 	$scope.addReview = function(parentReviewId,formObject){
 		if(parentReviewId == 0){
 			console.log($scope.newReview);
-			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
-				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
-				$scope.newReview = {};
-				formObject.$setPristine();
-			});
+			if(typeof $scope.newReview.stars !== 'undefined'){
+				PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
+					$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+					$scope.newReview = {};
+					formObject.$setPristine();
+					$scope.starsRequired = false;
+				});
+			}else{
+				$scope.starsRequired = true;
+			}
 		}else{
 			$scope.comment.parentReviewId = parentReviewId;
 			console.log($scope.newReview.parentReviewId);
