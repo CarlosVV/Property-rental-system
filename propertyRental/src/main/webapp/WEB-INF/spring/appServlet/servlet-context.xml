@@ -25,10 +25,10 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="ee.rental.app" />
-	
+	<!-- access="ROLE_USER,ROLE_ADMIN" - don't have admins for now -->
 	<security:global-method-security pre-post-annotations="enabled">
         <security:protect-pointcut expression="execution(* ee.rental.app.rest.controller.*.*(..))"
-                                   access="ROLE_USER,ROLE_ADMIN"/>
+                                   access="ROLE_USER"/>
     </security:global-method-security>
 	
 	

@@ -23,7 +23,7 @@ public interface BookingService {
 	public List<BookingStatus> findBookingStatuses();
 	public boolean updateBookingStatus(Long bookingId, Long statusId);
 	public boolean canSendReviews(String username, Long propertyId);
-	public List<Booking> findPropertiesBookingsByYear(String username);
+	public List<Booking> findPropertiesBookings(String username);
 	public List<BookingGuestCountWrapper> findBookingGuestCountPerMonthsInYearByProp(
 			Integer year, Long id);
 	public List<ReviewStarsWrapper> findReviewsAvgStars(Integer year,

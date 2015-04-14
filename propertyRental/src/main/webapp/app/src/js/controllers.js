@@ -831,6 +831,17 @@ propertyController.controller("RegisterCtrl",["$scope","AccountService","$state"
 			});
 		});
 	};
+	$scope.checkUsername = function(formObject){
+		console.log(formObject);
+		AccountService.account.findByUsername({username:$scope.userAccount.username},function(){
+			//user doesn't exist
+			formObject.username.$setValidity("usernameAvailable",true);
+		},function(){
+			//user already exists
+			console.log("ERR");
+			formObject.username.$setValidity("usernameAvailable",false);
+		});
+	};
 	
 }]);
 propertyController.controller('LogoutCtrl', ["$scope","AccountService","$state","$rootScope",function($scope,AccountService,$state,$rootScope){

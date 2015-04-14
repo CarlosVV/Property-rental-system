@@ -38,7 +38,7 @@ import ee.rental.app.rest.exception.NotFoundException;
 import ee.rental.app.rest.response.Success;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("/api/bookings")
 public class BookingController {
 	@Autowired
 	private BookingService bookingService;
@@ -75,7 +75,7 @@ public class BookingController {
 	@RequestMapping(value="/myPropertiesBookings",method=RequestMethod.GET)
 	public List<BookingWrapper> myPropertiesBookings(){
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<Booking> bookings = bookingService.findPropertiesBookingsByYear(principal.getUsername());
+		List<Booking> bookings = bookingService.findPropertiesBookings(principal.getUsername());
 		List<BookingWrapper> result = new ArrayList<BookingWrapper>();
 		for(Booking b : bookings){
 			BookingWrapper bw = new BookingWrapper(b);

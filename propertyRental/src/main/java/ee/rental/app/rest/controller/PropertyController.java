@@ -61,7 +61,7 @@ import ee.rental.app.rest.response.ErrorResponse;
 import ee.rental.app.rest.response.Success;
 
 @RestController
-@RequestMapping("/properties")
+@RequestMapping("/api/properties")
 public class PropertyController {
 	private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 	@Autowired

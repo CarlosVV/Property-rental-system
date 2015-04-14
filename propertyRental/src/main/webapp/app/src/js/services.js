@@ -90,14 +90,19 @@ propertyService.factory("ConversationService",["$resource","API_URL",function($r
 	};
 	return sessionService;
 }]);*/
-propertyService.factory("AccountService",["$resource","API_URL","$http","$rootScope","$state","ConversationService",function($resource,API_URL,$http,$rootScope,$state,ConversationService){
+propertyService.factory("AccountService",["$resource","API_URL","$http","$rootScope","$state","ConversationService","APP_URL",function($resource,API_URL,$http,$rootScope,$state,ConversationService,APP_URL){
 	// /accounts POST - register
 	// /accounts/:id GET - get account by id
 	// /accounts GET + parameters username and password - get account by username and password
 	var accountService = {
-		account:$resource(API_URL+"accounts/:accountId"),
+		account:$resource(API_URL+"accounts/:accountId",{},{
+			findByUsername:{
+				method:"GET",
+				url:API_URL+"accounts/username/:username"
+			}
+		}),
 		login:function(data) {
-	        return $http.post(API_URL+"login", "username=" + data.username +
+	        return $http.post(APP_URL+"login", "username=" + data.username +
 	                "&password=" + data.password, {
 	                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 	                } ).then(function(data2) {
@@ -115,7 +120,7 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	    },
 		logout : function(){
 			console.log("logout");
-			$http.post(API_URL+"logout", {}).success(function() {
+			$http.post(APP_URL+"logout", {}).success(function() {
 			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");
 				localStorage.removeItem("authority");

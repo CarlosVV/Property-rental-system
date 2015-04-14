@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.service.UserAccountService;
 import ee.rental.app.core.service.exception.UserAccountExistsException;
+import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 import ee.rental.app.rest.exception.ConflictException;
 import ee.rental.app.rest.response.Success;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/api/accounts")
 public class UserAccountController {
 	private static final Logger logger = LoggerFactory.getLogger(UserAccountController.class);
 	@Autowired
@@ -37,20 +38,17 @@ public class UserAccountController {
 		}
 	}
 	@PreAuthorize("permitAll")
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<UserAccount> findAccountByUsername(
-			@RequestParam(value = "username", required = false) String username,
-			@RequestParam(value = "password", required = false) String password) {
-		if(username != null && password != null){
-			UserAccount userAccount = userAccountService.findUserAccountByUsername(username);
-			if(userAccount != null){
-				if(userAccount.getPassword().equals(password)){
-					return new ResponseEntity<UserAccount>(userAccount,HttpStatus.OK);
-				}
+	@RequestMapping(value="/username/{username}",method = RequestMethod.GET)
+	public void findAccountByUsername(
+			@PathVariable String username) {
+		if(username != null){
+			try{
+				UserAccount userAccount = userAccountService.findUserAccountByUsername(username);
+			}catch(UserAccountNotFoundException e){
+				return;
 			}
-			return new ResponseEntity<UserAccount>(HttpStatus.NOT_FOUND);
+			throw new ConflictException();
 		}
-		return new ResponseEntity<UserAccount>(HttpStatus.BAD_REQUEST);
 	}
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/{accountId}", method = RequestMethod.GET)

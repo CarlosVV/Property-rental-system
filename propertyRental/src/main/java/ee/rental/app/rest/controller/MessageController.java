@@ -24,7 +24,7 @@ import ee.rental.app.rest.exception.ForbiddenException;
 import ee.rental.app.rest.exception.NotFoundException;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/api/messages")
 public class MessageController {
 	private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 	@Autowired

@@ -4,7 +4,8 @@
 
 var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','ui.bootstrap','PropertyService','PropertyController','PropertyDirective','PropertyFilters']);
 
-rentalApp.constant('API_URL',"/propertyRental/");
+rentalApp.constant('API_URL',"/propertyRental/api/");
+rentalApp.constant('APP_URL',"/propertyRental/");
 
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
@@ -19,7 +20,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                	authorities:[]
+                	authorities:[],
+                	pageTitle:"Home"
                 }
 			})
 			.state("queryProperties",{
@@ -36,7 +38,8 @@ rentalApp.config(
 					guestNumber:""
 				},
                 data : {
-                    	authorities:[]
+                    	authorities:[],
+                    	pageTitle:"Find properties"
                 }
 			})
 			.state("showProperty",{
@@ -53,7 +56,8 @@ rentalApp.config(
 					guestNumber:""
 				},
                 data : {
-                    	authorities:[]
+                    	authorities:[],
+                    	pageTitle:"Show property"
                 }
 			})
 			.state("addProperty",{
@@ -65,7 +69,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    	authorities:['ROLE_USER']
+                    	authorities:['ROLE_USER'],
+                    	pageTitle:"Add property"
                 }
 			})
 			.state("updateProperty",{
@@ -77,7 +82,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    	authorities:['ROLE_USER']
+                    	authorities:['ROLE_USER'],
+                    	pageTitle:"Update property"
                 }
 			})
 			.state("showMyProperties",{
@@ -90,7 +96,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    	authorities:['ROLE_USER']
+                    	authorities:['ROLE_USER'],
+                    	pageTitle:"My properties"
                 }
 			})
             .state("showMyProperties.pleaseSelect",{
@@ -149,7 +156,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                	authorities:["ROLE_USER"]
+                	authorities:["ROLE_USER"],
+                	pageTitle:"My bookings"
                 }
 			})
 			.state("login",{
@@ -161,7 +169,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    	authorities:[]
+                    	authorities:[],
+                    	pageTitle:"Login"
                 }
 			})
 			.state("register",{
@@ -173,7 +182,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                    	authorities:[]
+                    	authorities:[],
+                    	pageTitle:"Register"
                 }
 			})
 			.state("logout",{
@@ -195,7 +205,8 @@ rentalApp.config(
 					}
 				},
                 data : {
-                	authorities:[]
+                	authorities:[],
+                	pageTitle:"Access denied"
                 }
             })
             .state("conversations",{
@@ -208,7 +219,8 @@ rentalApp.config(
             		}
             	},
                 data : {
-                	authorities:['ROLE_USER']
+                	authorities:['ROLE_USER'],
+                	pageTitle:"Conversations"
                 }
             })
             .state("conversations.pleaseSelect",{
@@ -292,6 +304,7 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 		//console.log("toState",toState);
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
+        $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
         //if(!$rootScope.isLoggedIn() && $rootScope.toState.data.loggedIn){
         if(!$rootScope.isLoggedIn() && $rootScope.toState.data.authorities.length != 0){
         	console.log("should check");

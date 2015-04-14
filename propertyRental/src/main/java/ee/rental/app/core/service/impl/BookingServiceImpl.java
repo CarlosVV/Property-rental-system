@@ -140,7 +140,7 @@ public class BookingServiceImpl implements BookingService{
 			return true;
 		return false;
 	}
-	public List<Booking> findPropertiesBookingsByYear(String username) {
+	public List<Booking> findPropertiesBookings(String username) {
 		return bookingRepo.findAllPropertiesBookings(username);
 	}
 	public List<BookingGuestCountWrapper> findBookingGuestCountPerMonthsInYearByProp(

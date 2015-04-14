@@ -220,3 +220,6 @@ For elements with both the ng-valid and ng-dirty classes
 .propFacMiniList{
 	display:inline;
 }
+.errorMsg{
+	color:red;
+}
