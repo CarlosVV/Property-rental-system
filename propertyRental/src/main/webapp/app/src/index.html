@@ -5,7 +5,7 @@
 <title ng-bind="pageTitle"></title>
 <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
 <link rel="stylesheet" href="../bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css">
 <!-- For my own implementation of datepicker directive -->
 <link rel="stylesheet" href="../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.css">
 <script src="../bower_components/jquery/dist/jquery.js"></script>
@@ -31,10 +31,18 @@
 <!-- Angularjs bootstrap directives -->
 <script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
-<script type="text/javascript" src="js/app.js"></script>
-<script type="text/javascript" src="js/services.js"></script>
-<script type="text/javascript" src="js/directives.js"></script>
-<script type="text/javascript" src="js/filters.js"></script>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="shared/services/accountService.js"></script>
+<script type="text/javascript" src="shared/services/bookingService.js"></script>
+<script type="text/javascript" src="shared/services/conversationService.js"></script>
+<script type="text/javascript" src="shared/services/propertyService.js"></script>
+<script type="text/javascript" src="shared/directives/bookingDatesDirective.js"></script>
+<script type="text/javascript" src="shared/directives/bookingStatusDirective.js"></script>
+<script type="text/javascript" src="shared/directives/checkListDirective.js"></script>
+<script type="text/javascript" src="shared/directives/datepickerDirective.js"></script>
+<script type="text/javascript" src="shared/directives/validateQueryDirective.js"></script>
+<script type="text/javascript" src="shared/filters/sortingFilters.js"></script>
+<script type="text/javascript" src="shared/filters/truncateFilter.js"></script>
 <script type="text/javascript" src="modules/home/home.js"></script>
 <script type="text/javascript" src="modules/addProperty/addProperty.js"></script>
 <script type="text/javascript" src="modules/security/login.js"></script>
