@@ -1,0 +1,38 @@
+<nav class="navbar navbar-inverse navbar-static-top resetMarginPadding">
+	<div class="container">
+		<div class="navbar-header">
+			<a ui-sref="home" class="navbar-brand">Property Rental System</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-show="isLoggedIn() && newMsgs.length">
+					<div class="btn-group" style="margin-top:9px;">
+						<button type="button" class="btn btn-default dropdown-toggle"
+							data-toggle="dropdown" aria-expanded="false">
+							<span class="glyphicon glyphicon-envelope"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="msg in newMsgs">
+								<a ui-sref="conversations.chat({bookingId : msg.bookingId,myBooking:true})">
+									<strong>{{msg.senderUsername}}</strong> wrote you:<br/>
+									{{msg.message | truncate : 40 : "Show more"}}
+								</a>
+								<hr/>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li ng-show="isLoggedIn()"><a ui-sref="conversations.pleaseSelect">Conversations</a></li>
+				<li ng-show="isLoggedIn()"><a ui-sref="showMyBookings">Show my bookings</a></li>
+				<li ng-show="isLoggedIn()"><a ui-sref="showMyProperties.pleaseSelect">Show my props</a></li>
+				<!-- <li ng-show="isLoggedIn()"><a ui-sref="updateProperty({propertyId:1})">Update prop 1</a></li> -->
+				<li><a ui-sref="showProperty({propertyId:1})">Show prop 1</a></li>
+				<li ng-show="isLoggedIn()"><a ui-sref="addProperty">Add property</a></li>
+                <li ng-show="!isLoggedIn()"><a ui-sref="login">Login</a></li>
+                <li ng-show="!isLoggedIn()"><a ui-sref="register">Register</a></li>
+                <li ng-show="isLoggedIn()"><a href=''>Hi, {{currentUsername}}</a></li>
+                <li ng-show="isLoggedIn()"><a ui-sref="logout">Log out</a></li>
+            </ul>
+		</div>
+	</div>
+</nav>

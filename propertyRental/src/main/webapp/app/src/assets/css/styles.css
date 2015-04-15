@@ -226,3 +226,8 @@ For elements with both the ng-valid and ng-dirty classes
 .floatRightA{
 	float:right;
 }
+.footerText{
+	font-size:11px;
+	text-align:center;
+	color:#adbcbb;
+}
