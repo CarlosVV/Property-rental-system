@@ -7,7 +7,7 @@ propertyDirective.directive("myDatepicker",function(){
 			bookedDates:"=",
 			updateUnDates:"&"
 		},
-		templateUrl:"modules/directives/partials/datepicker.html",
+		templateUrl:"shared/directives/partials/datepicker.html",
 		link : function(scope){
 			console.log("STARTING BUILDING CALENDAR");
 			/*scope.$watch('unavailableDates', function(){

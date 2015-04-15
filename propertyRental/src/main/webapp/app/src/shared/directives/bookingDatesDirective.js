@@ -156,7 +156,7 @@ propertyDirective.directive('countBookingPrice',function(){
 			checkOut:"=",
 			nightPrice:"="
 		},
-		templateUrl:"modules/directives/partials/bookingPrice.html",
+		templateUrl:"shared/directives/partials/bookingPrice.html",
 		link:function(scope,element,attr){
 			console.log("PLS DUDE",scope.nightPrice);
 			scope.$watch("checkIn",function(newVal){

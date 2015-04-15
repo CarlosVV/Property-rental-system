@@ -6,7 +6,7 @@ propertyDirective.directive("showBookingStatus",function(){
 			list:"=",
 			currentStatusId:"="
 		},
-		templateUrl:"modules/directives/partials/showBookingStatus.html",
+		templateUrl:"shared/directives/partials/showBookingStatus.html",
 		link:function(scope){
 			scope.$watch('currentStatusId',function(){
 				angular.forEach(scope.list,function(value){
