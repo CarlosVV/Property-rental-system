@@ -40,7 +40,6 @@ public class MessageController {
 			for(Message m : messages){
 				result.add(new MessageWrapper(m));
 			}
-			logger.info("PLS"+messages.toString());
 			return result;
 		}catch(BookingNotFoundException e){
 			throw new NotFoundException(e);
@@ -51,7 +50,6 @@ public class MessageController {
 	@RequestMapping(method=RequestMethod.POST)
 	public MessageWrapper addMessage(@RequestBody MessageWrapper m){
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		System.out.println("WHAT WE GOT:"+m);
 		try{
 			Message message = messageService.addMessage(m);
 			return new MessageWrapper(message);
@@ -63,12 +61,10 @@ public class MessageController {
 	public List<MessageWrapper> findUnreadMessages(){
 		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		List<Message> messages = messageService.findUnreadMessages(principal.getUsername());
-		System.out.println("HOW MANY MSGS?"+messages.size());
 		List<MessageWrapper> result = new ArrayList<MessageWrapper>();
 		for(Message m : messages){
 			result.add(new MessageWrapper(m));
 		}
-		System.out.println("UNREAD MSGS:"+result);
 		return result;
 	}
 	@RequestMapping(value="/markRead/{bookingId}",method=RequestMethod.GET)

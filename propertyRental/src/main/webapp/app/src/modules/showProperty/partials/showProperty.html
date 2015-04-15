@@ -51,7 +51,7 @@
 							class="form-control" min="0" ng-if="property.imagePaths.length" max="{{property.guestCount}}" required/>
 					</div>
 					<div class="col-md-2 cold-xs-2 bookingPricePadding">
-						<count-booking-price night-price="property.pricePerNight" check-in="booking.checkIn" check-out="booking.checkOut"></count-booking-price>
+						<count-booking-price ng-if="property.$resolved && property.userAccount.username != currentUser"" night-price="property.pricePerNight" check-in="booking.checkIn" check-out="booking.checkOut"></count-booking-price>
 					</div>
 					<div class="col-md-1 col-xs-12">
 						<input type="submit" value="Book apartment" class="btn btn-default" ng-show="isLoggedIn() && property.userAccount.username != currentUser"/>

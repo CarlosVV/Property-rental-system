@@ -1,7 +1,7 @@
 /**
  * 
  */
-var propertyDirective = angular.module("PropertyDirective", []);
+var propertyDirective = angular.module("PropertyDirectives", []);
 
 //this directive is used to check whether user has chosen address from the list that is provided by google
 //validates ng-model specified in input
@@ -251,7 +251,7 @@ propertyDirective.directive('countBookingPrice',function(){
 			checkOut:"=",
 			nightPrice:"="
 		},
-		templateUrl:"partials/bookingPrice.html",
+		templateUrl:"modules/directives/partials/bookingPrice.html",
 		link:function(scope,element,attr){
 			console.log("PLS DUDE",scope.nightPrice);
 			scope.$watch("checkIn",function(newVal){
@@ -263,8 +263,10 @@ propertyDirective.directive('countBookingPrice',function(){
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;
+						   scope.nightCount = difference;
 					   }else{
 						   delete scope.totalPrice;
+						   delete scope.nightCount;
 					   }
 				}
 			});
@@ -277,8 +279,10 @@ propertyDirective.directive('countBookingPrice',function(){
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;
+						   scope.nightCount = difference;
 					   }else{
 						   delete scope.totalPrice;
+						   delete scope.nightCount;
 					   }
 				}
 			});
@@ -309,7 +313,7 @@ propertyDirective.directive("myDatepicker",function(){
 			bookedDates:"=",
 			updateUnDates:"&"
 		},
-		templateUrl:"partials/directives/datepicker.html",
+		templateUrl:"modules/directives/partials/datepicker.html",
 		link : function(scope){
 			console.log("STARTING BUILDING CALENDAR");
 			/*scope.$watch('unavailableDates', function(){
@@ -358,7 +362,7 @@ propertyDirective.directive("showBookingStatus",function(){
 			list:"=",
 			currentStatusId:"="
 		},
-		templateUrl:"partials/directives/showBookingStatus.html",
+		templateUrl:"modules/directives/partials/showBookingStatus.html",
 		link:function(scope){
 			scope.$watch('currentStatusId',function(){
 				angular.forEach(scope.list,function(value){

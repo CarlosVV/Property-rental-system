@@ -4,7 +4,7 @@
 			<ul class="nav nav-pills nav-stacked">
 				<li class="nav-header">My properties:</li>
 				<li ng-repeat="property in properties" ng-class="{'active':selectedPropertyId == property.id}">
-					<a ui-sref="showMyProperties.detail.bookings({propertyId:property.id})">
+					<a ui-sref="showMyProperties.detail({propertyId:property.id})">
 						{{property.title}}<br/>
 						<span class="smallInfo">{{property.city}}, {{property.administrativeArea}}, {{property.country}}</span>
 					</a>

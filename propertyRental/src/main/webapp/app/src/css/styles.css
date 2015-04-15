@@ -223,3 +223,6 @@ For elements with both the ng-valid and ng-dirty classes
 .errorMsg{
 	color:red;
 }
+.floatRightA{
+	float:right;
+}

@@ -2,7 +2,37 @@
  * 
  */
 
-var rentalApp = angular.module('RentalApp',['ui.router','ngResource','uiGmapgoogle-maps','ngAutocomplete','ui.bootstrap.datetimepicker','angularFileUpload','highcharts-ng','ui.bootstrap','PropertyService','PropertyController','PropertyDirective','PropertyFilters']);
+var rentalApp = angular.module('RentalApp',
+	[
+	 'ui.router',
+	 'ngResource',
+	 'uiGmapgoogle-maps',
+	 'ngAutocomplete',
+	 'ui.bootstrap.datetimepicker',
+	 'angularFileUpload',
+	 'highcharts-ng',
+	 'ui.bootstrap',
+	 'PropertyService',
+	 'PropertyDirectives',
+	 'PropertyFilters',
+	 'home',
+	 'addProperty',
+	 'login',
+	 'register',
+	 'logout',
+	 'searchProperties',
+	 'myBookings',
+	 'showProperty',
+	 'conversations',
+	 'chat',
+	 'myProperties',
+	 'myProperty',
+	 'myPropertyStatistics',
+	 'updateProperty',
+	 'myPropertyBookings',
+	 'myPropertyUnavailableDates'
+	 ]
+);
 
 rentalApp.constant('API_URL',"/propertyRental/api/");
 rentalApp.constant('APP_URL',"/propertyRental/");
@@ -10,8 +40,8 @@ rentalApp.constant('APP_URL',"/propertyRental/");
 rentalApp.config(
 	function($stateProvider,$urlRouterProvider){
 		$urlRouterProvider.otherwise("/");
-		$stateProvider
-			.state("home", {
+		//$stateProvider
+			/*.state("home", {
 				url:"/",
 				views: {
 					"mainView":{
@@ -23,8 +53,8 @@ rentalApp.config(
                 	authorities:[],
                 	pageTitle:"Home"
                 }
-			})
-			.state("queryProperties",{
+			})*/
+			/*.state("queryProperties",{
 				url:"/queryProperties/:address/:country/:city/:admArea/:checkIn/:checkOut/:guestNumber",
 				views: {
 					"mainView":{
@@ -41,8 +71,8 @@ rentalApp.config(
                     	authorities:[],
                     	pageTitle:"Find properties"
                 }
-			})
-			.state("showProperty",{
+			})*/
+			/*.state("showProperty",{
 				url:"/showProperty/{propertyId}/{checkIn}/{checkOut}/{guestNumber}",
 				views:{
 					"mainView":{
@@ -59,8 +89,8 @@ rentalApp.config(
                     	authorities:[],
                     	pageTitle:"Show property"
                 }
-			})
-			.state("addProperty",{
+			})*/
+			/*.state("addProperty",{
 				url:"/addProperty",
 				views:{
 					"mainView":{
@@ -72,21 +102,8 @@ rentalApp.config(
                     	authorities:['ROLE_USER'],
                     	pageTitle:"Add property"
                 }
-			})
-			.state("updateProperty",{
-				url:"/updateProperty/{propertyId}",
-				views:{
-					"mainView":{
-						templateUrl:"partials/updateProperty.html",
-						controller:"UpdatePropertyCtrl"
-					}
-				},
-                data : {
-                    	authorities:['ROLE_USER'],
-                    	pageTitle:"Update property"
-                }
-			})
-			.state("showMyProperties",{
+			})*/
+			/*.state("showMyProperties",{
 				abstract:true,
 				url:"/showMyProperties",
 				views:{
@@ -99,55 +116,55 @@ rentalApp.config(
                     	authorities:['ROLE_USER'],
                     	pageTitle:"My properties"
                 }
-			})
-            .state("showMyProperties.pleaseSelect",{
+			})*/
+            /*.state("showMyProperties.pleaseSelect",{
             	url:"",
             	templateUrl:"partials/myProperties/pleaseSelect.html",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-            })
-			.state("showMyProperties.detail",{
+            })*/
+			/*.state("showMyProperties.detail",{
 				url:"/{propertyId}",
 				templateUrl:"partials/myProperties/showMyPropertiesDetail.html",
 				controller:"ShowMyPropertyCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-			})
-			.state("showMyProperties.detail.bookings",{
+			})*/
+			/*.state("showMyProperties.detail.bookings",{
 				url:"/bookings",
 				templateUrl:"partials/myProperties/showMyPropertyBookings.html",
 				controller:"ShowMyPropertyBookingsCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-			})
-			.state("showMyProperties.detail.statistics",{
+			})*/
+			/*.state("showMyProperties.detail.statistics",{
 				url:"/statistics",
 				templateUrl:"partials/myProperties/showMyPropertyStatistics.html",
 				controller:"ShowMyPropertyStatisticsCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-			})
-			.state("showMyProperties.detail.update",{
+			})*/
+			/*.state("showMyProperties.detail.update",{
 				url:"/update",
 				templateUrl:"partials/myProperties/updateProperty.html",
 				controller:"UpdatePropertyCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-			})
-			.state("showMyProperties.detail.unDates",{
+			})*/
+			/*.state("showMyProperties.detail.unDates",{
 				url:"/unavailableDates",
 				templateUrl:"partials/myProperties/unavailableDates.html",
 				controller:"UnavailableDatesCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-			})
-			.state("showMyBookings",{
+			})*/
+			/*.state("showMyBookings",{
 				url:"/showMyBookings",
 				views:{
 					"mainView":{
@@ -159,8 +176,8 @@ rentalApp.config(
                 	authorities:["ROLE_USER"],
                 	pageTitle:"My bookings"
                 }
-			})
-			.state("login",{
+			})*/
+			/*.state("login",{
 				url:"/login",
 				views:{
 					"mainView":{
@@ -172,8 +189,8 @@ rentalApp.config(
                     	authorities:[],
                     	pageTitle:"Login"
                 }
-			})
-			.state("register",{
+			})*/
+			/*.state("register",{
 				url:"/register",
 				views:{
 					"mainView":{
@@ -185,8 +202,8 @@ rentalApp.config(
                     	authorities:[],
                     	pageTitle:"Register"
                 }
-			})
-			.state("logout",{
+			})*/
+			/*.state("logout",{
 				url:"/logout",
 				views:{
 					"mainView":{
@@ -196,8 +213,8 @@ rentalApp.config(
                 data : {
                     authorities:['ROLE_USER']
                 }
-			})
-			.state("accessDenied",{
+			})*/
+			/*.state("accessDenied",{
                 url : "/accessDenied",
                 views:{
 					"mainView":{
@@ -208,8 +225,8 @@ rentalApp.config(
                 	authorities:[],
                 	pageTitle:"Access denied"
                 }
-            })
-            .state("conversations",{
+            })*/
+            /*.state("conversations",{
             	abstract:true,
             	url:"/conversations",
             	views:{
@@ -222,22 +239,22 @@ rentalApp.config(
                 	authorities:['ROLE_USER'],
                 	pageTitle:"Conversations"
                 }
-            })
-            .state("conversations.pleaseSelect",{
+            })*/
+            /*.state("conversations.pleaseSelect",{
             	url:"",
             	templateUrl:"partials/conversations/pleaseSelect.html",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-            })
-            .state("conversations.chat",{
+            })*/
+            /*.state("conversations.chat",{
             	url:"/{bookingId}",
             	templateUrl:"partials/conversations/chat.html",
             	controller:"ChatCtrl",
                 data : {
                 	authorities:['ROLE_USER']
                 }
-            });
+            });*/
 	}
 );
 //to intercept both 401 and 403 errors
