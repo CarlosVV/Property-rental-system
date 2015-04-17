@@ -129,7 +129,7 @@ propertyDirective.directive('checkDatesMatch', function () {
     };
 });
 //alternative to $scope.$watch solution
-propertyDirective.directive('filterDate', function($filter){
+propertyDirective.directive('filterDate',["$filter", function($filter){
 	return {
 		require:'ngModel',
 		link: function(scope,element,attrs,modelCtrl){
@@ -148,7 +148,7 @@ propertyDirective.directive('filterDate', function($filter){
 			});
 		}
 	};
-});
+}]);
 propertyDirective.directive('countBookingPrice',function(){
 	return{
 		scope:{

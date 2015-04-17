@@ -14,16 +14,16 @@ module.exports = function(grunt) {
 		  },
 		  dist: {
 			src: ['src/**/*.js'],
-			dest: 'dist/<%= pkg.name %>.js'
+			dest: 'build/app.js'
 		  }
 		},
 		uglify: {
 		  options: {
-			banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+			banner: '/*! app <%= grunt.template.today("dd-mm-yyyy") %> */\n'
 		  },
 		  dist: {
 			files: {
-			  'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+			  'build/app.min.js': ['<%= concat.dist.dest %>']
 			}
 		  }
 		},
@@ -33,11 +33,11 @@ module.exports = function(grunt) {
 				{expand:true,
 				cwd:'src/',
 				src:'**/*.html',
-				dest:'dist/'},
+				dest:'build/'},
 				{expand:true,
 				cwd:'src/assets/',
 				src:'**/*',
-				dest:'dist/assets'}
+				dest:'build/assets'}
 			]
 			}
 	},

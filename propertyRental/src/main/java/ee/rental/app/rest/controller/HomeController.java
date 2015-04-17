@@ -26,7 +26,7 @@ public class HomeController {
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		return "redirect:app/dist";
+		return "redirect:app/build";
 	}
 	
 }

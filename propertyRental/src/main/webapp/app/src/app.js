@@ -45,7 +45,7 @@ var rentalApp = angular.module('RentalApp',
 rentalApp.constant('API_URL',"/propertyRental/api/");
 rentalApp.constant('APP_URL',"/propertyRental/");
 
-rentalApp.config(
+rentalApp.config(["$stateProvider","$urlRouterProvider",
 	function($stateProvider,$urlRouterProvider){
 		$urlRouterProvider.otherwise("/");
 		//$stateProvider
@@ -263,7 +263,7 @@ rentalApp.config(
                 	authorities:['ROLE_USER']
                 }
             });*/
-	}
+	}]
 );
 //to intercept both 401 and 403 errors
 rentalApp.factory('httpErrorResponseInterceptor', [ '$q', '$location',
