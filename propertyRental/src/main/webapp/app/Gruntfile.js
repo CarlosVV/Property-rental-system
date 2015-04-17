@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 			separator: ';'
 		  },
 		  dist: {
-			src: ['source/**/*.js'],
+			src: ['src/**/*.js'],
 			dest: 'dist/<%= pkg.name %>.js'
 		  }
 		},
@@ -31,19 +31,18 @@ module.exports = function(grunt) {
 			main:{
 			files:[
 				{expand:true,
-				cwd:'source/',
+				cwd:'src/',
 				src:'**/*.html',
 				dest:'dist/'},
 				{expand:true,
-				cwd:'source/assets/',
+				cwd:'src/assets/',
 				src:'**/*',
-				dest:'dist/assets'},
-				
+				dest:'dist/assets'}
 			]
 			}
 	},
 		watch:{
-			files:['source/**/*.js'],
+			files:['src/**/*.js','src/**/*.html'],
 			tasks:['concat','uglify','copy']
 		}
     });
@@ -53,5 +52,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-karma');
     grunt.registerTask('test', ['karma']);
-    grunt.registerTask('default', ['concat','uglify']);
+    grunt.registerTask('default', ['concat','uglify','copy']);
 };
