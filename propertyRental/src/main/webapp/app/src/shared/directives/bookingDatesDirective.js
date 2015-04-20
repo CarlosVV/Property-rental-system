@@ -158,7 +158,7 @@ propertyDirective.directive('countBookingPrice',function(){
 		},
 		templateUrl:"shared/directives/partials/bookingPrice.html",
 		link:function(scope,element,attr){
-			console.log("PLS DUDE",scope.nightPrice);
+			console.log("PLS DUDE",scope.nightPrice); 
 			scope.$watch("checkIn",function(newVal){
 				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
 					   var startDate = moment(scope.checkIn);

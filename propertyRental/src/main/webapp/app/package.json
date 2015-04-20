@@ -9,12 +9,12 @@
     "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-uglify": "^0.9.1",
     "grunt-contrib-watch": "^0.6.1",
-    "karma": "0.12.31",
     "grunt-karma": "0.6.2",
     "jasmine-core": "2.2.0",
+    "karma": "0.12.31",
     "karma-jasmine": "0.3.5",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "karma-chrome-launcher": "~0.1"
+    "karma-ng-html2js-preprocessor": "^0.1.2",
+    "karma-phantomjs-launcher": "^0.1.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
