@@ -2,6 +2,9 @@
  * 
  */
 
+/**
+ * 
+ */
 var rentalApp = angular.module('RentalApp',
 	[
 	 'ui.router',
@@ -39,7 +42,7 @@ var rentalApp = angular.module('RentalApp',
 	 'ValidateQueryDirective',
 	 'SortingFilters',
 	 'TruncateFilter',
-	 'httpInterceptorModule'
+	 'HttpInterceptorService'
 	 ]
 );
 

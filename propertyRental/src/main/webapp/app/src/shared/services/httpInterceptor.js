@@ -1,4 +1,4 @@
-var httpInterceptor = angular.module('httpInterceptorModule',[]);
+var httpInterceptor = angular.module('HttpInterceptorService',[]);
 //to intercept both 401 and 403 errors
 httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', function($q, $location) {
 	return {
