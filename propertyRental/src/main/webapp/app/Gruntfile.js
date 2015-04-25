@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 			}
 	},
 		watch:{
-			files:['src/**/*.js','src/**/*.html'],
+			files:['src/**/*.js','src/**/*.html','src/**/*.css'],
 			tasks:['concat','uglify','copy']
 		}
     });

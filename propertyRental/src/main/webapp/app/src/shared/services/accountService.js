@@ -21,10 +21,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                    localStorage.setItem("authority",data2.data.authority);
 	                    //check if new msgs are available
 	                    $rootScope.newMsgs = new ConversationService.conversation.query({});
-	                    $state.go("login");
-	                }, function(data2) {
-	                    $state.go("login");
-	                    alert("error logging in");
 	                });
 	    },
 		logout : function(){

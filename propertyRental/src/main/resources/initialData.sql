@@ -55,10 +55,10 @@ INSERT INTO BookingStatus(id,name,description) VALUES(2,'Payed and accepted','Th
 INSERT INTO BookingStatus(id,name,description) VALUES(3,'Cancelled by owner','The booking has been cancelled by the owner');
 
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2014-04-01','2014-04-12',1400,2,'2014-03-02');
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2014-08-06','2014-08-15',1400,2,'2014-06-22');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2014-08-06','2014-08-15',1400,2,'2014-05-22');
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-05-01','2015-05-10',1000,2,'2015-04-01');
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,2,2,'2015-06-02','2015-06-10',1300,2,'2015-05-09');
-INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-07-01','2015-07-12',1400,2,'2015-06-11');
+INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-07-01','2015-07-12',1400,2,'2015-05-11');
 
 INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'VERY NICE PROPERTY 10/10',5,'2015-04-06');
 INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'Didnt like it',2,'2015-05-12');

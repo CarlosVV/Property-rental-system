@@ -9,8 +9,12 @@ myPropertyBookings.config(["$stateProvider",function($stateProvider){
         }
 	});
 }]);
-myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyService","BookingService","$stateParams", function($scope, PropertyService,BookingService,$stateParams){
+myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyService","BookingService","$stateParams","$filter", function($scope, PropertyService,BookingService,$stateParams,$filter){
 	$scope.availableYears = [];
+	$scope.currentPage = 1;
+    $scope.itemsPerPage = 2;
+    $scope.showOnlyStatus = "";
+    $scope.showOnlyYear = "";
 	$scope.propertyBookings = BookingService.booking.myPropertiesBookings({propertyId:$stateParams.propertyId},function(){
 		for(var i=0;i<$scope.propertyBookings.length;i++){
 			var createdYear = moment($scope.propertyBookings[i].bookedDate).year();
@@ -24,12 +28,9 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 				$scope.availableYears.push(createdYear);
 			}
 		}
+		$scope.filteredBookings = $scope.propertyBookings;
 	});
 	$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	$scope.showOnlyStatus = {};
-	$scope.$watch('showOnlyStatus',function(){
-		console.log("PLS",$scope.showOnlyStatus);
-	});
 	
 	
 	$scope.lastActionBookingId;
@@ -84,4 +85,15 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 			});
 		}
 	};
+	//Because of pagination was forced to move all filtering logic to controllers
+    $scope.$watch('showOnlyStatus',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+    });
+    $scope.$watch('showOnlyYear',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+    });
 }]);

@@ -88,3 +88,10 @@ propertyFilters.filter('sortByYearBooking',function(){
 		return bookings;
 	}
 });
+propertyFilters.filter('startFrom',function(){
+	return function (input, start) {
+		if(!angular.isUndefined(input)){
+			return input.slice(start);
+		}
+    };
+});

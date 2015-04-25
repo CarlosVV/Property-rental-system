@@ -14,7 +14,11 @@ home.config(["$stateProvider",function($stateProvider){
         }
 	});
 }]);
-myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService",function($scope,BookingService){
+myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",function($scope,BookingService,$filter){
+	$scope.currentPage = 1;
+    $scope.itemsPerPage = 2;
+    $scope.showOnlyStatus = "";
+    $scope.showOnlyYear = "";
 	$scope.availableYears = [];
 	$scope.bookings = new BookingService.booking.myBookings(function(){
 		for(var i=0;i<$scope.bookings.length;i++){
@@ -29,10 +33,20 @@ myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService",function($
 				$scope.availableYears.push(createdYear);
 			}
 		}
+        var from = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        var to = from + $scope.itemsPerPage;
+        $scope.filteredBookings = $scope.bookings;
 	});
 	$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	$scope.$watch('bookings',function(newVal){
-		console.log($scope.bookings);
-	});
-	
+	//Because of pagination was forced to move all filtering logic to controllers
+    $scope.$watch('showOnlyStatus',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('filter')($scope.bookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+    });
+    $scope.$watch('showOnlyYear',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.bookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('filter')($scope.filteredBookings,$scope.showOnlyStatus);
+    });
 }]);

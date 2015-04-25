@@ -12,7 +12,7 @@
 		<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
 	</div>
 	<div class="col-md-10">
-		<div class="row" ng-repeat="booking in bookings | filter:showOnlyStatus | sortByYearBooking : showOnlyYear">
+		<div class="row" ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:'-bookingId'">
 			<div class="col-md-12 apartmentBlock">
 				<div class="apartmentTitle">Booked - <a ui-sref="showProperty({propertyId : booking.propertyId})">{{booking.propertyTitle}}</a></div>
 				<div class="apartmentLocation">{{booking.city}}, {{booking.administrativeArea}}, {{booking.country}}</div>
@@ -21,8 +21,18 @@
 				<div class="bookingDates">Booked on: {{booking.bookedDate | date:"dd/MM/yyyy"}}</div>
 				<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
 				<div class="bookingStatus"><a ui-sref="conversations.chat({bookingId : booking.bookingId})">Message host</a></div>
-			</a>
 			<hr/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<pagination ng-if="bookings.$resolved && bookings.length" boundary-links="true" total-items="filteredBookings.length"
+	                ng-model="$parent.currentPage" class="pagination-sm"
+	                previous-text="&lsaquo;" next-text="&rsaquo;"
+	                first-text="&laquo;" last-text="&raquo;"
+	            	items-per-page="itemsPerPage"></pagination>
+			</div>
 		</div>
 	</div>
 </div>
