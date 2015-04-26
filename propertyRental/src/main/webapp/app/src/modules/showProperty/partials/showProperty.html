@@ -145,10 +145,10 @@
 					</button>
 					<div class="reviewHeader">Answer from the host:</div>
 					<div class="reviewBody">{{answer.review}}</div>
+					<a href="javascript:void(0);" class="commentLink" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
 					<hr/>
 				</div>
 			</div>
-			<a href="" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
 			<div class="row" ng-if="reviewToComment == review.id">
 				<form novalidate name="commentForm" ng-submit="addReview(review.id,commentForm)">
 					<div class="col-md-5">

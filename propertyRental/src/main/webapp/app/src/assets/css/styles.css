@@ -231,3 +231,6 @@ For elements with both the ng-valid and ng-dirty classes
 	text-align:center;
 	color:#adbcbb;
 }
+.commentLink{
+	margin:0 0 0 15px; 
+}

@@ -185,7 +185,7 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 				uploadPhoto($scope.photosToUpload[i]);
             }
 		}
-	}
+	};
 	$scope.removePhoto = function(photo){
 		var index = $scope.photosToUpload.indexOf(photo);
 		console.log("SLICED",index);
@@ -194,7 +194,7 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			$scope.photosToUpload.splice(index, 1);
 			console.log($scope.photosToUpload);
 		}
-	}
+	};
 	function uploadPhoto(photo){
         console.log(API_URL+'properties/uploadPhoto');
     	photo.progress = 10;
@@ -222,7 +222,7 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
         	photo.progressMsg = "Error";
         	photo.error = true;
         });
-	}
+	};
 	$scope.generateThumb = function(file) {
 		if (file != null) {
 			if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
@@ -237,6 +237,12 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 				});
 			}
 		}
+	};
+	$scope.addPropertyButtonDisabled = function(formObject){
+		if(formObject.$valid && $scope.property.propertyFacilities.length > 0 && $scope.photosToUpload.length > 0){
+			return false;
+		}
+		return true;
 	};
 	
 }]);
