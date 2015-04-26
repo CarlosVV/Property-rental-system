@@ -18,6 +18,7 @@
 	
 <div class="col-md-9">
 	<div class="row" ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:'-bookingId'">
+		<group-bookings-by-date bookings="filteredBookings" current-booking="booking" start-from="(currentPage - 1)*itemsPerPage" limit-to="itemsPerPage" order-by="-bookingId"></group-bookings-by-date>
 		<div class="col-md-12 apartmentBlock">
 			<div class="apartmentTitle">Booked by - <a ui-sref='conversations.chat({bookingId : booking.bookingId})'>{{booking.userAccountUsername}}</a></div>
 			<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>

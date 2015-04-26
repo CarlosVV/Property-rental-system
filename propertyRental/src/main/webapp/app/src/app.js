@@ -40,6 +40,7 @@ var rentalApp = angular.module('RentalApp',
 	 'BookingStatusDirective',
 	 'CheckListDirective',
 	 'ValidateQueryDirective',
+	 'GroupBookingsByDateDirective',
 	 'SortingFilters',
 	 'TruncateFilter',
 	 'HttpInterceptorService'

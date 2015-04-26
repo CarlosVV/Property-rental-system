@@ -13,6 +13,7 @@
 	</div>
 	<div class="col-md-10">
 		<div class="row" ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:'-bookingId'">
+			<group-bookings-by-date bookings="filteredBookings" current-booking="booking" start-from="(currentPage - 1)*itemsPerPage" limit-to="itemsPerPage" order-by="-bookingId"></group-bookings-by-date>
 			<div class="col-md-12 apartmentBlock">
 				<div class="apartmentTitle">Booked - <a ui-sref="showProperty({propertyId : booking.propertyId})">{{booking.propertyTitle}}</a></div>
 				<div class="apartmentLocation">{{booking.city}}, {{booking.administrativeArea}}, {{booking.country}}</div>
