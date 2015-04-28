@@ -35,6 +35,11 @@ For elements with both the ng-valid and ng-dirty classes
 	padding:5px 5px 0 5px;
 	margin:5px 5px 0 5px;
 }
+a.apartmentBlock:hover{
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
 .editPropButton{
 	margin:0px 5px 5px 10px;
 }

@@ -25,9 +25,9 @@
 			<div class="bookingPrice">{{booking.price}} EUR</div>
 			<div class="bookingDates">Booked on: {{booking.bookedDate | date:"dd/MM/yyyy"}}</div>
 			<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
-			<button class="btn btn-default" ng-disabled="booking.bookingStatusId == 2 || booking.bookingStatusId == 3" ng-click="setBookingStatusPayed(booking.bookingId)">Set status "payed and accepted"</button>
-			<button class="btn btn-default" ng-disabled="booking.bookingStatusId == 3" ng-click="cancelBooking(booking.bookingId)">Cancel booking</button>
-			<button class="btn btn-default" ng-if="lastActionBookingId == booking.bookingId" ng-click="annulLastAction(booking.bookingId)">Annul last action</button>
+			<button class="btn btn-success" ng-disabled="booking.bookingStatusId == 2 || booking.bookingStatusId == 3" ng-click="setBookingStatusPayed(booking.bookingId)">Set status "payed and accepted"</button>
+			<button class="btn btn-danger" ng-disabled="booking.bookingStatusId == 3" ng-click="cancelBooking(booking.bookingId)">Cancel booking</button>
+			<button class="btn btn-warning" ng-if="lastActionBookingId == booking.bookingId" ng-click="annulLastAction(booking.bookingId)">Annul last action</button>
 			<hr/>
 		</div>
 	</div>

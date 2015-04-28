@@ -9,16 +9,7 @@ propertyDirective.directive("myDatepicker",function(){
 		},
 		templateUrl:"shared/directives/partials/datepicker.html",
 		link : function(scope){
-			console.log("STARTING BUILDING CALENDAR");
-			/*scope.$watch('unavailableDates', function(){
-				console.log("unDates",scope.unavailableDates);
-			});
-			scope.$watch('bookedDates',function(){
-				console.log("bookedDates",scope.bookedDates);
-			});*/
 			scope.$watchGroup(['unavailableDates','bookedDates'],function(newValues){
-				//console.log(newValues[0],'AND',newValues[1]);
-				//console.log(newValues[0])
 				var bookedDates = [];
 				for (var i = 0; i < newValues[1].length; i++) {
 					var start = moment(newValues[1][i].startDate);
@@ -38,7 +29,6 @@ propertyDirective.directive("myDatepicker",function(){
 				    datesDisabled:bookedDates
 				})
 				.on("changeDate",function(e){
-					//console.log("heey",e.dates);
 					scope.updateUnDates({dates:e.dates});
 					$("#datepicker_data_input").val(
 						$(".datepicker").datepicker("getFormattedDate")	

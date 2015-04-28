@@ -199,4 +199,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			}
 		}
 	};
+	$scope.updateButtonDisabled = function(formObject){
+		if(formObject.$valid && $scope.property.propertyFacilities.length > 0 && $scope.photosToUpload.length > 0){
+			return false;
+		}
+		return true;
+	};
 }]);
