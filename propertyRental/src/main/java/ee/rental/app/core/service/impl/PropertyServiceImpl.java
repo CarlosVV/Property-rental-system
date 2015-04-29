@@ -66,27 +66,9 @@ public class PropertyServiceImpl implements PropertyService{
 	}
 
 	public Property addProperty(Property data) {
-		/*UserAccount account = userAccountRepo.findUserAccount(property.getOwner().getId());
-		if(account == null)
-			throw new UserAccountNotFoundException();*/
 		Property property = propertyRepo.addProperty(data);
-		/*for(ImagePath img : property.getImagePaths()){
-			System.out.println("Setting property");
-			img.setProperty(property);
-		}*/
 		System.out.println("inserted");
-		//propertyRepo.addImagePaths(property.getImagePaths());
 		return property;
-	}
-	public List<UnavailableDatesForPublic> findUnavailableDates(Long id) throws ParseException {
-		List<UnavailableDate> unDates = propertyRepo.findUnavailabeDates(id);
-		List<UnavailableDatesForPublic> bookedDates = propertyRepo.findBookedDates(id);
-		List<UnavailableDatesForPublic> result = new ArrayList<UnavailableDatesForPublic>(bookedDates);
-		for(UnavailableDate u : unDates){
-			result.add(new UnavailableDatesForPublic(u.getWhen(), u.getWhen()));
-		}
-		//System.out.println("OK WE GOT RESULT: "+bookedDates);
-		return result;
 	}
 
 	public List<PropertyFacility> findPropertyFacilities() {
@@ -96,22 +78,6 @@ public class PropertyServiceImpl implements PropertyService{
 
 	public void updateProperty(Property property) {
 		propertyRepo.updateProperty(property);
-	}
-
-	public List<UnavailableDate> findOnlyUnavailableDates(Long id) throws ParseException {
-		return propertyRepo.findUnavailabeDates(id);
-	}
-
-	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id,String username) throws ParseException {
-		Property property = propertyRepo.findProperty(id);
-		if(property.getUserAccount().getUsername().equals(username))
-			return propertyRepo.findBookedDates(id);
-		throw new NotAllowedException();
-	}
-
-	public void updatePropertyUnavailableDates(List<Date> dates, Long id) {
-		propertyRepo.deleteUnavailableDates(id);
-		propertyRepo.addUnavailableDates(dates,id);
 	}
 
 	public List<Review> findReviewsByPropertyId(Long id) {

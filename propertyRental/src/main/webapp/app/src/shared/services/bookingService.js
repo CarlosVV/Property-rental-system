@@ -27,7 +27,12 @@ propertyService.factory("BookingService",["$resource","API_URL",function($resour
 				method:"GET",
 				url:API_URL+"bookings/bookingStatus/:bookingId/:statusId"
 			}
-		})
+		}),
+		unavailableDates : $resource(API_URL+'bookings/unavailableDates/:id', {}),
+		onlyBookedDays : $resource(API_URL+"bookings/onlyBookedDates/:id"),
+		onlyUnavailableDays : $resource(API_URL+"bookings/onlyUnavailableDates/:id",{},{
+			update:{method:"PUT"}
+		}),
 	};
 	return bookingService;
 }]);

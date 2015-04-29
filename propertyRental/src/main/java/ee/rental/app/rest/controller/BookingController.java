@@ -1,5 +1,6 @@
 package ee.rental.app.rest.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,17 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 import ee.rental.app.core.model.Booking;
 import ee.rental.app.core.model.BookingStatus;
 import ee.rental.app.core.model.Property;
+import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.wrapper.BookingWrapper;
 import ee.rental.app.core.model.wrapper.CanSendReviews;
+import ee.rental.app.core.model.wrapper.UnavailableDatesForPublic;
 import ee.rental.app.core.model.wrapper.statistics.BookedDaysWrapper;
 import ee.rental.app.core.model.wrapper.statistics.BookingAvgLength;
 import ee.rental.app.core.model.wrapper.statistics.BookingGuestCountWrapper;
 import ee.rental.app.core.model.wrapper.statistics.BookingLengthCount;
 import ee.rental.app.core.model.wrapper.statistics.ReviewStarsWrapper;
 import ee.rental.app.core.service.BookingService;
+import ee.rental.app.core.service.PropertyService;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.BookingStatusNotFoundException;
+import ee.rental.app.core.service.exception.NotAllowedException;
 import ee.rental.app.rest.exception.BadRequestException;
 import ee.rental.app.rest.exception.ForbiddenException;
 import ee.rental.app.rest.exception.NotFoundException;
@@ -42,6 +47,8 @@ import ee.rental.app.rest.response.Success;
 public class BookingController {
 	@Autowired
 	private BookingService bookingService;
+	@Autowired
+	private PropertyService propertyService;
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Booking> addBooking(@RequestBody Booking booking){
 		System.out.println("CHECKING BOOKING"+booking);
@@ -142,5 +149,36 @@ public class BookingController {
 			return new CanSendReviews(bookingService.canSendReviews(account.getUsername(),propertyId));
 		}
 		return new CanSendReviews(false);
+	}
+	@PreAuthorize("permitAll")
+	@RequestMapping(value = "/unavailableDates/{id}", method = RequestMethod.GET)
+	public List<UnavailableDatesForPublic> findUnavailableDates(@PathVariable("id") Long id) throws ParseException{
+		List<UnavailableDatesForPublic> result = bookingService.findUnavailableDates(id);
+		return result;
+	}
+	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.GET)
+	public List<UnavailableDate> findOnlyUnavailableDates(@PathVariable("id") Long id) throws ParseException{
+		List<UnavailableDate> result = bookingService.findOnlyUnavailableDates(id);
+		return result;
+	}
+	@RequestMapping(value = "/onlyBookedDates/{id}", method = RequestMethod.GET)
+	public List<UnavailableDatesForPublic> findOnlyBookedDates(@PathVariable("id") Long id) throws ParseException{
+		try{
+			UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			List<UnavailableDatesForPublic> result = bookingService.findOnlyBookedDates(id,principal.getUsername());
+			return result;
+		}catch(NotAllowedException e){
+			throw new ForbiddenException();
+		}
+	}
+	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.PUT)
+	public void updateOnlyUnavailableDates(@PathVariable("id") Long id,@RequestBody List<Date> dates) throws ParseException{
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Property property = propertyService.findProperty(id);
+        if(property.getUserAccount().getUsername().equals(principal.getUsername())){
+        	bookingService.updatePropertyUnavailableDates(dates,id);
+        }else{
+        	throw new ForbiddenException();
+        }
 	}
 }

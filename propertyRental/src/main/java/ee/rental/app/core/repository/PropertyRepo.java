@@ -25,11 +25,7 @@ public interface PropertyRepo {
 	public List<PropertyType> findAllPropertyTypes();
 	public Property addProperty(Property data);
 	//public void addImagePaths(List<ImagePath> imagePaths);
-	public List<UnavailableDate> findUnavailabeDates(Long id) throws ParseException;
-	public List<UnavailableDatesForPublic> findBookedDates(Long id) throws ParseException;
 	public List<PropertyFacility> findPropertyFacilities();
-	public void deleteUnavailableDates(Long id);
-	public void addUnavailableDates(List<Date> dates, Long id);
 	public List<Review> findReviewsByPropertyId(Long id);
 	public Review findReviewById(Long id);
 	public Review addReview(Review review);

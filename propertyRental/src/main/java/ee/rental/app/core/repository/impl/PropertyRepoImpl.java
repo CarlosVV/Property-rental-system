@@ -103,26 +103,7 @@ public class PropertyRepoImpl implements PropertyRepo{
 	}
 	
 	public Property addProperty(Property property) {
-		/*Property p = new Property();
-		p.setAddress(property.getAddress());
-		p.setAdministrativeArea(property.getAdministrativeArea());
-		p.setBathroomCount(Integer.parseInt(property.getBathroomCount()));
-		p.setBedroomCount(Integer.parseInt(property.getBedroomCount()));
-		p.setCity(property.getCity());
-		p.setCountry(property.getCountry());
-		p.setDescription(property.getDescription());
-		p.setLatitude(Double.parseDouble(property.getLatitude()));
-		p.setLongitude(Double.parseDouble(property.getLongitude()));
-		p.setMinimumNights(Integer.parseInt(property.getMinimumNights()));
-		p.setPostalCode(property.getPostalCode());
-		p.setPricePerNight(new BigDecimal(property.getPricePerNight()));
-		p.setPropertyType((PropertyType)sessionFactory.getCurrentSession().get(PropertyType.class, Long.parseLong(property.getPropertyType())));
-		//p.setPropertyType(new PropertyType(1L, "Apartment", "Apartment desc"));
-		p.setRules(property.getRules());
-		p.setSize(Integer.parseInt(property.getSize()));
-		p.setTitle(property.getTitle());*/
 		Session session = sessionFactory.getCurrentSession();
-		//property.setPropertyType((PropertyType)session.load(PropertyType.class, property.getPropertyType().getId()));
 		UserAccount userAccount = userAccountRepo.findUserAccountByUsername(property.getUserAccount().getUsername());
 		property.setUserAccount(userAccount);
 		Long id = (Long) session.save(property);
@@ -136,53 +117,13 @@ public class PropertyRepoImpl implements PropertyRepo{
 		return property;
 	}
 
-	public List<UnavailableDatesForPublic> findBookedDates(Long id) throws ParseException {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date today = dateFormat.parse(dateFormat.format(new Date()));
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT new ee.rental.app.core.model.wrapper.UnavailableDatesForPublic(b.checkIn,b.checkOut) FROM Booking b"
-				+ " WHERE b.property.id=? AND (b.bookingStatus.id=1 OR b.bookingStatus.id=2) AND b.checkOut >= ?");
-		query.setParameter(0, id);
-		query.setParameter(1, today);
-		List<UnavailableDatesForPublic> result = (List<UnavailableDatesForPublic>) query.list();
-		session.flush();
-		return result;
-	}
-	public List<UnavailableDate> findUnavailabeDates(Long id) throws ParseException{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date today = dateFormat.parse(dateFormat.format(new Date()));
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT u FROM UnavailableDate u WHERE u.property.id=? AND u.when >= ?");
-		query.setParameter(0, id);
-		query.setParameter(1, today);
-		List<UnavailableDate> result = (List<UnavailableDate>) query.list();
-		return result;
-	}
+	
 
 	public List<PropertyFacility> findPropertyFacilities() {
 		Query query = sessionFactory.getCurrentSession().createQuery("SELECT pf FROM PropertyFacility pf");
 		return query.list();
 	}
 
-	public void deleteUnavailableDates(Long id) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("DELETE FROM UnavailableDate ud WHERE ud.property.id=:id");
-		query.setParameter("id", id);
-		query.executeUpdate();
-		session.flush();
-	}
-
-	public void addUnavailableDates(List<Date> dates, Long id) {
-		Session session = sessionFactory.getCurrentSession();
-		Property property = findProperty(id);
-		for(Date date : dates){
-			UnavailableDate unavailableDate = new UnavailableDate();
-			unavailableDate.setProperty(property);
-			unavailableDate.setWhen(date);
-			session.save(unavailableDate);
-		}
-		session.flush();
-	}
 
 	public List<Review> findReviewsByPropertyId(Long id) {
 		Session session = sessionFactory.getCurrentSession();

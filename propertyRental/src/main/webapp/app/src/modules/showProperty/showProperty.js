@@ -128,7 +128,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
 		}
 	}
-	$scope.unavailableDates = new PropertyService.unavailableDates.query({id:$stateParams.propertyId}, function(){
+	$scope.unavailableDates = new BookingService.unavailableDates.query({id:$stateParams.propertyId}, function(){
 		console.log($scope.unavailableDates);
 	});
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){

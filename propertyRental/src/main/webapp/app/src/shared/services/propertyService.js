@@ -24,11 +24,6 @@ propertyService.factory("PropertyService", [ "$resource", "API_URL", function($r
 		}),
 		propertyTypes: $resource(API_URL+'properties/propertyTypes', {}),
 		propertyFacilities : $resource(API_URL+'properties/propertyFacilities',{}),
-		unavailableDates : $resource(API_URL+'properties/unavailableDates/:id', {}),
-		onlyBookedDays : $resource(API_URL+"properties/onlyBookedDates/:id"),
-		onlyUnavailableDays : $resource(API_URL+"properties/onlyUnavailableDates/:id",{},{
-			update:{method:"PUT"}
-		}),
 		reviews : $resource(API_URL+"properties/reviews/:id",{},{
 			canSendReviews:{
 				method:"GET",

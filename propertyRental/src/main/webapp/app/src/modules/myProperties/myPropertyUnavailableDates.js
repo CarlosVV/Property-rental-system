@@ -9,7 +9,7 @@ myPropUnDates.config(["$stateProvider",function($stateProvider){
         }
 	});
 }]);
-myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","$stateParams",function($scope,PropertyService,$stateParams){
+myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","BookingService","$stateParams",function($scope,PropertyService,BookingService,$stateParams){
 	//unavailable dates:
 	$scope.currentUnDates;
 	$scope.currentBookedDates;
@@ -18,8 +18,8 @@ myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","$st
 	var firstTime;
 	firstTime = true;
 	$scope.datesUpdated = true;
-	$scope.currentUnDates = new PropertyService.onlyUnavailableDays.query({id:$stateParams.propertyId});
-	$scope.currentBookedDates = new PropertyService.onlyBookedDays.query({id:$stateParams.propertyId});
+	$scope.currentUnDates = new BookingService.onlyUnavailableDays.query({id:$stateParams.propertyId});
+	$scope.currentBookedDates = new BookingService.onlyBookedDays.query({id:$stateParams.propertyId});
 	$scope.newUnDates;
 	$scope.updateUnDates = function(dates){
 		//it's executed once on datepicker startup
@@ -34,9 +34,7 @@ myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","$st
 		}
 	};
 	$scope.sendUnDates = function(){
-		console.log("UPDATING",$scope.currentUnDates);
-		PropertyService.onlyUnavailableDays.update({id:$stateParams.propertyId},$scope.newUnDates,function(){
-			console.log("UPdated");
+		BookingService.onlyUnavailableDays.update({id:$stateParams.propertyId},$scope.newUnDates,function(){
 			$scope.datesUpdated = true;
 		});
 	};

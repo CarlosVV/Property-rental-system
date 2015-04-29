@@ -1,5 +1,8 @@
 package ee.rental.app.core.repository.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,12 +20,16 @@ import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.Property;
 import ee.rental.app.core.model.Booking;
+import ee.rental.app.core.model.wrapper.UnavailableDatesForPublic;
 import ee.rental.app.core.repository.BookingRepo;
+import ee.rental.app.core.repository.PropertyRepo;
 @Repository
 public class BookingRepoImpl implements BookingRepo{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	@Autowired
+	private PropertyRepo propertyRepo;
 	public Booking createBooking(Booking booking) {
 		Session session = sessionFactory.getCurrentSession();
 		session.persist(booking);
@@ -127,5 +134,46 @@ public class BookingRepoImpl implements BookingRepo{
 		return result;
 	}
 
+	public void deleteUnavailableDates(Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("DELETE FROM UnavailableDate ud WHERE ud.property.id=:id");
+		query.setParameter("id", id);
+		query.executeUpdate();
+		session.flush();
+	}
 
+	public void addUnavailableDates(List<Date> dates, Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		Property property = propertyRepo.findProperty(id);
+		for(Date date : dates){
+			UnavailableDate unavailableDate = new UnavailableDate();
+			unavailableDate.setProperty(property);
+			unavailableDate.setWhen(date);
+			session.save(unavailableDate);
+		}
+		session.flush();
+	}
+	public List<UnavailableDate> findUnavailabeDates(Long id) throws ParseException{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = dateFormat.parse(dateFormat.format(new Date()));
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT u FROM UnavailableDate u WHERE u.property.id=? AND u.when >= ?");
+		query.setParameter(0, id);
+		query.setParameter(1, today);
+		List<UnavailableDate> result = (List<UnavailableDate>) query.list();
+		return result;
+	}
+
+	public List<UnavailableDatesForPublic> findBookedDates(Long id) throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = dateFormat.parse(dateFormat.format(new Date()));
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createQuery("SELECT new ee.rental.app.core.model.wrapper.UnavailableDatesForPublic(b.checkIn,b.checkOut) FROM Booking b"
+				+ " WHERE b.property.id=? AND (b.bookingStatus.id=1 OR b.bookingStatus.id=2) AND b.checkOut >= ?");
+		query.setParameter(0, id);
+		query.setParameter(1, today);
+		List<UnavailableDatesForPublic> result = (List<UnavailableDatesForPublic>) query.list();
+		session.flush();
+		return result;
+	}
 }

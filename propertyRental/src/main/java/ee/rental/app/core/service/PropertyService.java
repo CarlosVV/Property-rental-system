@@ -20,12 +20,8 @@ public interface PropertyService {
 	public List<Property> queryProperties(PropertyQueryWrapper query);
 	public List<PropertyType> findAllPropertyTypes();
 	public Property addProperty(Property property);
-	public List<UnavailableDatesForPublic> findUnavailableDates(Long id) throws ParseException;
 	public List<PropertyFacility> findPropertyFacilities();
 	public void updateProperty(Property property);
-	public List<UnavailableDate> findOnlyUnavailableDates(Long id) throws ParseException;
-	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id, String string) throws ParseException;
-	public void updatePropertyUnavailableDates(List<Date> dates, Long id);
 	public List<Review> findReviewsByPropertyId(Long id);
 	public Review findReviewById(Long id);
 	public Review addReview(ReviewWrapper review);

@@ -3,6 +3,7 @@ package ee.rental.app.core.service.impl;
 import java.awt.print.Book;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +32,7 @@ import ee.rental.app.core.model.Review;
 import ee.rental.app.core.model.UnavailableDate;
 import ee.rental.app.core.model.UserAccount;
 import ee.rental.app.core.model.UnavailableDate;
+import ee.rental.app.core.model.wrapper.UnavailableDatesForPublic;
 import ee.rental.app.core.model.wrapper.statistics.BookedDaysWrapper;
 import ee.rental.app.core.model.wrapper.statistics.BookingAvgLength;
 import ee.rental.app.core.model.wrapper.statistics.BookingCount;
@@ -43,6 +46,7 @@ import ee.rental.app.core.repository.UserAccountRepo;
 import ee.rental.app.core.service.BookingService;
 import ee.rental.app.core.service.exception.BookingNotFoundException;
 import ee.rental.app.core.service.exception.BookingStatusNotFoundException;
+import ee.rental.app.core.service.exception.NotAllowedException;
 import ee.rental.app.core.service.exception.PropertyNotFoundException;
 import ee.rental.app.core.service.exception.UserAccountNotFoundException;
 
@@ -247,6 +251,31 @@ public class BookingServiceImpl implements BookingService{
 		bookingAvgLengthByMonth.sort(new MonthComparator());
 		List<BookingLengthCount> result = new ArrayList<BookingLengthCount>();
 		result.add(new BookingLengthCount(bookingAvgLengthByMonth,bookingCountByMonth));
+		return result;
+	}
+
+	public List<UnavailableDate> findOnlyUnavailableDates(Long id) throws ParseException {
+		return bookingRepo.findUnavailabeDates(id);
+	}
+
+	public List<UnavailableDatesForPublic> findOnlyBookedDates(Long id,String username) throws ParseException {
+		Property property = propertyRepo.findProperty(id);
+		if(property.getUserAccount().getUsername().equals(username))
+			return bookingRepo.findBookedDates(id);
+		throw new NotAllowedException();
+	}
+
+	public void updatePropertyUnavailableDates(List<Date> dates, Long id) {
+		bookingRepo.deleteUnavailableDates(id);
+		bookingRepo.addUnavailableDates(dates,id);
+	}
+	public List<UnavailableDatesForPublic> findUnavailableDates(Long id) throws ParseException {
+		List<UnavailableDate> unDates = bookingRepo.findUnavailabeDates(id);
+		List<UnavailableDatesForPublic> bookedDates = bookingRepo.findBookedDates(id);
+		List<UnavailableDatesForPublic> result = new ArrayList<UnavailableDatesForPublic>(bookedDates);
+		for(UnavailableDate u : unDates){
+			result.add(new UnavailableDatesForPublic(u.getWhen(), u.getWhen()));
+		}
 		return result;
 	}
 }

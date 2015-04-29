@@ -142,39 +142,6 @@ public class PropertyController {
 		return result;
 	}
 	@PreAuthorize("permitAll")
-	@RequestMapping(value = "/unavailableDates/{id}", method = RequestMethod.GET)
-	public List<UnavailableDatesForPublic> findUnavailableDates(@PathVariable("id") Long id) throws ParseException{
-		List<UnavailableDatesForPublic> result = propertyService.findUnavailableDates(id);
-		return result;
-	}
-	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.GET)
-	public List<UnavailableDate> findOnlyUnavailableDates(@PathVariable("id") Long id) throws ParseException{
-		List<UnavailableDate> result = propertyService.findOnlyUnavailableDates(id);
-		return result;
-	}
-	@RequestMapping(value = "/onlyBookedDates/{id}", method = RequestMethod.GET)
-	public List<UnavailableDatesForPublic> findOnlyBookedDates(@PathVariable("id") Long id) throws ParseException{
-		try{
-			UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			List<UnavailableDatesForPublic> result = propertyService.findOnlyBookedDates(id,principal.getUsername());
-			return result;
-		}catch(NotAllowedException e){
-			throw new ForbiddenException();
-		}
-	}
-	@RequestMapping(value = "/onlyUnavailableDates/{id}", method = RequestMethod.PUT)
-	public void updateOnlyUnavailableDates(@PathVariable("id") Long id,@RequestBody List<Date> dates) throws ParseException{
-		System.out.println("WE GOT"+dates);
-		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Property property = propertyService.findProperty(id);
-		logger.info(""+principal);
-        if(property.getUserAccount().getUsername().equals(principal.getUsername())){
-        	propertyService.updatePropertyUnavailableDates(dates,id);
-        }else{
-        	throw new ForbiddenException();
-        }
-	}
-	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/propertyFacilities", method = RequestMethod.GET)
 	public List<PropertyFacility> propertyFacilityList(){
 		List<PropertyFacility> result = propertyService.findPropertyFacilities();
