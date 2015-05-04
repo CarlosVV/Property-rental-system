@@ -1,0 +1,7 @@
+<h3>Specify unavailable dates</h3>
+<p>These dates are unavailable for booking.</p>
+<my-datepicker class="col-md-12" ng-if="currentUnDates.$resolved && currentBookedDates.$resolved" 
+	update-un-dates="updateUnDates(dates)"
+	unavailable-dates="currentUnDates"
+	booked-dates="currentBookedDates"></my-datepicker>
+<button class="btn btn-success col-md-3" ng-disabled="datesUpdated" ng-click="sendUnDates()">Save unavailable dates</button>

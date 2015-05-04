@@ -1,0 +1,39 @@
+<div class="container">
+	<div class="col-md-2">
+		<strong>Show only:</strong>
+		<div ng-repeat="status in bookingsStatuses">
+			<label class='facility'><input type="radio" value="{{status.name}}" ng-model="$parent.showOnlyStatus"/> {{status.name}}</label>
+		</div>
+		<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No sorting by status</label>
+		<br/><strong>Sort by year:</strong>
+		<div ng-repeat="year in availableYears">
+			<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyYear"/> {{year}}</label>
+		</div>
+		<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
+	</div>
+	<div class="col-md-10">
+		<div class="row" ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:'-bookingId'">
+			<group-bookings-by-date bookings="filteredBookings" current-booking="booking" start-from="(currentPage - 1)*itemsPerPage" limit-to="itemsPerPage" order-by="-bookingId"></group-bookings-by-date>
+			<div class="col-md-12 apartmentBlock">
+				<div class="apartmentTitle">Booked - <a ui-sref="showProperty({propertyId : booking.propertyId})">{{booking.propertyTitle}}</a></div>
+				<div class="apartmentLocation">{{booking.city}}, {{booking.administrativeArea}}, {{booking.country}}</div>
+				<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
+				<div class="bookingPrice">{{booking.price}} EUR</div>
+				<div class="bookingDates">Booked on: {{booking.bookedDate | date:"dd/MM/yyyy"}}</div>
+				<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
+				<div class="bookingStatus"><a ui-sref="conversations.chat({bookingId : booking.bookingId})">Message host</a></div>
+			<hr/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<pagination ng-if="bookings.$resolved && bookings.length" boundary-links="true" total-items="filteredBookings.length"
+	                ng-model="$parent.currentPage" class="pagination-sm"
+	                previous-text="&lsaquo;" next-text="&rsaquo;"
+	                first-text="&laquo;" last-text="&raquo;"
+	            	items-per-page="itemsPerPage"></pagination>
+			</div>
+		</div>
+	</div>
+</div>

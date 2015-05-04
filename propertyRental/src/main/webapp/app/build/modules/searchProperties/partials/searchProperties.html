@@ -1,0 +1,81 @@
+<div class="jumbotron formSection">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9 centerElement input-append">
+				<form name="queryForm" ng-submit="queryForm.$valid && queryProperties(query)" novalidate>
+					<div class="col-md-4 col-xs-12">
+						<input type="text" name="location" placeholder="Location" options="autoCompleteOptions" 
+							ng-autocomplete details="details" ng-model="query.address" 
+							class="form-control" validate-query="{{query.country}}" ng-change="resetQuery()" required/>
+							<div ng-show="queryForm.location.$dirty && queryForm.location.$error.validQuery">INVALID QUERY</div>
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#">
+						    <div class="input-group">
+						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="query.checkIn" 
+								class="form-control" filter-date check-dates-match="{{query.checkOut}}"/>
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker data-ng-model="query.checkIn" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown1' }"/>
+						</ul>
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#">
+		    				<div class="input-group">
+		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="query.checkOut" 
+								class="form-control" filter-date check-dates-match="{{query.checkIn}}"/>
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker data-ng-model="query.checkOut" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
+						</ul>
+					</div>
+					<div class="col-md-2 col-xs-4">
+						<input type="number" name="guestNumber" placeholder="Guest number" ng-model="query.guestNumber" 
+							class="form-control" min="0"/>
+					</div>
+					<div class="col-md-1 col-xs-12">
+						<input type="submit" value="Search" class="btn btn-default"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="col-md-2">
+		<strong>Property types:</strong>
+		<div ng-repeat="type in propertyTypes">
+			<label class='facility'><input type="checkbox" value="{{type}}" check-list="sorting.propertyTypes"/> {{type.name}}</label>
+		</div>
+		<strong>Price per night:</strong>
+		<div ng-repeat="price in pricePerNightOptions">
+			<label class='facility'><input type="checkbox" value="{{price}}" check-list="sorting.prices"/> {{price.lowerBound}} <span ng-if="price.upperBound">- {{price.upperBound}}</span><span ng-if="!price.upperBound">+</span> EUR</label>
+		</div>
+		<strong>Property facilities:</strong>
+		<div ng-repeat="facility in propertyFacilities">
+			<label class='facility'><input type="checkbox" value="{{facility}}" check-list="sorting.propertyFacilities"/> {{facility.name}}</label>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="row" ng-repeat="property in properties | sortByFacility : sorting.propertyFacilities | sortByType : sorting.propertyTypes | sortByPrice : sorting.prices">
+			<a ui-sref="showProperty({propertyId : property.id,checkIn:queryToPass.checkIn,checkOut:queryToPass.checkOut,guestNumber:query.guestNumber})" class="col-md-12 apartmentBlock">
+				<div class="apartmentTitle">{{property.title}}</div>
+				<div class="apartmentLocation">{{property.city}}, {{property.administrativeArea}}, {{property.country}}</div>
+				<div class="apartmentLocation">Price: {{property.pricePerNight}} EUR per night</div>
+				<div class="apartmentLocation">Minimum nights: {{property.minimumNights}}</div>
+				<ul>
+					<li class="apartmentLocation propFacMiniList" ng-repeat="facility in property.propertyFacilities">&bull; {{facility.name}} </li>
+				</ul>
+			</a>
+		</div>
+	</div>
+</div>

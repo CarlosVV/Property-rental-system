@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs">
+    <li  ui-sref-active="active">
+      <a ui-sref=".bookings">Bookings</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".statistics">Statistics</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".update">Edit property</a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref=".unDates">Unavailable dates</a>
+    </li>
+</ul>
+<div class="row"><div class="col-md-12"><a ui-sref="showProperty({propertyId:currentProperty.id})" class="floatRightA">Move to property info</a></div></div>
+<div ui-view></div>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="RentalApp">
+<head>
+<meta charset="UTF-8">
+<title ng-bind="pageTitle"></title>
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" href="../bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+<!-- For my own implementation of datepicker directive -->
+<link rel="stylesheet" href="../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.css">
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+
+<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
+
+<script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
+<script type="text/javascript" src="../bower_components/moment/moment.js"></script>
+<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script type="text/javascript" src="../bower_components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="../bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
+<script type="text/javascript" src="../bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+<script type="text/javascript" src="../bower_components/ngAutocomplete/src/ngAutocomplete.js"></script>
+<script type="text/javascript" src="../bower_components/ng-file-upload/angular-file-upload-shim.js"></script>
+<script type="text/javascript" src="../bower_components/ng-file-upload/angular-file-upload.js"></script>
+
+<script type="text/javascript" src="../bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+<!-- For my own implementation of datepicker directive -->
+<script type="text/javascript" src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<!-- Angularjs bootstrap directives -->
+<script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+<script type="text/javascript" src="app.min.js"></script>
+<!-- <script type="text/javascript" src="shared/services/accountService.js"></script>
+<script type="text/javascript" src="shared/services/bookingService.js"></script>
+<script type="text/javascript" src="shared/services/conversationService.js"></script>
+<script type="text/javascript" src="shared/services/propertyService.js"></script>
+<script type="text/javascript" src="shared/directives/bookingDatesDirective.js"></script>
+<script type="text/javascript" src="shared/directives/bookingStatusDirective.js"></script>
+<script type="text/javascript" src="shared/directives/checkListDirective.js"></script>
+<script type="text/javascript" src="shared/directives/datepickerDirective.js"></script>
+<script type="text/javascript" src="shared/directives/validateQueryDirective.js"></script>
+<script type="text/javascript" src="shared/filters/sortingFilters.js"></script>
+<script type="text/javascript" src="shared/filters/truncateFilter.js"></script>
+<script type="text/javascript" src="modules/home/home.js"></script>
+<script type="text/javascript" src="modules/addProperty/addProperty.js"></script>
+<script type="text/javascript" src="modules/security/login.js"></script>
+<script type="text/javascript" src="modules/security/register.js"></script>
+<script type="text/javascript" src="modules/security/logout.js"></script>
+<script type="text/javascript" src="modules/searchProperties/searchProperties.js"></script>
+<script type="text/javascript" src="modules/myBookings/myBookings.js"></script>
+<script type="text/javascript" src="modules/showProperty/showProperty.js"></script>
+<script type="text/javascript" src="modules/conversations/conversations.js"></script>
+<script type="text/javascript" src="modules/conversations/chat.js"></script>
+<script type="text/javascript" src="modules/myProperties/myProperties.js"></script>
+<script type="text/javascript" src="modules/myProperties/myProperty.js"></script>
+<script type="text/javascript" src="modules/myProperties/myPropertyStatistics.js"></script>
+<script type="text/javascript" src="modules/myProperties/myPropertyBookings.js"></script>
+<script type="text/javascript" src="modules/myProperties/updateProperty.js"></script>
+<script type="text/javascript" src="modules/myProperties/myPropertyUnavailableDates.js"></script> -->
+</head>
+<body>
+<div id="header" ng-include="'shared/partials/header.html'"></div>
+<div ui-view="mainView"></div>
+
+<div id="footer" ng-include="'shared/partials/footer.html'"></div>
+</body>
+</html>

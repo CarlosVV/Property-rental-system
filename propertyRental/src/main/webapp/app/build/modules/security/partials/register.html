@@ -1,0 +1,15 @@
+<div class="container">
+	<h1>Registration</h1>
+	<form name="registerForm" ng-submit="registerForm.$valid && register()">
+		<div class="form-group">
+			<label>Username:</label> <input type="text" name="username"
+				ng-model="userAccount.username" class="form-control" ng-blur="!registerForm.$pristine && checkUsername(registerForm)" required />
+				<span class="errorMsg" ng-show="registerForm.username.$error.usernameAvailable">The username is not available</span>
+		</div>
+		<div class="form-group">
+			<label>Password:</label> <input type="password" name="password"
+				ng-model="userAccount.password" class="form-control" required />
+		</div>
+		<button class="btn btn-success" type="submit">Register</button>
+	</form>
+</div>

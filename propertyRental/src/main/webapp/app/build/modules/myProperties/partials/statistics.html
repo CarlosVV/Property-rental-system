@@ -1,0 +1,58 @@
+<div class="marginFromTabs">
+
+<accordion close-others="false"> 
+	<accordion-group heading="Amount of booked days by months">
+		<div class="col-md-2 formSection">Choose year</div>
+		<div class="col-md-2">
+			<select ng-options="year as year for year in currentProperty.availableYears" 
+				ng-model="bookedDaysYear" ng-change="showPropertyBookedDays(bookedDaysYear)"
+				ng-if="properties.$resolved"
+				class="form-control" name="propertyType"></select>		
+		</div>
+		<div class="col-md-12">
+			<highchart config="chartConfigBookedDays"></highchart>
+		</div>
+	</accordion-group>
+	<accordion-group heading="Average guest count by months">
+		<div class="col-md-2 formSection">Choose year</div>
+		<div class="col-md-2">
+			<select ng-options="year as year for year in currentProperty.availableYears" 
+				ng-model="avgGuestCountYear" ng-change="showPropertyAvgGuestCount(avgGuestCountYear)"
+				ng-if="properties.$resolved"
+				class="form-control" name="avgGuestCount"></select>		
+		</div>
+		<div class="col-md-12">
+			<highchart config="chartConfigAvgGuestCount"></highchart>
+		</div>
+	</accordion-group>
+	<accordion-group heading="Property average rating by months">
+		<div class="col-md-2 formSection">Choose year</div>
+		<div class="col-md-2">
+			<select ng-options="year as year for year in currentProperty.availableYears" 
+				ng-model="avgStarsYear" ng-change="showPropertyAvgStars(avgStarsYear)"
+				ng-if="properties.$resolved"
+				class="form-control" name="avgStars"></select>		
+		</div>
+		<div class="col-md-12">
+			<highchart config="chartConfigAvgStars"></highchart>
+		</div>
+	</accordion-group>
+	<accordion-group heading="Average bookings length and number of bookings by months">
+		<div class="col-md-2 formSection">Choose year</div>
+		<div class="col-md-2">
+			<select ng-options="year as year for year in currentProperty.availableYears" 
+				ng-model="avgBookingsLengthYear" ng-change="showBookingsAvgLength(avgBookingsLengthYear)"
+				ng-if="properties.$resolved"
+				class="form-control" name="avgBookLength"></select>		
+		</div>
+		<div class="col-md-12">
+			<highchart config="chartConfigAvgBookingLength"></highchart>
+		</div>
+	</accordion-group>
+</accordion>
+
+
+</div>
+	
+
+	

@@ -1,0 +1,241 @@
+/*
+Bug fix from angular ui bootstrap
+*/
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.resetMarginPadding {
+	margin:0px;
+	padding:0px;
+}
+.centerText{
+	text-align: center;
+}
+.centerElement{
+	float:none;
+	margin:0 auto;
+}
+.angular-google-map-container { height: 400px; width:100%; }
+/*
+For elements with both the ng-valid and ng-dirty classes
+*/
+.ng-invalid.ng-dirty {
+  border-color: red;
+  outline-color: red;
+}
+.ng-valid.ng-dirty {
+  border-color: green;
+  outline-color: green;
+}
+[class^="col-md-"]{
+	padding: 0 5px 0 5px;
+}
+.formSection{
+	padding:5px;
+}
+.apartmentBlock{
+	padding:5px 5px 0 5px;
+	margin:5px 5px 0 5px;
+}
+a.apartmentBlock:hover{
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+.editPropButton{
+	margin:0px 5px 5px 10px;
+}
+.apartmentBlock:hover{
+	text-decoration: none;
+}
+.apartmentTitle{
+	font-size: 21px;
+}
+.apartmentLocation{
+	font-size:15px;
+	color:black;
+}
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 300px;
+    height: 150px;
+    text-align: center;
+    padding-top: 25px;
+}
+.dragover {
+    border: 5px dashed blue;
+}
+.thumbnail{
+	width:200px;
+}
+.deletePhoto{
+	float:right;
+}
+.photoList{
+	margin:10px 0 10px 5px;
+}
+.facility{
+	font-weight: normal;
+}
+.thumbnail-backup{
+	opacity: 0.4;
+}
+.propertyTitle{
+	padding:5px;
+	border-bottom:1px solid rgb(224, 224, 224);
+}
+.mainImgContainer{
+    width:100%;
+    height:700px;
+    position:relative;
+}
+.mainImgContainer img{
+	position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index:1;
+    display: block;
+    max-width:100%;
+    max-height:700px;
+}
+.leftArrowBox{
+	position:absolute;
+	left:0;
+	top:0;
+	width:5%;
+	height:100%;
+    z-index:2;
+}
+.leftArrowBox:hover{
+	background: rgba(27, 27, 27, 0.72);
+}
+.leftArrowBox span{
+	top:40%;
+	background:url('../img/leftArrow.png');
+	display:block;
+	height:90px;
+	width:50px;
+	position:absolute;
+}
+.rightArrowBox{
+	position:absolute;
+	top:0;
+	left:95%;
+	width:5%;
+	height:100%;
+    z-index:2;
+}
+.rightArrowBox span{
+	top:40%;
+	background:url('../img/rightArrow.png');
+	display:block;
+	height:90px;
+	width:50px;
+	position:absolute;
+}
+.rightArrowBox:hover{
+	background: rgba(27, 27, 27, 0.72);
+}
+.photoThumbs{
+    margin-left: auto;
+    margin-right: auto;
+    width:100%;
+	text-align:center;
+}
+.photoThumbs li{
+	display:inline-block;
+	margin:5px;
+}
+.photoThumbs img{
+	width:150px;
+	cursor:pointer;
+}
+.fullWidthContainer{
+	background:rgba(0, 0, 0, 0.01);
+	border-top:1px solid rgb(213, 213, 213);
+	border-bottom:1px solid rgb(213, 213, 213);
+}
+.imgBorder{
+	border: 1px solid rgb(213, 55, 42);
+}
+.formMargin{
+	margin-bottom:0;
+}
+.bookingFormText{
+	text-align:right;
+	padding:6px 0 0 0;
+}
+.bookingPricePadding{
+	padding:7px 0 0 7px;
+}
+.statusDesc{
+	font-size:13px;
+}
+.statusCreated{
+	color:rgb(153, 12, 161);
+}
+.statusAccepted{
+	color:green;
+}
+.statusCancelled{
+	color:red;
+}
+.paddingLeft{
+	padding:0 0 0 30px;
+}
+.review{
+	margin:20px;
+}
+.reviewHeader{
+	font-size:20px;
+}
+.reviewBody{
+	font-size:15px;
+}
+.nav-header{
+	display:block;
+	font-size:15px;
+	font-weight:bold;
+	color:#606060;
+	padding: 3px 0 3px 15px;
+}
+.msgColor{
+	color:rgb(136, 252, 238);
+}
+.smallInfo{
+	font-size:12px;
+}
+.relParent{
+	position:relative;
+}
+.msgPopup{
+	position:absolute;
+	background:#f3f3f3;
+	width:400px;
+	min-height:150px;
+	color:black;
+	font-size:17px;
+	border:1pxp solid black;
+}
+.marginFromTabs{
+	margin-top:10px;
+}
+.propFacMiniList{
+	display:inline;
+}
+.errorMsg{
+	color:red;
+}
+.floatRightA{
+	float:right;
+}
+.footerText{
+	font-size:11px;
+	text-align:center;
+	color:#adbcbb;
+}
+.commentLink{
+	margin:0 0 0 15px; 
+}

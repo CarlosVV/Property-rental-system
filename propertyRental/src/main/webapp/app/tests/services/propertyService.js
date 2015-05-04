@@ -3,21 +3,21 @@ describe('testing property service',function(){
 	beforeEach(function(){
 		module('RentalApp');
 	});
-	//I cannot write $httpBackend=$httpBackend that's why using _$httpBackend_
+	beforeEach(module(function ($urlRouterProvider) {
+	    $urlRouterProvider.otherwise(function(){return false;});
+	}));
 	beforeEach(inject(function(_$httpBackend_,_API_URL_,_PropertyService_){
 		$httpBackend = _$httpBackend_;
 		API_URL = _API_URL_;
 		PropertyService = _PropertyService_;
 	}));
 	describe('property',function(){
-		it('should return same property',function(){ 
-			/*
+		it('should return same property',function(){
 			var url = '/propertyRental/api/properties/1';
 			$httpBackend.expectGET(url).respond({id:1});
 			var result = PropertyService.property.get({id:1});
 			$httpBackend.flush();
-			console.log(result);
-			expect(result.id).toEqual(1);*/
+			expect(result.id).toEqual(1);
 		});
 	});
 });

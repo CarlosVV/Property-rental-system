@@ -87,7 +87,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
-        console.log("WORKS?");
         if(toState.data.authorities.length != 0){
 	        if($rootScope.isLoggedIn() && toState.data.authorities.indexOf($rootScope.getAuthority()) == -1){
 	            event.preventDefault();

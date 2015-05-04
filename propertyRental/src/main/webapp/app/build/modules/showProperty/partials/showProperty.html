@@ -1,0 +1,174 @@
+<div class="container">
+	<h1 class='propertyTitle'>{{property.title}}</h1>
+</div>
+<div class="jumbotron formSection formMargin">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9 centerElement input-append">
+				<form name="bookingForm" ng-submit="bookingForm.$valid && bookApartment()" novalidate>
+					
+					<div class="col-md-1 bookingFormText">
+						Check in:
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#">
+						    <div class="input-group">
+						    	<input type="text" name="checkIn" placeholder="Check in" ng-model="booking.checkIn" 
+								class="form-control" ng-if="unavailableDates.$resolved" filter-date check-date="unavailableDates" 
+								check-dates-match="{{booking.checkOut}}" required />
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker ng-if="unavailableDates.$resolved" data-ng-model="booking.checkIn" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown1' }"/>
+						</ul>
+					</div>
+					<div class="col-md-1 bookingFormText">
+						Check out:
+					</div>
+					<div class="col-md-2 col-xs-4 dropdown">
+						<a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#">
+		    				<div class="input-group">
+		    					<input type="text" name="checkOut" placeholder="Check out" ng-model="booking.checkOut" 
+								class="form-control" ng-if="unavailableDates.$resolved" filter-date check-date="unavailableDates" 
+								check-dates-match="{{booking.checkIn}}" required/>
+							    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+						    </div>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						    <datetimepicker ng-if="unavailableDates.$resolved" data-ng-model="booking.checkOut" 
+						    data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)" 
+						    data-datetimepicker-config="{ minView:'day',dropdownSelector: '#dropdown2' }"/>
+						</ul>
+					</div>
+					<div class="col-md-1 bookingFormText">
+						Guests:
+					</div>
+					<div class="col-md-2 col-xs-4">
+						<input type="number" name="guestNumber" placeholder="Guest number" ng-model="booking.guestNumber" 
+							class="form-control" min="0" ng-if="property.imagePaths.length" max="{{property.guestCount}}" required/>
+					</div>
+					<div class="col-md-2 cold-xs-2 bookingPricePadding">
+						<count-booking-price ng-if="property.$resolved && property.userAccount.username != currentUser" night-price="property.pricePerNight" check-in="booking.checkIn" check-out="booking.checkOut"></count-booking-price>
+					</div>
+					<div class="col-md-1 col-xs-12">
+						<input type="submit" value="Book apartment" class="btn btn-success" ng-show="isLoggedIn() && property.userAccount.username != currentUser"/>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="row" ng-show="(bookingForm.checkIn.$touched && bookingForm.checkOut.$touched) && 
+		(bookingForm.checkIn.$error.validcheckIn || bookingForm.checkOut.$error.validcheckOut)">
+			<div class="alert alert-danger" role="alert">
+			  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			  <span class="sr-only">Error:</span>
+			  	Check if your length of stay is greater or equal than property's minimum length of stay.<br/>
+			  	Check if your booking overlaps unavailable dates.
+			</div>
+		</div>
+	</div>
+</div>
+<div class="fullWidthContainer">
+	<div class="container">
+		<div class="mainImgContainer">
+			<a href='javascript:void(0)' class="leftArrowBox" ng-click="prevImg()">
+				<span></span>
+			</a>
+			<img ng-src="../uploads/photos/{{mainImgUrl}}">
+			<a href='javascript:void(0)' class="rightArrowBox" ng-click="nextImg()">
+				<span></span>
+			</a>
+		</div>
+		<ul class="photoThumbs">
+		  <li ng-repeat="img in property.imagePaths">
+		    <img ng-src="../uploads/photos/{{img.path}}" ng-click="setImg(img)" ng-class="{imgBorder:img.path == mainImgUrl}">
+		  </li>
+		</ul>
+		<div class="row">
+			<h4>Provided facilities:</h4>
+			<ul>
+				<li ng-repeat="facility in property.propertyFacilities">{{facility.name}}</li>
+			</ul>
+		</div>
+		<div class="row">
+			<h4>Pricing:</h4>
+			<p>Minimum nights: {{property.minimumNights}}</p>
+			<p>Price per night: {{property.pricePerNight}} EUR</p>
+			<h4>Sizing:</h4>
+			<p>Maximum guest count: {{property.guestCount}}</p>
+			<p>Bathroom count: {{property.bathroomCount}}</p>
+			<p>Bedroom count: {{property.bedroomCount}}</p>
+			<p>Bed count: {{property.bedCount}}</p>
+			<p>Size: {{property.size}} m^2</p>
+		</div>
+		<div class="row">
+			<h4>Description</h4>
+			<p>{{property.description | truncate : maxLength : showMoreDesc}}</p>
+			<a href='javascript:void(0);' ng-click="showMoar('desc')">{{showMoreDesc}}</a>
+		</div>
+		<div class="row">
+			<h4>Owner's rules</h4>
+			<p>{{property.rules | truncate : maxLength : showMoreRules}}</p>
+			<a href='javascript:void(0);' ng-click="showMoar('rules')">{{showMoreRules}}</a>
+		</div>
+		<div class="row">
+			<h4>Location:</h4>
+			<p>Country: {{property.country}}</p>
+			<p>Administrative area: {{property.administrativeArea}}</p>
+			<p>City: {{property.city}}</p>
+			<p>Address:{{property.address}}</p>
+			<p>Postal code: {{property.postalCode}}</p>
+		</div>
+	</div>
+</div>
+<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom' options="mapOptions">
+	<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+       </ui-gmap-marker>
+</ui-gmap-google-map>
+<div class="container">
+	<h3>Reviews:</h3>
+	<div ng-repeat="review in reviews">
+		<div ng-if="review.parentReviewId == null" class="review">
+			<button ng-if="currentUsername == review.username" ng-click="deleteReview(review.id)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			</button>
+			<div class="reviewHeader">Wrote {{review.username}}:</div>
+			<div class="reviewBody">{{review.review}}</div>
+			<div class="reviewBody">Stars: {{review.stars}}/5</div>
+			<hr/>
+			<div ng-repeat="answer in reviews">
+				<div ng-if="review.id == answer.parentReviewId" class="review">
+					<button ng-if="currentUsername == answer.username" ng-click="deleteReview(answer.id)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
+					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</button>
+					<div class="reviewHeader">Answer from the host:</div>
+					<div class="reviewBody">{{answer.review}}</div>
+					<a href="javascript:void(0);" class="commentLink" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
+					<hr/>
+				</div>
+			</div>
+			<div class="row" ng-if="reviewToComment == review.id">
+				<form novalidate name="commentForm" ng-submit="addReview(review.id,commentForm)">
+					<div class="col-md-5">
+						<p>Your comment:</p>
+						<textarea ng-model="comment.review" rows="5" class="form-control" required></textarea>
+					   	<input type="submit" value="Add a comment" class="btn btn-default"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="!reviews.length">
+		<h4>There are no reviews</h4>
+	</div>
+	<form novalidate name="reviewForm" ng-if="canSendReviews.allowed" ng-submit="reviewForm.$valid && addReview(0,reviewForm)">
+		<div class="col-md-5">
+			<p>Please add a review:</p>
+			<textarea name="review" ng-model="newReview.review" rows="5" class="form-control" required></textarea>
+		   	<p>Stars: <rating ng-model="newReview.stars" max="5" readonly="false"></rating><span ng-show="starsRequired" style="color:red;">Please rate your stay!</span></p>
+    		<input type="submit" class="btn btn-default" value="Add a review"/>
+		</div>
+	</form>
+</div>

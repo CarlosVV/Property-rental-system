@@ -30,7 +30,6 @@ public class UserAccountController {
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<UserAccount> registerAccount(@RequestBody UserAccount userAccount){
 		try{
-			System.out.println("WTF"+userAccount);
 			UserAccount user = userAccountService.createUserAccount(userAccount);
 			return new ResponseEntity<UserAccount>(user,HttpStatus.CREATED);
 		}catch(UserAccountExistsException e){
@@ -48,17 +47,6 @@ public class UserAccountController {
 				return;
 			}
 			throw new ConflictException();
-		}
-	}
-	@PreAuthorize("permitAll")
-	@RequestMapping(value = "/{accountId}", method = RequestMethod.GET)
-	public ResponseEntity<UserAccount> getAccount(
-			@PathVariable Long accountId) {
-		UserAccount userAccount = userAccountService.findUserAccountById(accountId);
-		if (userAccount != null) {
-			return new ResponseEntity<UserAccount>(userAccount, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<UserAccount>(HttpStatus.NOT_FOUND);
 		}
 	}
 }

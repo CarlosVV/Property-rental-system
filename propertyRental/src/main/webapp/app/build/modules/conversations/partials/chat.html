@@ -1,0 +1,36 @@
+<div class="row">
+<div class="col-md-12 apartmentBlock">
+	<div class="apartmentTitle">Booked <a ui-sref="showProperty({propertyId : currentBooking.propertyId})">{{currentBooking.propertyTitle}}</a> by - <strong>{{currentBooking.userAccountUsername}}</strong></div>
+	<div class="bookingDates">{{currentBooking.checkIn | date:"dd/MM/yyyy"}} - {{currentBooking.checkOut | date:"dd/MM/yyyy"}}</div>
+	<div class="bookingPrice">{{currentBooking.price}} EUR</div>
+	<div class="bookingDates">Booked on: {{currentBooking.bookedDate | date:"dd/MM/yyyy"}}</div>
+	<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="currentBooking.bookingStatusId"></show-booking-status>
+	<hr/>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12" ng-repeat="message in messages">
+	<div class="col-md-10">
+		<h4 ng-if="message.senderUsername == currentUsername">You sent:</h4>
+		<h4 ng-if="message.receiverUsername == currentUsername">{{message.senderUsername}} sent:</h4>
+	</div>
+	<div class="col-md-2">
+		<h5><i>{{message.sentDate | date:"dd/MM/yyyy HH:MM"}}</i></h5>
+	</div>
+	<div class="col-md-12">{{message.message}}</div>
+	<hr/>
+</div>
+</div>
+<h3 class="col-md-12" ng-if="!messages.length">No messages for now</h3>
+<div class="col-md-12" style="margin-top:20px;">
+<form name="messageForm" ng-submit="messageForm.$valid && sendMessage(messageForm)">
+	<div class="row">
+		<div class="form-group col-md-8">
+			<label for="description">Please send a message:</label>
+			<textarea rows="8" class="form-control" name="message" ng-model="message.message" required></textarea>
+		</div>
+	</div>
+	<input type="submit" class="btn btn-default" ng-disabled="messageForm.$invalid"/>
+</form>
+</div>
