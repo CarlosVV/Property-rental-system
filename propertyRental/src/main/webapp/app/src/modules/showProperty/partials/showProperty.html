@@ -93,15 +93,25 @@
 			</ul>
 		</div>
 		<div class="row">
-			<h4>Pricing:</h4>
-			<p>Minimum nights: {{property.minimumNights}}</p>
-			<p>Price per night: {{property.pricePerNight}} EUR</p>
-			<h4>Sizing:</h4>
-			<p>Maximum guest count: {{property.guestCount}}</p>
-			<p>Bathroom count: {{property.bathroomCount}}</p>
-			<p>Bedroom count: {{property.bedroomCount}}</p>
-			<p>Bed count: {{property.bedCount}}</p>
-			<p>Size: {{property.size}} m^2</p>
+			<div class="col-md-6">
+				<h4>Pricing:</h4>
+				<p>Minimum nights: {{property.minimumNights}}</p>
+				<p>Price per night: {{property.pricePerNight}} EUR</p>
+				<h4>Sizing:</h4>
+				<p>Maximum guest count: {{property.guestCount}}</p>
+				<p>Bathroom count: {{property.bathroomCount}}</p>
+				<p>Bedroom count: {{property.bedroomCount}}</p>
+				<p>Bed count: {{property.bedCount}}</p>
+				<p>Size: {{property.size}} m^2</p>
+			</div>
+			<div class="col-md-6">
+				<h4>Location:</h4>
+				<p>Country: {{property.country}}</p>
+				<p>Administrative area: {{property.administrativeArea}}</p>
+				<p>City: {{property.city}}</p>
+				<p>Address:{{property.address}}</p>
+				<p>Postal code: {{property.postalCode}}</p>
+			</div>
 		</div>
 		<div class="row">
 			<h4>Description</h4>
@@ -112,14 +122,6 @@
 			<h4>Owner's rules</h4>
 			<p>{{property.rules | truncate : maxLength : showMoreRules}}</p>
 			<a href='javascript:void(0);' ng-click="showMoar('rules')">{{showMoreRules}}</a>
-		</div>
-		<div class="row">
-			<h4>Location:</h4>
-			<p>Country: {{property.country}}</p>
-			<p>Administrative area: {{property.administrativeArea}}</p>
-			<p>City: {{property.city}}</p>
-			<p>Address:{{property.address}}</p>
-			<p>Postal code: {{property.postalCode}}</p>
 		</div>
 	</div>
 </div>

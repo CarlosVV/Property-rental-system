@@ -15,6 +15,9 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
     $scope.itemsPerPage = 2;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
+    
+    $scope.testBookings = [];
+    
 	$scope.propertyBookings = BookingService.booking.myPropertiesBookings({propertyId:$stateParams.propertyId},function(){
 		for(var i=0;i<$scope.propertyBookings.length;i++){
 			var createdYear = moment($scope.propertyBookings[i].bookedDate).year();
@@ -27,12 +30,43 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 			if(!found){
 				$scope.availableYears.push(createdYear);
 			}
+			$scope.testBookings.push({
+				id:$scope.propertyBookings[i].bookingId,
+				user:$scope.propertyBookings[i].userAccountUsername,
+				price:$scope.propertyBookings[i].price,
+				bookedDate:$scope.propertyBookings[i].bookedDate,
+				status:status,
+				checkIn:$scope.propertyBookings[i].checkIn,
+				checkOut:$scope.propertyBookings[i].checkOut
+			});
 		}
 		$scope.filteredBookings = $scope.propertyBookings;
 	});
 	$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	
-	
+	$scope.$watch('bookingsStatuses',function(){
+		if($scope.bookingsStatuses.length && $scope.propertyBookings.length){
+		  for(var i=0;i<$scope.testBookings.length;i++){
+			  for(var j=0;j<$scope.bookingsStatuses.length;j++){
+				if($scope.bookingsStatuses[j].id == $scope.propertyBookings[i].bookingStatusId){
+					$scope.testBookings[i].status = $scope.bookingsStatuses[j].name;
+					break;
+				}
+			  }
+		  }
+		}
+	},true);
+	$scope.$watch('testBookings',function(){
+		if($scope.bookingsStatuses.length && $scope.testBookings.length){
+		  for(var i=0;i<$scope.testBookings.length;i++){
+			  for(var j=0;j<$scope.bookingsStatuses.length;j++){
+				if($scope.bookingsStatuses[j].id == $scope.propertyBookings[i].bookingStatusId){
+					$scope.testBookings[i].status = $scope.bookingsStatuses[j].name;
+					break;
+				}
+			  }
+		  }
+		}
+	},true);
 	$scope.lastActionBookingId;
 	$scope.lastStatus;
 	$scope.setBookingStatusPayed = function(bookingId){
@@ -96,4 +130,34 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
     });
+    
+    $scope.reverse = true;
+    $scope.predicate = 'bookingId';
+	$scope.bookedDateSort = 'noSort';
+	$scope.checkInSort = 'noSort';
+	$scope.reset = function(){
+		$scope.bookedDateSort = 'noSort';
+		$scope.checkInSort = 'noSort';
+	};
+    $scope.sortByCreationDate = function(){
+    	$scope.predicate = 'bookedDate';
+    	$scope.reverse = !$scope.reverse;
+    	$scope.reset();
+    	if(!$scope.reverse){
+    		$scope.bookedDateSort = 'sort';
+    	}else{
+    		$scope.bookedDateSort = 'reverseSort';
+    	}
+    };
+    $scope.sortByCheckIn = function(){
+    	$scope.predicate = 'checkIn';
+    	$scope.reverse = !$scope.reverse;
+    	$scope.reset();
+    	if(!$scope.reverse){
+    		$scope.checkInSort = 'sort';
+    	}else{
+    		$scope.checkInSort = 'reverseSort';
+    	}
+    };
+    
 }]);

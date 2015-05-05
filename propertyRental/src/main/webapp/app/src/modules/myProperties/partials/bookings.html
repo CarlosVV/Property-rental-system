@@ -15,30 +15,28 @@
 		</div>
 		<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
 	</div>
-	
-<div class="col-md-9">
-	<div class="row" ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:'-bookingId'">
-		<group-bookings-by-date bookings="filteredBookings" current-booking="booking" start-from="(currentPage - 1)*itemsPerPage" limit-to="itemsPerPage" order-by="-bookingId"></group-bookings-by-date>
-		<div class="col-md-12 apartmentBlock">
-			<div class="apartmentTitle">Booked by - <a ui-sref='conversations.chat({bookingId : booking.bookingId})'>{{booking.userAccountUsername}}</a></div>
-			<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
-			<div class="bookingPrice">{{booking.price}} EUR</div>
-			<div class="bookingDates">Booked on: {{booking.bookedDate | date:"dd/MM/yyyy"}}</div>
-			<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
-			<button class="btn btn-success" ng-disabled="booking.bookingStatusId == 2 || booking.bookingStatusId == 3" ng-click="setBookingStatusPayed(booking.bookingId)">Set status "payed and accepted"</button>
-			<button class="btn btn-danger" ng-disabled="booking.bookingStatusId == 3" ng-click="cancelBooking(booking.bookingId)">Cancel booking</button>
-			<button class="btn btn-warning" ng-if="lastActionBookingId == booking.bookingId" ng-click="annulLastAction(booking.bookingId)">Annul last action</button>
-			<hr/>
+	<div class="col-md-9">
+		<table class="table table-striped table-hover">
+			<tr><th>Renter</th><th ng-click="sortByCheckIn()">Booking dates<span ng-class="checkInSort"></span></th><th>Price</th><th ng-click="sortByCreationDate()" >Creation date<span ng-class="bookedDateSort"></span></th><th>Status</th><th>Accept</th><th>Cancel</th><th>Annul</th></tr>
+			<tr ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:predicate:reverse">
+				<td><a ui-sref='conversations.chat({bookingId : booking.bookingId})'>{{booking.userAccountUsername}}</a></td>
+				<td>{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</td>
+				<td>{{booking.price}} EUR</td>
+				<td>{{booking.bookedDate | date:"dd/MM/yyyy"}}</td>
+				<td><show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status></td>
+				<td><button class="btn btn-success" ng-disabled="booking.bookingStatusId == 2 || booking.bookingStatusId == 3" ng-click="setBookingStatusPayed(booking.bookingId)">Accept</button></td>
+				<td><button class="btn btn-danger" ng-disabled="booking.bookingStatusId == 3" ng-click="cancelBooking(booking.bookingId)">Cancel</button></td>
+				<td><button class="btn btn-warning" ng-if="lastActionBookingId == booking.bookingId" ng-click="annulLastAction(booking.bookingId)">Annul last action</button></td>
+			</tr>
+		</table>
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<pagination ng-if="propertyBookings.$resolved && propertyBookings.length" boundary-links="true" total-items="filteredBookings.length"
+	                ng-model="$parent.currentPage" class="pagination-sm"
+	                previous-text="&lsaquo;" next-text="&rsaquo;"
+	                first-text="&laquo;" last-text="&raquo;"
+	            	items-per-page="itemsPerPage"></pagination>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-2"></div>
-		<div class="col-md-8">
-			<pagination ng-if="propertyBookings.$resolved && propertyBookings.length" boundary-links="true" total-items="filteredBookings.length"
-                ng-model="$parent.currentPage" class="pagination-sm"
-                previous-text="&lsaquo;" next-text="&rsaquo;"
-                first-text="&laquo;" last-text="&raquo;"
-            	items-per-page="itemsPerPage"></pagination>
-		</div>
-	</div>
-</div>

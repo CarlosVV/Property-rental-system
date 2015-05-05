@@ -87,7 +87,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
-        console.log("WORKS?");
         if(toState.data.authorities.length != 0){
 	        if($rootScope.isLoggedIn() && toState.data.authorities.indexOf($rootScope.getAuthority()) == -1){
 	            event.preventDefault();
@@ -208,6 +207,9 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			$scope.address = $scope.addressBackup;
 		}
 	});
+	$scope.resetQuery = function(){
+		$scope.streetNumber = "";
+	};
 	//get address details for property
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
@@ -229,13 +231,13 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			console.log("SRSLY",$scope.streetNumber);
 			$scope.property.address = street+streetNumber;
 			
-			$scope.marker.coords.latitude = newVal.geometry.location.k;
-			$scope.marker.coords.longitude = newVal.geometry.location.D;
-			$scope.map.center.latitude = newVal.geometry.location.k;
-			$scope.map.center.longitude = newVal.geometry.location.D;
+			$scope.marker.coords.latitude = newVal.geometry.location.A;
+			$scope.marker.coords.longitude = newVal.geometry.location.F;
+			$scope.map.center.latitude = newVal.geometry.location.A;
+			$scope.map.center.longitude = newVal.geometry.location.F;
 			$scope.map.zoom = 16;
-			$scope.property.latitude = newVal.geometry.location.k;
-			$scope.property.longitude = newVal.geometry.location.D;
+			$scope.property.latitude = newVal.geometry.location.A;
+			$scope.property.longitude = newVal.geometry.location.F;
 			console.log($scope.property.address);
 			console.log($scope.marker.coords.latitude);
 			console.log($scope.marker.coords.longitude);
@@ -552,12 +554,10 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 		});
 	}
 	$scope.resetQuery = function(){
-		console.log("execute pls");
 		$scope.query.city = "";
 		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
-		console.log($scope.query.city);
-	}
+	};
 	//old way, should use directive instead!
 	//moreover it is incorrect to use such method! cuz i am changing value of the variable but datepicker consumes moment object not string!
 	//not sure how to show it in thesis.
@@ -711,6 +711,9 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
     $scope.itemsPerPage = 2;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
+    
+    $scope.testBookings = [];
+    
 	$scope.propertyBookings = BookingService.booking.myPropertiesBookings({propertyId:$stateParams.propertyId},function(){
 		for(var i=0;i<$scope.propertyBookings.length;i++){
 			var createdYear = moment($scope.propertyBookings[i].bookedDate).year();
@@ -723,12 +726,43 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 			if(!found){
 				$scope.availableYears.push(createdYear);
 			}
+			$scope.testBookings.push({
+				id:$scope.propertyBookings[i].bookingId,
+				user:$scope.propertyBookings[i].userAccountUsername,
+				price:$scope.propertyBookings[i].price,
+				bookedDate:$scope.propertyBookings[i].bookedDate,
+				status:status,
+				checkIn:$scope.propertyBookings[i].checkIn,
+				checkOut:$scope.propertyBookings[i].checkOut
+			});
 		}
 		$scope.filteredBookings = $scope.propertyBookings;
 	});
 	$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	
-	
+	$scope.$watch('bookingsStatuses',function(){
+		if($scope.bookingsStatuses.length && $scope.propertyBookings.length){
+		  for(var i=0;i<$scope.testBookings.length;i++){
+			  for(var j=0;j<$scope.bookingsStatuses.length;j++){
+				if($scope.bookingsStatuses[j].id == $scope.propertyBookings[i].bookingStatusId){
+					$scope.testBookings[i].status = $scope.bookingsStatuses[j].name;
+					break;
+				}
+			  }
+		  }
+		}
+	},true);
+	$scope.$watch('testBookings',function(){
+		if($scope.bookingsStatuses.length && $scope.testBookings.length){
+		  for(var i=0;i<$scope.testBookings.length;i++){
+			  for(var j=0;j<$scope.bookingsStatuses.length;j++){
+				if($scope.bookingsStatuses[j].id == $scope.propertyBookings[i].bookingStatusId){
+					$scope.testBookings[i].status = $scope.bookingsStatuses[j].name;
+					break;
+				}
+			  }
+		  }
+		}
+	},true);
 	$scope.lastActionBookingId;
 	$scope.lastStatus;
 	$scope.setBookingStatusPayed = function(bookingId){
@@ -792,6 +826,36 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
     });
+    
+    $scope.reverse = true;
+    $scope.predicate = 'bookingId';
+	$scope.bookedDateSort = 'noSort';
+	$scope.checkInSort = 'noSort';
+	$scope.reset = function(){
+		$scope.bookedDateSort = 'noSort';
+		$scope.checkInSort = 'noSort';
+	};
+    $scope.sortByCreationDate = function(){
+    	$scope.predicate = 'bookedDate';
+    	$scope.reverse = !$scope.reverse;
+    	$scope.reset();
+    	if(!$scope.reverse){
+    		$scope.bookedDateSort = 'sort';
+    	}else{
+    		$scope.bookedDateSort = 'reverseSort';
+    	}
+    };
+    $scope.sortByCheckIn = function(){
+    	$scope.predicate = 'checkIn';
+    	$scope.reverse = !$scope.reverse;
+    	$scope.reset();
+    	if(!$scope.reverse){
+    		$scope.checkInSort = 'sort';
+    	}else{
+    		$scope.checkInSort = 'reverseSort';
+    	}
+    };
+    
 }]);;var myPropertyStatistics = angular.module("myPropertyStatistics",[]);
 myPropertyStatistics.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.statistics",{
@@ -1058,16 +1122,18 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			}
 			$scope.property.address = street+streetNumber;
 			
-			$scope.marker.coords.latitude = newVal.geometry.location.k;
-			$scope.marker.coords.longitude = newVal.geometry.location.D;
-			$scope.map.center.latitude = newVal.geometry.location.k;
-			$scope.map.center.longitude = newVal.geometry.location.D;
+			$scope.marker.coords.latitude = newVal.geometry.location.A;
+			$scope.marker.coords.longitude = newVal.geometry.location.F;
+			$scope.map.center.latitude = newVal.geometry.location.A;
+			$scope.map.center.longitude = newVal.geometry.location.F;
 			$scope.map.zoom = 16;
-			$scope.property.latitude = newVal.geometry.location.k;
-			$scope.property.longitude = newVal.geometry.location.D;
+			$scope.property.latitude = newVal.geometry.location.A;
+			$scope.property.longitude = newVal.geometry.location.F;
 		}
 	});
-	
+	$scope.resetQuery = function(){
+		$scope.property.address = "";
+	};
 	$scope.removePhoto = function(photo){
 		var index = $scope.photosToUpload.indexOf(photo);
 		if(index > -1){
@@ -1484,7 +1550,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		}
 	};
 	
-	console.log($scope.booking);
 	/*{
 			checkIn:checkInTemp,
 			checkOut:checkOutTemp,

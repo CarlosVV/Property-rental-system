@@ -63,12 +63,10 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 		});
 	}
 	$scope.resetQuery = function(){
-		console.log("execute pls");
 		$scope.query.city = "";
 		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
-		console.log($scope.query.city);
-	}
+	};
 	//old way, should use directive instead!
 	//moreover it is incorrect to use such method! cuz i am changing value of the variable but datepicker consumes moment object not string!
 	//not sure how to show it in thesis.

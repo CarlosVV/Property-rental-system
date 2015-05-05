@@ -1,2 +1,1 @@
-<div ng-class="{'statusCreated':currentStatusId==1,'statusAccepted':currentStatusId==2,'statusCancelled':currentStatusId==3}">{{bookingStatus}}</div>
-<div class="statusDesc"><i>{{bookingStatusDesc}}</i></div>
+<div class="statusClass" ng-class="{'statusCreated':currentStatusId==1,'statusAccepted':currentStatusId==2,'statusCancelled':currentStatusId==3}" tooltip="{{bookingStatusDesc}}">{{bookingStatus}}</div>

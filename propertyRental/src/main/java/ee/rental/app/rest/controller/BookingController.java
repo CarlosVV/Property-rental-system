@@ -76,8 +76,6 @@ public class BookingController {
 	}
 	/**
 	 * For messaging service
-	 * @param year
-	 * @return
 	 */
 	@RequestMapping(value="/myPropertiesBookings",method=RequestMethod.GET)
 	public List<BookingWrapper> myPropertiesBookings(){

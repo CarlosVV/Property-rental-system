@@ -59,7 +59,7 @@
 		<div class="form-group col-md-6">
 			<label for="address">Address:</label>
 			<input type="text" name="address" id="Autocomplete" options="autoCompleteOptions" ng-autocomplete
-			details="details" ng-model="address" class="form-control" check-query="{{property.address}}"/>
+			details="details" ng-model="address" class="form-control" ng-change="resetQuery()" validate-query="{{property.address}}"/>
 			<p ng-if="map.center.latitude != 0">Pro tip: drag the marker to specify the location!</p>
 			<ui-gmap-google-map ng-if="map.center.latitude != 0" center='map.center' zoom='map.zoom'>
 				<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>

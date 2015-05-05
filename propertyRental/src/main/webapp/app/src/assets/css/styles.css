@@ -239,3 +239,34 @@ a.apartmentBlock:hover{
 .commentLink{
 	margin:0 0 0 15px; 
 }
+.statusClass{
+	display:inline-block;
+}
+.table-striped tr th:hover {
+	background-color: #EFEFF5;
+	cursor:pointer;
+}
+.noSort {
+	background: url('../img/sort.gif');
+	display:block;
+	width: 21px;
+	height: 9px;
+	float:right;
+	margin-top:6px;
+}
+.sort{
+	background: url('../img/sort.gif') 0px 9px;
+	display:block;
+	width: 21px;
+	height: 4px;
+	float:right;
+	margin-top:6px;
+}
+.reverseSort{
+	background: url('../img/sort.gif') 0px 4px;
+	display:block;
+	width: 21px;
+	height: 4px;
+	float:right;
+	margin-top:6px;
+}

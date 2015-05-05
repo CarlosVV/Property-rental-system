@@ -20,7 +20,7 @@
 				<div class="bookingDates">{{booking.checkIn | date:"dd/MM/yyyy"}} - {{booking.checkOut | date:"dd/MM/yyyy"}}</div>
 				<div class="bookingPrice">{{booking.price}} EUR</div>
 				<div class="bookingDates">Booked on: {{booking.bookedDate | date:"dd/MM/yyyy"}}</div>
-				<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status>
+				<show-booking-status ng-if="bookingsStatuses.$resolved" list="bookingsStatuses" current-status-id="booking.bookingStatusId"></show-booking-status><br/>
 				<div class="bookingStatus"><a ui-sref="conversations.chat({bookingId : booking.bookingId})">Message host</a></div>
 			<hr/>
 			</div>

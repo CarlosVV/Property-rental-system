@@ -106,6 +106,9 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			$scope.address = $scope.addressBackup;
 		}
 	});
+	$scope.resetQuery = function(){
+		$scope.streetNumber = "";
+	};
 	//get address details for property
 	$scope.$watch('details',function(newVal){
 		if(typeof newVal.address_components !== 'undefined'){
@@ -127,13 +130,13 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			console.log("SRSLY",$scope.streetNumber);
 			$scope.property.address = street+streetNumber;
 			
-			$scope.marker.coords.latitude = newVal.geometry.location.k;
-			$scope.marker.coords.longitude = newVal.geometry.location.D;
-			$scope.map.center.latitude = newVal.geometry.location.k;
-			$scope.map.center.longitude = newVal.geometry.location.D;
+			$scope.marker.coords.latitude = newVal.geometry.location.A;
+			$scope.marker.coords.longitude = newVal.geometry.location.F;
+			$scope.map.center.latitude = newVal.geometry.location.A;
+			$scope.map.center.longitude = newVal.geometry.location.F;
 			$scope.map.zoom = 16;
-			$scope.property.latitude = newVal.geometry.location.k;
-			$scope.property.longitude = newVal.geometry.location.D;
+			$scope.property.latitude = newVal.geometry.location.A;
+			$scope.property.longitude = newVal.geometry.location.F;
 			console.log($scope.property.address);
 			console.log($scope.marker.coords.latitude);
 			console.log($scope.marker.coords.longitude);

@@ -81,16 +81,18 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			}
 			$scope.property.address = street+streetNumber;
 			
-			$scope.marker.coords.latitude = newVal.geometry.location.k;
-			$scope.marker.coords.longitude = newVal.geometry.location.D;
-			$scope.map.center.latitude = newVal.geometry.location.k;
-			$scope.map.center.longitude = newVal.geometry.location.D;
+			$scope.marker.coords.latitude = newVal.geometry.location.A;
+			$scope.marker.coords.longitude = newVal.geometry.location.F;
+			$scope.map.center.latitude = newVal.geometry.location.A;
+			$scope.map.center.longitude = newVal.geometry.location.F;
 			$scope.map.zoom = 16;
-			$scope.property.latitude = newVal.geometry.location.k;
-			$scope.property.longitude = newVal.geometry.location.D;
+			$scope.property.latitude = newVal.geometry.location.A;
+			$scope.property.longitude = newVal.geometry.location.F;
 		}
 	});
-	
+	$scope.resetQuery = function(){
+		$scope.property.address = "";
+	};
 	$scope.removePhoto = function(photo){
 		var index = $scope.photosToUpload.indexOf(photo);
 		if(index > -1){

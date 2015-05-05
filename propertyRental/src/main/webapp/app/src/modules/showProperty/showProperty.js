@@ -81,7 +81,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		}
 	};
 	
-	console.log($scope.booking);
 	/*{
 			checkIn:checkInTemp,
 			checkOut:checkOutTemp,
