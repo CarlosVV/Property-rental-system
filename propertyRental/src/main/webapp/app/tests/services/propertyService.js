@@ -12,12 +12,12 @@ describe('testing property service',function(){
 		PropertyService = _PropertyService_;
 	}));
 	describe('property',function(){
-		it('should return same property',function(){
-			var url = '/propertyRental/api/properties/1';
-			$httpBackend.expectGET(url).respond({id:1});
-			var result = PropertyService.property.get({id:1});
+		it('should return list of properties by id',function(){
+			var url = API_URL+'properties/myProperties/1';
+			$httpBackend.expectGET(url).respond([{id:1}]);
+			var result = PropertyService.property.findMyProperties({ownerId:1});
 			$httpBackend.flush();
-			expect(result.id).toEqual(1);
+			expect(result.length).toEqual(1);
 		});
 	});
 });

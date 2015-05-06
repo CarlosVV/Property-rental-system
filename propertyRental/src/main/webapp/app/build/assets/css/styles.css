@@ -270,3 +270,7 @@ a.apartmentBlock:hover{
 	float:right;
 	margin-top:6px;
 }
+.dateInput[readonly]{
+	background-color:white;
+	cursor:pointer;
+}

@@ -26,11 +26,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	var checkInTemp = undefined;
 	var checkOutTemp = undefined;
 	if($stateParams.checkIn != "" || $stateParams.checkOut != ""){
-		console.log("ok",$stateParams.checkIn);
 		checkInTemp = moment($stateParams.checkIn,'DD/MM/YYYY')._d;
 		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
 	}
-	console.log(checkInTemp);
 	$scope.unavailableDatesBetween = false;
 	$scope.booking = new BookingService.booking;
 	$scope.booking.checkIn = checkInTemp;
@@ -41,13 +39,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	
 	$scope.newReview = {};
 	$scope.comment = {};
-	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
-		console.log("WE GOT DEM REVIEWS", $scope.reviews);
-	});
+	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
 	$scope.stars = [1,2,3,4,5];
-	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId},function(){
-		console.log("soooo",$scope.canSendReviews);
-	});
+	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId});
 	$scope.reviewToComment = 0;
 	$scope.commentReview = function(reviewId){
 		if($scope.reviewToComment == reviewId){
@@ -58,7 +52,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	};
 	$scope.addReview = function(parentReviewId,formObject){
 		if(parentReviewId == 0){
-			console.log($scope.newReview);
 			if(typeof $scope.newReview.stars !== 'undefined'){
 				PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
 					$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
@@ -71,7 +64,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			}
 		}else{
 			$scope.comment.parentReviewId = parentReviewId;
-			console.log($scope.newReview.parentReviewId);
 			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.comment,function(data){
 				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
 				$scope.comment = {};
@@ -97,7 +89,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			      },
 			      options: { draggable: false }
 		};
-		console.log($scope.property);
 		$scope.currentIndx = 0;
 		$scope.mainImgUrl = $scope.property.imagePaths[0].path;
 		$scope.maxGuests = $scope.property.guestCount;
@@ -127,9 +118,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
 		}
 	}
-	$scope.unavailableDates = new BookingService.unavailableDates.query({id:$stateParams.propertyId}, function(){
-		console.log($scope.unavailableDates);
-	});
+	$scope.unavailableDates = new BookingService.unavailableDates.query({id:$stateParams.propertyId});
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
 		if($scope.unavailableDates.length > 0){
 			for(var i=0;i<$dates.length;i++){
@@ -146,28 +135,20 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 					$dates[i].selectable = false;
 				}
 			}
-		}else{
-			console.log("nothing");
 		}
 	};
 	$scope.bookApartment = function(){
-		//$scope.booking.userAccount.username = localStorage.getItem("currentUsername");
-		console.log("CHEC");
 		//part of validation moved here
 		var thereAreErrors = false;
 		if(!angular.isUndefined($scope.booking.checkOut) && !angular.isUndefined($scope.booking.checkIn)){
-			console.log("OKAY");
 		   var startDate = moment($scope.booking.checkIn);
 		   var endDate = moment($scope.booking.checkOut);
 		   var difference = endDate.diff(startDate,'days');
-		   console.log("DIF",difference);
 		   if(difference >= $scope.property.minimumNights){
 				for(var i=0;i<$scope.unavailableDates.length;i++){
 					var start = moment($scope.unavailableDates[i].startDate);
 					var end = moment($scope.unavailableDates[i].endDate);
-					console.log("LOOP",i);
 					if(start.isBetween($scope.booking.checkIn,$scope.booking.checkOut) || end.isBetween($scope.booking.checkIn,$scope.booking.checkOut)){
-						console.log("YAY");
 						thereAreErrors = true;
 					}
 		    	}
@@ -177,13 +158,11 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		   }
 		}
 		if(!thereAreErrors){
-			console.log("should not",$scope.booking);
 			$scope.booking.$save();
 			$state.go("showMyBookings");
 		}else{
 			$scope.bookingForm.checkIn.$setValidity("validcheckIn", false);
 			$scope.bookingForm.checkOut.$setValidity("validcheckOut", false);
-			console.log("ERRORS");
 		}
 	}
 	//filter
@@ -214,7 +193,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	//Reviews
 	$scope.deleteReview = function(reviewId){
 		PropertyService.reviews.remove({id:reviewId}, function(){
-			console.log("DELETED");
 			$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
 		});
 	};

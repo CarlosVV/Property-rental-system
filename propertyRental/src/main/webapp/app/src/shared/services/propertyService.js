@@ -5,15 +5,8 @@ propertyService.factory("PropertyService", [ "$resource", "API_URL", function($r
 		property: $resource(API_URL+'properties/:id', {}, {
 				find:{
 					method:"POST",
-					isArray:true,//API_URL+"apartments/search/:country/:city/:admArea/:checkIn/:checkOut"
-					url:API_URL+"properties/search"/*,
-					params:{
-						country:"@country",
-						city:"@locality",
-						admArea:"@administrative_area_level_1",
-						checkIn:"@checkIn",
-						checkOut:"@checkOut"
-					}*/
+					isArray:true,
+					url:API_URL+"properties/search"
 				},
 				findMyProperties:{
 					method:"GET",
