@@ -23,9 +23,7 @@ conversations.config(["$stateProvider",function($stateProvider){
     });
 }]);
 conversations.controller("ConversationsCtrl",["$scope","BookingService","$rootScope","$stateParams",function($scope,BookingService,$rootScope,$stateParams){
-	$scope.myBookings = new BookingService.booking.myBookings(function(){
-		console.log($scope.myBookings);
-	});
+	$scope.myBookings = new BookingService.booking.myBookings();
 	$scope.bookingsStatuses = new BookingService.bookingsStatuses.query();
 	$scope.myPropertiesBookings = new BookingService.booking.allMyPropertiesBookings();
 	$scope.newMsgsAvailable = function(bookingId){

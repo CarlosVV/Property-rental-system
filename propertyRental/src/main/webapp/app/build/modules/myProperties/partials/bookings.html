@@ -3,19 +3,23 @@
 
 	<!-- doesn't work with it! ng-if="propertyBookings.$resolved && bookingsStatuses.$resolved"(probably should remove these tags 
 	from statistics tab too) -->
-	<div class="col-md-3">
-		<strong>Show only:</strong>
-		<div ng-repeat="status in bookingsStatuses">
-			<label class='facility'><input type="radio" value="{{status.name}}" ng-model="$parent.showOnlyStatus"/> {{status.name}}</label>
+	<div class="col-md-12">
+		<div class="col-md-6">
+			<strong>Show only:</strong>
+			<div ng-repeat="status in bookingsStatuses">
+				<label class='facility'><input type="radio" value="{{status.name}}" ng-model="$parent.showOnlyStatus"/> {{status.name}}</label>
+			</div>
+			<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No sorting by status</label>
 		</div>
-		<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No sorting by status</label>
-		<br/><strong>Sort by year:</strong>
-		<div ng-repeat="year in availableYears">
-			<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyYear"/> {{year}}</label>
+		<div class="col-md-6">
+			<strong>Sort by year:</strong>
+			<div ng-repeat="year in availableYears">
+				<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyYear"/> {{year}}</label>
+			</div>
+			<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
 		</div>
-		<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
 	</div>
-	<div class="col-md-9">
+	<div class="col-md-12">
 		<table class="table table-striped table-hover">
 			<tr><th>Renter</th><th ng-click="sortByCheckIn()">Booking dates<span ng-class="checkInSort"></span></th><th>Price</th><th ng-click="sortByCreationDate()" >Creation date<span ng-class="bookedDateSort"></span></th><th>Status</th><th>Accept</th><th>Cancel</th><th>Annul</th></tr>
 			<tr ng-repeat="booking in filteredBookings | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage | orderBy:predicate:reverse">
@@ -30,7 +34,7 @@
 			</tr>
 		</table>
 		<div class="row">
-			<div class="col-md-2"></div>
+			<div class="col-md-4"></div>
 			<div class="col-md-8">
 				<pagination ng-if="propertyBookings.$resolved && propertyBookings.length" boundary-links="true" total-items="filteredBookings.length"
 	                ng-model="$parent.currentPage" class="pagination-sm"

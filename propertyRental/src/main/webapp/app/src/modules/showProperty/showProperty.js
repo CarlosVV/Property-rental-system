@@ -79,6 +79,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
+		console.log($scope.property.latitude);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {

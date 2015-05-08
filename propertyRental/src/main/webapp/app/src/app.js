@@ -67,7 +67,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//although it's checked on login but when user hard refeshs page it should check anyway
 	if($rootScope.isLoggedIn()){
 		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
-			console.log("OKAY WE GOT",$rootScope.newMsgs);
 			if($rootScope.newMsgs.length){
 				$rootScope.$broadcast("newMessages");
 			}
@@ -77,7 +76,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	var checkNewMsgs = $interval(function(){
 		if($rootScope.isLoggedIn()){
 			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
-				console.log("OKAY WE GOT",$rootScope.newMsgs);
 				if($rootScope.newMsgs.length){
 					$rootScope.$broadcast("newMessages");
 				}

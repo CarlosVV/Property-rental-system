@@ -16,8 +16,7 @@ httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', fun
 				$location.path('/accessDenied');
 				break;
 			default:
-				//$location.path('/error');
-				console.log("ERROR");
+				alert("Unknown error occured.");
 			}
 			return $q.reject(response);
 		}

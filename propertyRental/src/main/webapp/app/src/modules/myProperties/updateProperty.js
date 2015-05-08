@@ -18,9 +18,7 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 	$scope.property.propertyFacilities = [];
 	$scope.details={};
 	$scope.propertyTypes = PropertyService.propertyTypes.query();
-	$scope.propertyFacilities = PropertyService.propertyFacilities.query(function(){
-		console.log($scope.propertyFacilities);
-	});
+	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
@@ -46,8 +44,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			$state.go("accessDenied");
 		}else{
 			$scope.photosToUpload = $scope.photosToUpload.concat($scope.property.imagePaths);
-			console.log($scope.photosToUpload);
-			console.log("GOT IT",$scope.property);
 			$scope.map.center.latitude = $scope.property.latitude;
 			$scope.map.center.longitude = $scope.property.longitude;
 			$scope.marker = {
@@ -61,6 +57,12 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			$scope.address = $scope.property.address;
 		}
 	});
+	$scope.$watch('marker',function(){
+		if(!angular.isUndefined($scope.marker)){
+			$scope.property.latitude = $scope.marker.coords.latitude;
+			$scope.property.longitude = $scope.marker.coords.longitude;
+		}
+	},true);
 	
 	//get address for property
 	$scope.$watch('details',function(newVal){
@@ -98,8 +100,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		if(index > -1){
 			$scope.photosToUpload.splice(index, 1);
 			$scope.photosBackup.push(photo);
-			console.log("upload:",$scope.photosToUpload);
-			console.log("backup",$scope.photosBackup);
 		}
 	};
 	$scope.restorePhoto = function(photo){
@@ -107,13 +107,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		if(index > -1){
 			$scope.photosBackup.splice(index, 1);
 			$scope.photosToUpload.push(photo);
-			console.log("upload:",$scope.photosToUpload);
-			console.log("backup",$scope.photosBackup);
 		}
 	};
 
 	$scope.updateProperty = function(){
-		console.log("updating",$scope.property.propertyFacilities);
 		//some bug that spring mvc refuses to save object with added property facility (400 (Bad Request))
 		for(var i=0;i<$scope.property.propertyFacilities.length;i++){
 			delete $scope.property.propertyFacilities[i]["atpropertyFacilityId"];
@@ -121,7 +118,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
-		console.log("WORKS?", newVal);
 		if(newVal != null){
 			for (var i = 0; i < newVal.length; i++) {
 				$scope.errorMsg = null;
@@ -131,13 +127,13 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		}
 	});
 	$scope.uploadAndSave = function(){
+		console.log($scope.property.latitude);
 		if($scope.photosToUpload && $scope.photosToUpload.length){
 			$scope.property.imagePaths = [];
 			//$scope.property.imagePaths = $scope.photosToUpload;
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
 				if(typeof $scope.photosToUpload[i].path === 'undefined'){
 					$scope.uploadingPhotos = true;
-					console.log("UPLOADING",$scope.photosToUpload[i]);
 					uploadPhoto($scope.photosToUpload[i]);
 				}else{
 					$scope.property.imagePaths.push($scope.photosToUpload[i]);
@@ -145,7 +141,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
             }
 			if(!$scope.uploadingPhotos){
 				$scope.property.$update({id:$scope.property.id},function(data){
-					console.log("COMPLETED",data);
 					$state.go("showProperty",{
 						propertyId:$scope.property.id
 					});
@@ -154,7 +149,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		}
 	};
 	function uploadPhoto(photo){
-        console.log(API_URL+'properties/uploadPhoto');
     	photo.progress = 10;
         photo.upload = $upload.upload({
             url: API_URL+'properties/uploadPhoto',
@@ -166,15 +160,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
         	photo.progress = 100;
         	photo.progressMsg = "Success";
         	photo.error = false;
-            console.log('file ' + config.file.name + 'uploaded. Response: ' + data.success);
             $scope.property.imagePaths.push({path:data.success});
             //only when the last photo was uploaded
             if($scope.property.imagePaths.length == $scope.photosToUpload.length){
-            	console.log('imagepaths ',$scope.property.imagePaths);
-            	console.log('and photostoupload ',$scope.photosToUpload);
-            	console.log("SENDING DATA: ",$scope.property);
 				$scope.property.$update({id:$scope.property.id},function(data){
-					console.log("COMPLETED",data);
 					$state.go("showProperty",{
 						propertyId:$scope.property.id
 					});

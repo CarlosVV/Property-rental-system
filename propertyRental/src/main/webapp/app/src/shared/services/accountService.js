@@ -24,7 +24,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                });
 	    },
 		logout : function(){
-			console.log("logout");
 			$http.post(APP_URL+"logout", {}).success(function() {
 			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");

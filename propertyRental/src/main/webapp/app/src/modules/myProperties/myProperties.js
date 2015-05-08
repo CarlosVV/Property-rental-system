@@ -29,7 +29,6 @@ myProperties.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","Boo
 	$scope.selectedYear = moment().year();*/
 	$scope.properties = PropertyService.property.findMyProperties(function(){
 		//generating data for select statistics
-		console.log("HMMM",$scope.properties);
 		var currentTime = moment();
 		for(var i=0;i<$scope.properties.length;i++){
 			var createdYear = moment($scope.properties[i].createdDate).year();

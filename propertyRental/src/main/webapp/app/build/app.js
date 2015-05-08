@@ -67,7 +67,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//although it's checked on login but when user hard refeshs page it should check anyway
 	if($rootScope.isLoggedIn()){
 		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
-			console.log("OKAY WE GOT",$rootScope.newMsgs);
 			if($rootScope.newMsgs.length){
 				$rootScope.$broadcast("newMessages");
 			}
@@ -77,7 +76,6 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	var checkNewMsgs = $interval(function(){
 		if($rootScope.isLoggedIn()){
 			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
-				console.log("OKAY WE GOT",$rootScope.newMsgs);
 				if($rootScope.newMsgs.length){
 					$rootScope.$broadcast("newMessages");
 				}
@@ -164,7 +162,13 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	};
 	
 	
-	
+
+	$scope.$watch('marker',function(){
+		if(!angular.isUndefined($scope.marker)){
+			$scope.property.latitude = $scope.marker.coords.latitude;
+			$scope.property.longitude = $scope.marker.coords.longitude;
+		}
+	},true);
 	
 	
 	$scope.neededAddressComponents = {
@@ -186,7 +190,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 		street_number:'street_number'
 	};
 	$scope.resetQuery = function(){
-		console.log("RESETING");
 		$scope.property.city = "";
 		$scope.property.administrativeArea = "";
 		$scope.property.country = "";
@@ -196,14 +199,11 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	$scope.$watch('address',function(newVal){
 		if(typeof $scope.address !== 'undefined'){
 			if($scope.address == ""){
-				console.log("new Val is empty set to",$scope.addressBackup);
 				$scope.address = $scope.addressBackup;
 			}else{
 				$scope.addressBackup = $scope.address;
-				console.log("newVal is ok",$scope.addressBackup);
 			}
 		}else{
-			console.log("pls",$scope.addressBackup);
 			$scope.address = $scope.addressBackup;
 		}
 	});
@@ -228,7 +228,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 				}
 			}
 			$scope.streetNumber = streetNumber;
-			console.log("SRSLY",$scope.streetNumber);
 			$scope.property.address = street+streetNumber;
 			
 			$scope.marker.coords.latitude = newVal.geometry.location.A;
@@ -238,11 +237,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			$scope.map.zoom = 16;
 			$scope.property.latitude = newVal.geometry.location.A;
 			$scope.property.longitude = newVal.geometry.location.F;
-			console.log($scope.property.address);
-			console.log($scope.marker.coords.latitude);
-			console.log($scope.marker.coords.longitude);
-			console.log($scope.property.postalCode);
-			console.log($scope.property.administrativeArea);
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -269,11 +263,9 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 		      }
 	};
 	$scope.addProperty = function(){
-		console.log("adding",$scope.property);
 		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
-		console.log("WORKS?", newVal);
 		if(newVal != null){
 			for (var i = 0; i < newVal.length; i++) {
 				$scope.errorMsg = null;
@@ -285,22 +277,18 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	$scope.uploadAndSave = function(){
 		if($scope.photosToUpload && $scope.photosToUpload.length){
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
-				console.log("UPLOADING",$scope.photosToUpload[i]);
 				uploadPhoto($scope.photosToUpload[i]);
             }
 		}
 	};
 	$scope.removePhoto = function(photo){
 		var index = $scope.photosToUpload.indexOf(photo);
-		console.log("SLICED",index);
 		
 		if(index > -1){
 			$scope.photosToUpload.splice(index, 1);
-			console.log($scope.photosToUpload);
 		}
 	};
 	function uploadPhoto(photo){
-        console.log(API_URL+'properties/uploadPhoto');
     	photo.progress = 10;
         photo.upload = $upload.upload({
             url: API_URL+'properties/uploadPhoto',
@@ -312,7 +300,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
         	photo.progress = 100;
         	photo.progressMsg = "Success";
         	photo.error = false;
-            console.log('file ' + config.file.name + 'uploaded. Response: ' + data.success);
             $scope.property.imagePaths.push({path:data.success});
             if($scope.property.imagePaths.length == $scope.photosToUpload.length){
 				$scope.property.$save(function(data){
@@ -374,7 +361,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 	});
 	//watching for new msgs while we are in chat
 	/*$rootScope.$watch('newMsgs',function(newVal){
-		console.log("WHY",newVal.bookingId);
 		if($rootScope.newMsgs.length){
 			var gotNew = false;
 			for(var i=0;i<$rootScope.newMsgs.length;i++){
@@ -391,7 +377,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 		}
 	},true);*/
 	$scope.$on("newMessages",function(){
-		console.log("THANK YOU");
 		if($rootScope.newMsgs.length){
 			var gotNew = false;
 			for(var i=0;i<$rootScope.newMsgs.length;i++){
@@ -445,7 +430,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 		$scope.message.bookingId = $stateParams.bookingId;
 		$scope.message.senderUsername = localStorage.getItem("currentUsername");
 		ConversationService.conversation.save({},$scope.message,function(newMsg){
-			console.log("answer from server:",newMsg);
 			$scope.messages.push(newMsg);
 			$scope.message = {};
 			formObject.$setPristine();
@@ -476,9 +460,7 @@ conversations.config(["$stateProvider",function($stateProvider){
     });
 }]);
 conversations.controller("ConversationsCtrl",["$scope","BookingService","$rootScope","$stateParams",function($scope,BookingService,$rootScope,$stateParams){
-	$scope.myBookings = new BookingService.booking.myBookings(function(){
-		console.log($scope.myBookings);
-	});
+	$scope.myBookings = new BookingService.booking.myBookings();
 	$scope.bookingsStatuses = new BookingService.bookingsStatuses.query();
 	$scope.myPropertiesBookings = new BookingService.booking.allMyPropertiesBookings();
 	$scope.newMsgsAvailable = function(bookingId){
@@ -518,9 +500,6 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
-	$scope.$watch('query.checkIn',function(newVal){
-		console.log("NEW VAL CHECKIN:",$scope.query.checkIn);
-	});
 	$scope.query = {};
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -538,11 +517,9 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 				}
 			}
 		}
-		console.log("query: ",$scope.query);
 	});
 	
 	$scope.queryProperties = function(){
-		console.log("sending",$filter("date")($scope.query.checkIn,'dd/MM/yyyy'));
 		$state.go("queryProperties",{
 			address:$scope.query.address,
 			country:$scope.query.country,
@@ -565,7 +542,6 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 	/*$scope.$watch('data.dateDropDownInput',function(newVal){
 		if(typeof $scope.data !== 'undefined'){
 			$scope.data.dateDropDownInput = $filter("date")(newVal,'dd-MM-yyyy');
-			console.log($scope.data.dateDropDownInput);
 		}
 	});*/
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
@@ -658,7 +634,6 @@ myProperties.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","Boo
 	$scope.selectedYear = moment().year();*/
 	$scope.properties = PropertyService.property.findMyProperties(function(){
 		//generating data for select statistics
-		console.log("HMMM",$scope.properties);
 		var currentTime = moment();
 		for(var i=0;i<$scope.properties.length;i++){
 			var createdYear = moment($scope.properties[i].createdDate).year();
@@ -683,7 +658,6 @@ myProperty.config(["$stateProvider",function($stateProvider){
 myProperty.controller("ShowMyPropertyCtrl",["$scope", "PropertyService","BookingService","$stateParams", function($scope, PropertyService,BookingService,$stateParams){
 	//accessing parent scope
 	$scope.$parent.selectedPropertyId = $stateParams.propertyId;
-	console.log("CURRENT ID:",$stateParams.propertyId);
 	//need to find current property, $scope.$watch('',fn,TRUE)!!!
 	$scope.currentProperty = {};
 	$scope.$watch('properties',function(){
@@ -880,7 +854,6 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 				var month = moment([$scope.bookedDaysYear,$scope.propertyBookedDays[i].month-1]).format("MMMM YYYY");
 				dataToShow.push([month,$scope.propertyBookedDays[i].bookedDays]);
 			}
-			console.log(dataToShow);
 			$scope.chartConfigBookedDays = {
 				options:{
 					title:{
@@ -894,7 +867,6 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 				}
 			};
 			$scope.chartConfigBookedDays.series.push({name:"Booked days",data:dataToShow});
-			console.log($scope.propertyBookedDays);
 			$scope.showChart = true;
 		});
 	};
@@ -996,9 +968,6 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 	$scope.showPropertyAvgGuestCount($scope.avgGuestCountYear);
 	$scope.showPropertyAvgStars($scope.avgStarsYear);
 	$scope.showBookingsAvgLength($scope.avgBookingsLengthYear);
-	$scope.$watch('bookedDaysYear',function(){
-		console.log("DOES IT WORK?",$scope.bookedDaysYear);
-	});
 }]);;var myPropUnDates = angular.module("myPropertyUnavailableDates",[]);
 myPropUnDates.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.unDates",{
@@ -1029,7 +998,6 @@ myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","Boo
 			$scope.datesUpdated = false;
 			//should update!
 			$scope.$apply();
-			console.log("WHAT SCOPE OMG",$scope);
 		}else{
 			firstTime = false;
 		}
@@ -1059,9 +1027,7 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 	$scope.property.propertyFacilities = [];
 	$scope.details={};
 	$scope.propertyTypes = PropertyService.propertyTypes.query();
-	$scope.propertyFacilities = PropertyService.propertyFacilities.query(function(){
-		console.log($scope.propertyFacilities);
-	});
+	$scope.propertyFacilities = PropertyService.propertyFacilities.query();
 	$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 	$scope.neededAddressComponents = {
 			locality : 'long_name',
@@ -1087,8 +1053,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			$state.go("accessDenied");
 		}else{
 			$scope.photosToUpload = $scope.photosToUpload.concat($scope.property.imagePaths);
-			console.log($scope.photosToUpload);
-			console.log("GOT IT",$scope.property);
 			$scope.map.center.latitude = $scope.property.latitude;
 			$scope.map.center.longitude = $scope.property.longitude;
 			$scope.marker = {
@@ -1102,6 +1066,12 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 			$scope.address = $scope.property.address;
 		}
 	});
+	$scope.$watch('marker',function(){
+		if(!angular.isUndefined($scope.marker)){
+			$scope.property.latitude = $scope.marker.coords.latitude;
+			$scope.property.longitude = $scope.marker.coords.longitude;
+		}
+	},true);
 	
 	//get address for property
 	$scope.$watch('details',function(newVal){
@@ -1139,8 +1109,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		if(index > -1){
 			$scope.photosToUpload.splice(index, 1);
 			$scope.photosBackup.push(photo);
-			console.log("upload:",$scope.photosToUpload);
-			console.log("backup",$scope.photosBackup);
 		}
 	};
 	$scope.restorePhoto = function(photo){
@@ -1148,13 +1116,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		if(index > -1){
 			$scope.photosBackup.splice(index, 1);
 			$scope.photosToUpload.push(photo);
-			console.log("upload:",$scope.photosToUpload);
-			console.log("backup",$scope.photosBackup);
 		}
 	};
 
 	$scope.updateProperty = function(){
-		console.log("updating",$scope.property.propertyFacilities);
 		//some bug that spring mvc refuses to save object with added property facility (400 (Bad Request))
 		for(var i=0;i<$scope.property.propertyFacilities.length;i++){
 			delete $scope.property.propertyFacilities[i]["atpropertyFacilityId"];
@@ -1162,7 +1127,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
-		console.log("WORKS?", newVal);
 		if(newVal != null){
 			for (var i = 0; i < newVal.length; i++) {
 				$scope.errorMsg = null;
@@ -1172,13 +1136,13 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		}
 	});
 	$scope.uploadAndSave = function(){
+		console.log($scope.property.latitude);
 		if($scope.photosToUpload && $scope.photosToUpload.length){
 			$scope.property.imagePaths = [];
 			//$scope.property.imagePaths = $scope.photosToUpload;
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
 				if(typeof $scope.photosToUpload[i].path === 'undefined'){
 					$scope.uploadingPhotos = true;
-					console.log("UPLOADING",$scope.photosToUpload[i]);
 					uploadPhoto($scope.photosToUpload[i]);
 				}else{
 					$scope.property.imagePaths.push($scope.photosToUpload[i]);
@@ -1186,7 +1150,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
             }
 			if(!$scope.uploadingPhotos){
 				$scope.property.$update({id:$scope.property.id},function(data){
-					console.log("COMPLETED",data);
 					$state.go("showProperty",{
 						propertyId:$scope.property.id
 					});
@@ -1195,7 +1158,6 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		}
 	};
 	function uploadPhoto(photo){
-        console.log(API_URL+'properties/uploadPhoto');
     	photo.progress = 10;
         photo.upload = $upload.upload({
             url: API_URL+'properties/uploadPhoto',
@@ -1207,15 +1169,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
         	photo.progress = 100;
         	photo.progressMsg = "Success";
         	photo.error = false;
-            console.log('file ' + config.file.name + 'uploaded. Response: ' + data.success);
             $scope.property.imagePaths.push({path:data.success});
             //only when the last photo was uploaded
             if($scope.property.imagePaths.length == $scope.photosToUpload.length){
-            	console.log('imagepaths ',$scope.property.imagePaths);
-            	console.log('and photostoupload ',$scope.photosToUpload);
-            	console.log("SENDING DATA: ",$scope.property);
 				$scope.property.$update({id:$scope.property.id},function(data){
-					console.log("COMPLETED",data);
 					$state.go("showProperty",{
 						propertyId:$scope.property.id
 					});
@@ -1295,7 +1252,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 	var checkInTemp = undefined;
 	var checkOutTemp = undefined;
 	if($stateParams.checkIn != "" || $stateParams.checkOut != ""){
-		console.log("ok",$stateParams.checkIn);
 		checkInTemp = moment($stateParams.checkIn,'DD/MM/YYYY')._d;
 		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
 	}
@@ -1324,8 +1280,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
-	console.log("we got ",$stateParams.checkIn,moment($stateParams.checkIn,'DD/MM/yyyy')._d);
-	console.log("and ",$stateParams.checkOut,moment($stateParams.checkOut,'DD/MM/yyyy')._d);
 	$scope.query = {
 			address:$stateParams.address,
 			country:$stateParams.country,
@@ -1335,7 +1289,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 			checkOut:checkOutTemp,
 			guestNumber:parseInt($stateParams.guestNumber)
 	};
-	console.log("what goes to datepicker::",$scope.query.checkIn);
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
 	$scope.$watch('details',function(newVal){
@@ -1351,13 +1304,8 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 				}
 			}
 		}
-		console.log($scope.details);
-		console.log("query: ",$scope.query);
 	});
 	$scope.properties = PropertyService.property.find($scope.query);
-	$scope.$watch('properties',function(){
-		console.log("WE GOT EM",$scope.properties);
-	});
 	$scope.queryProperties = function(query){
 		var newUrl = "/queryProperties/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.city+"/"+$scope.query.administrativeArea+"/"+encodeURIComponent(moment($scope.query.checkIn).format('DD/MM/YYYY'))+"/"+encodeURIComponent(moment($scope.query.checkOut).format('DD/MM/YYYY'))+"/"+$scope.query.guestNumber;
 		$location.path(newUrl).replace();
@@ -1398,7 +1346,6 @@ login.config(["$stateProvider",function($stateProvider){
 }]);
 login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
 	$scope.login = function(){
-		console.log($scope.userAccount);
 		AccountService.login($scope.userAccount).then(function(){
 			if($scope.returnToState){
 				$state.go($scope.returnToState.name, $scope.returnToStateParams);
@@ -1445,24 +1392,19 @@ register.controller("RegisterCtrl",["$scope","AccountService","$state",function(
 	$scope.userAccount = new AccountService.account;
 	$scope.register = function(){
 		var password = $scope.userAccount.password;
-		console.log($scope.userAccount);
 		$scope.userAccount.$save(function(returneData){
 			$scope.userAccount.password = password;
 			AccountService.login($scope.userAccount).then(function(data){
-				console.log("WTF");
-				console.log(data);
 				$state.go("home");
 			});
 		});
 	};
 	$scope.checkUsername = function(formObject){
-		console.log(formObject);
 		AccountService.account.findByUsername({username:$scope.userAccount.username},function(){
 			//user doesn't exist
 			formObject.username.$setValidity("usernameAvailable",true);
 		},function(){
 			//user already exists
-			console.log("ERR");
 			formObject.username.$setValidity("usernameAvailable",false);
 		});
 	};
@@ -1548,6 +1490,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
+		console.log($scope.property.latitude);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
@@ -1675,50 +1618,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	};
 	
 }]);;var propertyDirective = angular.module("BookingDatesDirective", []);
-//check whether date is allowed(not used, moved to checkDatesMatch, basically made 1 from two separate directives)
-/*propertyDirective.directive('checkDate', function () {
-    var isValid = function(date,unavailableDates) {
-    	var compare = moment(date,"DD/MM/YYYY");
-    	for(var j=0;j<unavailableDates.length;j++){
-			var start = moment(unavailableDates[j].startDate);
-			var end = moment(unavailableDates[j].endDate);
-			if(compare.isBetween(start,end,'day') || compare.isSame(start,'day') || compare.isSame(end,'day')){
-				return false;
-			}
-			if(compare.isBefore(moment(),'day') || compare.isSame(moment(),'day')){
-				return false;
-			}
-		}
-		return true;
-    };
-    return {
-        require:'ngModel',
-        link:function (scope, elm, attrs, ngModelCtrl) {
-            ngModelCtrl.$parsers.unshift(function (viewValue) {
-            	attrs.$observe('checkDate',function(actualValue){
-            		var unDatesArray = scope.$eval(actualValue);
-            		if(unDatesArray.length){
-            			console.log("CHECKIN DATE");
-            			ngModelCtrl.$setValidity('validDate', isValid(viewValue,unDatesArray));
-            		}
-            	});
-        		return viewValue;
-            });
-            ngModelCtrl.$formatters.unshift(function (modelValue) {
-            	//it is for checking whether the variable is passed to directive or not
-            	//http://stackoverflow.com/questions/16232917/angularjs-how-to-pass-scope-variables-to-a-directive
-            	attrs.$observe('checkDate',function(actualValue){
-            		var unDatesArray = scope.$eval(actualValue);
-            		if(unDatesArray.length){
-            			console.log("CHECKIN DATE");
-            			ngModelCtrl.$setValidity('validDate', isValid(modelValue,unDatesArray));
-            		}
-            	});
-            	return modelValue;
-            });
-        }
-    };
-});*/
+
 propertyDirective.directive('checkDatesMatch', function () {
     var isValid = function(name,date1,date2) {
 		if(typeof date1 === 'undefined' || typeof date2 === 'undefined')
@@ -1732,13 +1632,9 @@ propertyDirective.directive('checkDatesMatch', function () {
     		checkIn = moment(date2);
     		checkOut = moment(date1,"DD/MM/YYYY");
     	}
-		//console.log("checkIn",checkIn._d);
-		//console.log("checkOut",checkOut._d);
     	if(checkIn.isAfter(checkOut)){
-    		//console.log("WRONG");
     		return false;
     	}
-    	//console.log("EVERYTHING IS OK");
     	return true;
     };
     var isNotUnavailable = function(date,unavailableDates) {
@@ -1776,10 +1672,8 @@ propertyDirective.directive('checkDatesMatch', function () {
             	});
             	//if no watch and it doesn't have true, unavailableDates will be undefined.
             	scope.$watch('unavailableDates',function(){
-            		//console.log(scope.unavailableDates);
-                	var result = isNotUnavailable(viewValue,scope.unavailableDates);
+            		var result = isNotUnavailable(viewValue,scope.unavailableDates);
             		var finalResult = result && isValid(attrs.name,viewValue,scope.$eval(attrs.checkDatesMatch));
-            		//console.log(result);
             		ngModelCtrl.$setValidity('valid'+attrs.name, finalResult);
             	},true);//very important http://stackoverflow.com/questions/11135864/scope-watch-is-not-updating-value-fetched-from-resource-on-custom-directive
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,viewValue,scope.$eval(attrs.checkDatesMatch)));
@@ -1792,10 +1686,8 @@ propertyDirective.directive('checkDatesMatch', function () {
             		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(actualValue)));
             	});
             	scope.$watch('unavailableDates',function(){
-            		//console.log(scope.unavailableDates);
-                	var result = isNotUnavailable(modelValue,scope.unavailableDates);
+            		var result = isNotUnavailable(modelValue,scope.unavailableDates);
             		var finalResult = result && isValid(attrs.name,modelValue,scope.$eval(attrs.checkDatesMatch));
-            		//console.log(result);
             		ngModelCtrl.$setValidity('valid'+attrs.name, finalResult);
             	},true);
         		ngModelCtrl.$setValidity('valid'+attrs.name, isValid(attrs.name,modelValue,scope.$eval(attrs.checkDatesMatch)));
@@ -1834,13 +1726,11 @@ propertyDirective.directive('countBookingPrice',function(){
 		},
 		templateUrl:"shared/directives/partials/bookingPrice.html",
 		link:function(scope,element,attr){
-			console.log("PLS DUDE",scope.nightPrice); 
 			scope.$watch("checkIn",function(newVal){
 				if(typeof scope.checkIn !== 'undefined' && typeof scope.checkOut !== 'undefined'){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
 					   var difference = endDate.diff(startDate,'days');
-					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;
@@ -1856,7 +1746,6 @@ propertyDirective.directive('countBookingPrice',function(){
 					   var startDate = moment(scope.checkIn);
 					   var endDate = moment(scope.checkOut);
 					   var difference = endDate.diff(startDate,'days');
-					   //console.log(difference);
 					   var result = difference*scope.nightPrice;
 					   if(result > 0){
 						   scope.totalPrice = difference*scope.nightPrice;
@@ -1867,22 +1756,6 @@ propertyDirective.directive('countBookingPrice',function(){
 					   }
 				}
 			});
-			/*attr.$observe('checkIn', function(value) {
-				   console.log(value);
-				   var startDate = moment(scope.checkIn);
-				   var endDate = moment(scope.checkOut);
-				   var difference = endDate.diff(startDate,'days');
-				   console.log(difference);
-				   scope.totalPrice = difference*scope.nightPrice;
-			});
-			attr.$observe('checkOut', function(value) {
-				   console.log(value);
-				   var startDate = moment(scope.checkIn);
-				   var endDate = moment(scope.checkOut);
-				   var difference = endDate.diff(startDate,'days');
-				   console.log(difference);
-				   scope.totalPrice = difference*scope.nightPrice;
-			});*/
 		}
 	};
 });;var propertyDirective = angular.module("BookingStatusDirective", []);
@@ -2019,7 +1892,6 @@ propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 propertyDirective.directive('validateQuery', function () {
     var isValid = function(query) {
         if(query != '' && typeof query !== 'undefined'){
-        	console.log("dunno",query);
         	return true;
         }else{
         	return false;
@@ -2032,10 +1904,8 @@ propertyDirective.directive('validateQuery', function () {
             ngModelCtrl.$parsers.unshift(function (viewValue) {
             	//this variant cuz we have {{}} in our attribute check-query="{{query}}"
             	attrs.$observe('validateQuery',function(actualValue){
-            		//console.log(actualValue);
             		//можно исопльзовать scope.query??
             		//scope.$eval to transform from string to javascript object
-            		console.log("HUH",isValid(actualValue));
             		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
         		return viewValue;
@@ -2198,7 +2068,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                });
 	    },
 		logout : function(){
-			console.log("logout");
 			$http.post(APP_URL+"logout", {}).success(function() {
 			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");
@@ -2280,8 +2149,7 @@ httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', fun
 				$location.path('/accessDenied');
 				break;
 			default:
-				//$location.path('/error');
-				console.log("ERROR");
+				alert("Unknown error occured.");
 			}
 			return $q.reject(response);
 		}

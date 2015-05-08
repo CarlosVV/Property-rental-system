@@ -63,7 +63,13 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	};
 	
 	
-	
+
+	$scope.$watch('marker',function(){
+		if(!angular.isUndefined($scope.marker)){
+			$scope.property.latitude = $scope.marker.coords.latitude;
+			$scope.property.longitude = $scope.marker.coords.longitude;
+		}
+	},true);
 	
 	
 	$scope.neededAddressComponents = {
@@ -85,7 +91,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 		street_number:'street_number'
 	};
 	$scope.resetQuery = function(){
-		console.log("RESETING");
 		$scope.property.city = "";
 		$scope.property.administrativeArea = "";
 		$scope.property.country = "";
@@ -95,14 +100,11 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	$scope.$watch('address',function(newVal){
 		if(typeof $scope.address !== 'undefined'){
 			if($scope.address == ""){
-				console.log("new Val is empty set to",$scope.addressBackup);
 				$scope.address = $scope.addressBackup;
 			}else{
 				$scope.addressBackup = $scope.address;
-				console.log("newVal is ok",$scope.addressBackup);
 			}
 		}else{
-			console.log("pls",$scope.addressBackup);
 			$scope.address = $scope.addressBackup;
 		}
 	});
@@ -127,7 +129,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 				}
 			}
 			$scope.streetNumber = streetNumber;
-			console.log("SRSLY",$scope.streetNumber);
 			$scope.property.address = street+streetNumber;
 			
 			$scope.marker.coords.latitude = newVal.geometry.location.A;
@@ -137,11 +138,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 			$scope.map.zoom = 16;
 			$scope.property.latitude = newVal.geometry.location.A;
 			$scope.property.longitude = newVal.geometry.location.F;
-			console.log($scope.property.address);
-			console.log($scope.marker.coords.latitude);
-			console.log($scope.marker.coords.longitude);
-			console.log($scope.property.postalCode);
-			console.log($scope.property.administrativeArea);
 		}
 	});
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -168,11 +164,9 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 		      }
 	};
 	$scope.addProperty = function(){
-		console.log("adding",$scope.property);
 		$scope.uploadAndSave();
 	};
 	$scope.$watch('photos', function(newVal){
-		console.log("WORKS?", newVal);
 		if(newVal != null){
 			for (var i = 0; i < newVal.length; i++) {
 				$scope.errorMsg = null;
@@ -184,22 +178,18 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	$scope.uploadAndSave = function(){
 		if($scope.photosToUpload && $scope.photosToUpload.length){
 			for (var i = 0; i < $scope.photosToUpload.length; i++) {
-				console.log("UPLOADING",$scope.photosToUpload[i]);
 				uploadPhoto($scope.photosToUpload[i]);
             }
 		}
 	};
 	$scope.removePhoto = function(photo){
 		var index = $scope.photosToUpload.indexOf(photo);
-		console.log("SLICED",index);
 		
 		if(index > -1){
 			$scope.photosToUpload.splice(index, 1);
-			console.log($scope.photosToUpload);
 		}
 	};
 	function uploadPhoto(photo){
-        console.log(API_URL+'properties/uploadPhoto');
     	photo.progress = 10;
         photo.upload = $upload.upload({
             url: API_URL+'properties/uploadPhoto',
@@ -211,7 +201,6 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
         	photo.progress = 100;
         	photo.progressMsg = "Success";
         	photo.error = false;
-            console.log('file ' + config.file.name + 'uploaded. Response: ' + data.success);
             $scope.property.imagePaths.push({path:data.success});
             if($scope.property.imagePaths.length == $scope.photosToUpload.length){
 				$scope.property.$save(function(data){

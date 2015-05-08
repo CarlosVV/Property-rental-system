@@ -12,7 +12,6 @@ myProperty.config(["$stateProvider",function($stateProvider){
 myProperty.controller("ShowMyPropertyCtrl",["$scope", "PropertyService","BookingService","$stateParams", function($scope, PropertyService,BookingService,$stateParams){
 	//accessing parent scope
 	$scope.$parent.selectedPropertyId = $stateParams.propertyId;
-	console.log("CURRENT ID:",$stateParams.propertyId);
 	//need to find current property, $scope.$watch('',fn,TRUE)!!!
 	$scope.currentProperty = {};
 	$scope.$watch('properties',function(){

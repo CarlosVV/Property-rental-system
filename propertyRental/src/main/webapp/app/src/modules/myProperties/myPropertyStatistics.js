@@ -22,7 +22,6 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 				var month = moment([$scope.bookedDaysYear,$scope.propertyBookedDays[i].month-1]).format("MMMM YYYY");
 				dataToShow.push([month,$scope.propertyBookedDays[i].bookedDays]);
 			}
-			console.log(dataToShow);
 			$scope.chartConfigBookedDays = {
 				options:{
 					title:{
@@ -36,7 +35,6 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 				}
 			};
 			$scope.chartConfigBookedDays.series.push({name:"Booked days",data:dataToShow});
-			console.log($scope.propertyBookedDays);
 			$scope.showChart = true;
 		});
 	};
@@ -138,7 +136,4 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 	$scope.showPropertyAvgGuestCount($scope.avgGuestCountYear);
 	$scope.showPropertyAvgStars($scope.avgStarsYear);
 	$scope.showBookingsAvgLength($scope.avgBookingsLengthYear);
-	$scope.$watch('bookedDaysYear',function(){
-		console.log("DOES IT WORK?",$scope.bookedDaysYear);
-	});
 }]);

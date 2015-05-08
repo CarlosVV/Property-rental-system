@@ -6,7 +6,6 @@ var propertyDirective = angular.module("ValidateQueryDirective", []);
 propertyDirective.directive('validateQuery', function () {
     var isValid = function(query) {
         if(query != '' && typeof query !== 'undefined'){
-        	console.log("dunno",query);
         	return true;
         }else{
         	return false;
@@ -19,10 +18,8 @@ propertyDirective.directive('validateQuery', function () {
             ngModelCtrl.$parsers.unshift(function (viewValue) {
             	//this variant cuz we have {{}} in our attribute check-query="{{query}}"
             	attrs.$observe('validateQuery',function(actualValue){
-            		//console.log(actualValue);
             		//можно исопльзовать scope.query??
             		//scope.$eval to transform from string to javascript object
-            		console.log("HUH",isValid(actualValue));
             		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
         		return viewValue;

@@ -27,9 +27,6 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
-	$scope.$watch('query.checkIn',function(newVal){
-		console.log("NEW VAL CHECKIN:",$scope.query.checkIn);
-	});
 	$scope.query = {};
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
@@ -47,11 +44,9 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 				}
 			}
 		}
-		console.log("query: ",$scope.query);
 	});
 	
 	$scope.queryProperties = function(){
-		console.log("sending",$filter("date")($scope.query.checkIn,'dd/MM/yyyy'));
 		$state.go("queryProperties",{
 			address:$scope.query.address,
 			country:$scope.query.country,
@@ -74,7 +69,6 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 	/*$scope.$watch('data.dateDropDownInput',function(newVal){
 		if(typeof $scope.data !== 'undefined'){
 			$scope.data.dateDropDownInput = $filter("date")(newVal,'dd-MM-yyyy');
-			console.log($scope.data.dateDropDownInput);
 		}
 	});*/
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){

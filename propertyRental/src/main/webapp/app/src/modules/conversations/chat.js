@@ -23,7 +23,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 	});
 	//watching for new msgs while we are in chat
 	/*$rootScope.$watch('newMsgs',function(newVal){
-		console.log("WHY",newVal.bookingId);
 		if($rootScope.newMsgs.length){
 			var gotNew = false;
 			for(var i=0;i<$rootScope.newMsgs.length;i++){
@@ -40,7 +39,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 		}
 	},true);*/
 	$scope.$on("newMessages",function(){
-		console.log("THANK YOU");
 		if($rootScope.newMsgs.length){
 			var gotNew = false;
 			for(var i=0;i<$rootScope.newMsgs.length;i++){
@@ -94,7 +92,6 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 		$scope.message.bookingId = $stateParams.bookingId;
 		$scope.message.senderUsername = localStorage.getItem("currentUsername");
 		ConversationService.conversation.save({},$scope.message,function(newMsg){
-			console.log("answer from server:",newMsg);
 			$scope.messages.push(newMsg);
 			$scope.message = {};
 			formObject.$setPristine();

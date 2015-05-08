@@ -28,7 +28,6 @@ myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","Boo
 			$scope.datesUpdated = false;
 			//should update!
 			$scope.$apply();
-			console.log("WHAT SCOPE OMG",$scope);
 		}else{
 			firstTime = false;
 		}

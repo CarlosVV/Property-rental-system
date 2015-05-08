@@ -45,7 +45,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 	var checkInTemp = undefined;
 	var checkOutTemp = undefined;
 	if($stateParams.checkIn != "" || $stateParams.checkOut != ""){
-		console.log("ok",$stateParams.checkIn);
 		checkInTemp = moment($stateParams.checkIn,'DD/MM/YYYY')._d;
 		checkOutTemp = moment($stateParams.checkOut,'DD/MM/YYYY')._d;
 	}
@@ -74,8 +73,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 			administrative_area_level_1:'administrativeArea',
 			country:'country'
 	};
-	console.log("we got ",$stateParams.checkIn,moment($stateParams.checkIn,'DD/MM/yyyy')._d);
-	console.log("and ",$stateParams.checkOut,moment($stateParams.checkOut,'DD/MM/yyyy')._d);
 	$scope.query = {
 			address:$stateParams.address,
 			country:$stateParams.country,
@@ -85,7 +82,6 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 			checkOut:checkOutTemp,
 			guestNumber:parseInt($stateParams.guestNumber)
 	};
-	console.log("what goes to datepicker::",$scope.query.checkIn);
 	$scope.details = {};
 	$scope.autoCompleteOptions = {watchEnter:false};
 	$scope.$watch('details',function(newVal){
@@ -101,13 +97,8 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 				}
 			}
 		}
-		console.log($scope.details);
-		console.log("query: ",$scope.query);
 	});
 	$scope.properties = PropertyService.property.find($scope.query);
-	$scope.$watch('properties',function(){
-		console.log("WE GOT EM",$scope.properties);
-	});
 	$scope.queryProperties = function(query){
 		var newUrl = "/queryProperties/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.city+"/"+$scope.query.administrativeArea+"/"+encodeURIComponent(moment($scope.query.checkIn).format('DD/MM/YYYY'))+"/"+encodeURIComponent(moment($scope.query.checkOut).format('DD/MM/YYYY'))+"/"+$scope.query.guestNumber;
 		$location.path(newUrl).replace();

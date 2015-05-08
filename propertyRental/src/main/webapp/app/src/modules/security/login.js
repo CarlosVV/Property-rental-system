@@ -28,7 +28,6 @@ login.config(["$stateProvider",function($stateProvider){
 }]);
 login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
 	$scope.login = function(){
-		console.log($scope.userAccount);
 		AccountService.login($scope.userAccount).then(function(){
 			if($scope.returnToState){
 				$state.go($scope.returnToState.name, $scope.returnToStateParams);
