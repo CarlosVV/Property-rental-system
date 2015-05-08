@@ -88,6 +88,21 @@ propertyFilters.filter('sortByYearBooking',function(){
 		return bookings;
 	}
 });
+propertyFilters.filter('sortByCheckInBooking',function(){
+	return function(bookings,year){
+		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
+			var result = [];
+			for(var i=0;i<bookings.length;i++){
+				var checkInYear = moment(bookings[i].checkIn).year();
+				if(checkInYear == year){
+					result.push(bookings[i]);
+				}
+			}
+			return result;
+		}
+		return bookings;
+	}
+});
 propertyFilters.filter('startFrom',function(){
 	return function (input, start) {
 		if(!angular.isUndefined(input)){

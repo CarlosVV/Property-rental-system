@@ -15,18 +15,18 @@ propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 			scope.bookings = $filter('limitTo')(scope.bookings,scope.limitTo);
 			scope.bookings = $filter('orderBy')(scope.bookings,scope.orderBy);
 			for(var i=0;i<scope.bookings.length;i++){
-				if(scope.bookings[i].bookedDate == scope.currentBooking.bookedDate){
+				if(scope.bookings[i].checkIn == scope.currentBooking.checkIn){
 					var showDate = true;
-					var currentMoment = moment(scope.currentBooking.bookedDate);
+					var currentMoment = moment(scope.currentBooking.checkIn);
 					for(var j=0;j<i;j++){
-						var compareMoment = moment(scope.bookings[j].bookedDate);
+						var compareMoment = moment(scope.bookings[j].checkIn);
 						if(currentMoment.isSame(compareMoment,'month')){
 							showDate = false;
 							break;
 						}
 					}
 					if(showDate){
-						scope.dateToShow = scope.currentBooking.bookedDate;
+						scope.dateToShow = scope.currentBooking.checkIn;
 						break;
 					}
 				}

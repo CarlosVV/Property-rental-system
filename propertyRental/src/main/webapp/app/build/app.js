@@ -573,9 +573,12 @@ myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",
     $scope.itemsPerPage = 2;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
+    $scope.showOnlyCheckInYear = "";
 	$scope.availableYears = [];
+	$scope.checkInAvailableYears = [];
 	$scope.bookings = new BookingService.booking.myBookings(function(){
 		for(var i=0;i<$scope.bookings.length;i++){
+			//for creation date
 			var createdYear = moment($scope.bookings[i].bookedDate).year();
 			var found = false;
 			for(var j=0;j<=$scope.availableYears.length;j++){
@@ -585,6 +588,17 @@ myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",
 			}
 			if(!found){
 				$scope.availableYears.push(createdYear);
+			}
+			//for check in
+			var checkInYear = moment($scope.bookings[i].checkIn).year();
+			var checkInFound = false;
+			for(var j=0;j<=$scope.checkInAvailableYears.length;j++){
+				if($scope.checkInAvailableYears[j] == checkInYear){
+					checkInFound = true;
+				}
+			}
+			if(!checkInFound){
+				$scope.checkInAvailableYears.push(checkInYear);
 			}
 		}
         var from = ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -597,11 +611,19 @@ myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('filter')($scope.bookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
     $scope.$watch('showOnlyYear',function(){
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.bookings,$scope.showOnlyYear);
 		$scope.filteredBookings = $filter('filter')($scope.filteredBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
+    });
+    $scope.$watch('showOnlyCheckInYear',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.bookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('filter')($scope.filteredBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
 }]);;var myProperties = angular.module("myProperties",[]);
 myProperties.config(["$stateProvider",function($stateProvider){
@@ -681,10 +703,12 @@ myPropertyBookings.config(["$stateProvider",function($stateProvider){
 }]);
 myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyService","BookingService","$stateParams","$filter", function($scope, PropertyService,BookingService,$stateParams,$filter){
 	$scope.availableYears = [];
+	$scope.checkInAvailableYears = [];
 	$scope.currentPage = 1;
     $scope.itemsPerPage = 2;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
+    $scope.showOnlyCheckInYear = "";
     
     $scope.testBookings = [];
     
@@ -699,6 +723,16 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 			}
 			if(!found){
 				$scope.availableYears.push(createdYear);
+			}
+			var checkInYear = moment($scope.propertyBookings[i].checkIn).year();
+			var checkInFound = false;
+			for(var j=0;j<=$scope.checkInAvailableYears.length;j++){
+				if($scope.checkInAvailableYears[j] == checkInYear){
+					checkInFound = true;
+				}
+			}
+			if(!checkInFound){
+				$scope.checkInAvailableYears.push(checkInYear);
 			}
 			$scope.testBookings.push({
 				id:$scope.propertyBookings[i].bookingId,
@@ -794,11 +828,19 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
     $scope.$watch('showOnlyYear',function(){
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
+    });
+    $scope.$watch('showOnlyCheckInYear',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
     
     $scope.reverse = true;
@@ -1866,18 +1908,18 @@ propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 			scope.bookings = $filter('limitTo')(scope.bookings,scope.limitTo);
 			scope.bookings = $filter('orderBy')(scope.bookings,scope.orderBy);
 			for(var i=0;i<scope.bookings.length;i++){
-				if(scope.bookings[i].bookedDate == scope.currentBooking.bookedDate){
+				if(scope.bookings[i].checkIn == scope.currentBooking.checkIn){
 					var showDate = true;
-					var currentMoment = moment(scope.currentBooking.bookedDate);
+					var currentMoment = moment(scope.currentBooking.checkIn);
 					for(var j=0;j<i;j++){
-						var compareMoment = moment(scope.bookings[j].bookedDate);
+						var compareMoment = moment(scope.bookings[j].checkIn);
 						if(currentMoment.isSame(compareMoment,'month')){
 							showDate = false;
 							break;
 						}
 					}
 					if(showDate){
-						scope.dateToShow = scope.currentBooking.bookedDate;
+						scope.dateToShow = scope.currentBooking.checkIn;
 						break;
 					}
 				}
@@ -2000,6 +2042,21 @@ propertyFilters.filter('sortByYearBooking',function(){
 			for(var i=0;i<bookings.length;i++){
 				var createdYear = moment(bookings[i].bookedDate).year();
 				if(createdYear == year){
+					result.push(bookings[i]);
+				}
+			}
+			return result;
+		}
+		return bookings;
+	}
+});
+propertyFilters.filter('sortByCheckInBooking',function(){
+	return function(bookings,year){
+		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
+			var result = [];
+			for(var i=0;i<bookings.length;i++){
+				var checkInYear = moment(bookings[i].checkIn).year();
+				if(checkInYear == year){
 					result.push(bookings[i]);
 				}
 			}

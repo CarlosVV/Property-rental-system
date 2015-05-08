@@ -11,10 +11,12 @@ myPropertyBookings.config(["$stateProvider",function($stateProvider){
 }]);
 myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyService","BookingService","$stateParams","$filter", function($scope, PropertyService,BookingService,$stateParams,$filter){
 	$scope.availableYears = [];
+	$scope.checkInAvailableYears = [];
 	$scope.currentPage = 1;
     $scope.itemsPerPage = 2;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
+    $scope.showOnlyCheckInYear = "";
     
     $scope.testBookings = [];
     
@@ -29,6 +31,16 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 			}
 			if(!found){
 				$scope.availableYears.push(createdYear);
+			}
+			var checkInYear = moment($scope.propertyBookings[i].checkIn).year();
+			var checkInFound = false;
+			for(var j=0;j<=$scope.checkInAvailableYears.length;j++){
+				if($scope.checkInAvailableYears[j] == checkInYear){
+					checkInFound = true;
+				}
+			}
+			if(!checkInFound){
+				$scope.checkInAvailableYears.push(checkInYear);
 			}
 			$scope.testBookings.push({
 				id:$scope.propertyBookings[i].bookingId,
@@ -124,11 +136,19 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
     $scope.$watch('showOnlyYear',function(){
     	$scope.currentPage = 1;
 		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
+    });
+    $scope.$watch('showOnlyCheckInYear',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredBookings = $filter('filter')($scope.propertyBookings,$scope.showOnlyStatus);
+		$scope.filteredBookings = $filter('sortByYearBooking')($scope.filteredBookings,$scope.showOnlyYear);
+		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
     
     $scope.reverse = true;

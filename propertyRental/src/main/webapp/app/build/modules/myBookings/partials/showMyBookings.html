@@ -5,7 +5,12 @@
 			<label class='facility'><input type="radio" value="{{status.name}}" ng-model="$parent.showOnlyStatus"/> {{status.name}}</label>
 		</div>
 		<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No sorting by status</label>
-		<br/><strong>Sort by year:</strong>
+		<br/><strong>Sort by check-in year:</strong>
+		<div ng-repeat="year in checkInAvailableYears">
+			<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyCheckInYear"/> {{year}}</label>
+		</div>
+		<label class="facility"><input type="radio" value="" ng-model="showOnlyCheckInYear"/> No sorting by year</label>
+		<br/><strong>Sort by creation year:</strong>
 		<div ng-repeat="year in availableYears">
 			<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyYear"/> {{year}}</label>
 		</div>
