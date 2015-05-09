@@ -20,4 +20,9 @@ describe('testing property service',function(){
 			expect(result.length).toEqual(1);
 		});
 	});
+	afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+        $httpBackend.resetExpectations();
+    });
 });

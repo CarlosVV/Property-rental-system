@@ -79,7 +79,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
-		console.log($scope.property.latitude);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
@@ -104,21 +103,21 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	$scope.setImg = function(img){
 		$scope.mainImgUrl = img.path;
 		$scope.currentIndx = $scope.property.imagePaths.indexOf(img);
-	}
+	};
 	$scope.nextImg = function(){
 		if($scope.currentIndx == $scope.property.imagePaths.length - 1){
 			$scope.setImg($scope.property.imagePaths[0]);
 		}else{
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx+1]);
 		}
-	}
+	};
 	$scope.prevImg = function(){
 		if($scope.currentIndx == 0){
 			$scope.setImg($scope.property.imagePaths[$scope.property.imagePaths.length-1]);
 		}else{
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
 		}
-	}
+	};
 	$scope.unavailableDates = new BookingService.unavailableDates.query({id:$stateParams.propertyId});
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
 		if($scope.unavailableDates.length > 0){
@@ -165,7 +164,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			$scope.bookingForm.checkIn.$setValidity("validcheckIn", false);
 			$scope.bookingForm.checkOut.$setValidity("validcheckOut", false);
 		}
-	}
+	};
 	//filter
 	$scope.showMoreDesc = "";
 	$scope.showMoreRules = "";
