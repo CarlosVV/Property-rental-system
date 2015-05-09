@@ -38,4 +38,9 @@ describe('ShowPropertyCtrl controller unit testing',function(){
 			expect(scope.mainImgUrl).toEqual("img3.jpg");
 		});
 	});
+	afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+        $httpBackend.resetExpectations();
+    });
 });
