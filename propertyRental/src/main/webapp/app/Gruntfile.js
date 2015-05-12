@@ -8,6 +8,7 @@ module.exports = function(grunt) {
                 configFile: 'karma.conf.js'
             }
         },
+        clean:['build'],
 		concat: {
 		  options: {
 			separator: ';'
@@ -43,13 +44,14 @@ module.exports = function(grunt) {
 	},
 		watch:{
 			files:['src/**/*.js','src/**/*.html','src/**/*.css'],
-			tasks:['concat','uglify','copy']
+			tasks:['clean','concat','uglify','copy']
 		}
     });
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-karma');
     grunt.registerTask('test', ['karma']);
     grunt.registerTask('default', ['concat','uglify','copy']);

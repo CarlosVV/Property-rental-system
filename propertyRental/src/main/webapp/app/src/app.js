@@ -85,13 +85,15 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
+        if(toState.url != '/login'){
+	        $rootScope.returnToState = toState;
+	        $rootScope.returnToStateParams = toStateParams;
+        }
         if(toState.data.authorities.length != 0){
 	        if($rootScope.isLoggedIn() && toState.data.authorities.indexOf($rootScope.getAuthority()) == -1){
 	            event.preventDefault();
 	        	$state.go('accessDenied');
 	        }else if(!$rootScope.isLoggedIn()){
-		            $rootScope.returnToState = toState;
-		            $rootScope.returnToStateParams = toStateParams;
 		            event.preventDefault();
 		            $state.go('login');
 	        }

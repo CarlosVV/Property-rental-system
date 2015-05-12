@@ -85,13 +85,15 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	//to redirect to right page after login
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
+        if(toState.url != '/login'){
+	        $rootScope.returnToState = toState;
+	        $rootScope.returnToStateParams = toStateParams;
+        }
         if(toState.data.authorities.length != 0){
 	        if($rootScope.isLoggedIn() && toState.data.authorities.indexOf($rootScope.getAuthority()) == -1){
 	            event.preventDefault();
 	        	$state.go('accessDenied');
 	        }else if(!$rootScope.isLoggedIn()){
-		            $rootScope.returnToState = toState;
-		            $rootScope.returnToStateParams = toStateParams;
 		            event.preventDefault();
 		            $state.go('login');
 	        }
@@ -1532,7 +1534,6 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
-		console.log($scope.property.latitude);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
@@ -1557,21 +1558,21 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	$scope.setImg = function(img){
 		$scope.mainImgUrl = img.path;
 		$scope.currentIndx = $scope.property.imagePaths.indexOf(img);
-	}
+	};
 	$scope.nextImg = function(){
 		if($scope.currentIndx == $scope.property.imagePaths.length - 1){
 			$scope.setImg($scope.property.imagePaths[0]);
 		}else{
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx+1]);
 		}
-	}
+	};
 	$scope.prevImg = function(){
 		if($scope.currentIndx == 0){
 			$scope.setImg($scope.property.imagePaths[$scope.property.imagePaths.length-1]);
 		}else{
 			$scope.setImg($scope.property.imagePaths[$scope.currentIndx-1]);
 		}
-	}
+	};
 	$scope.unavailableDates = new BookingService.unavailableDates.query({id:$stateParams.propertyId});
 	$scope.beforeRender = function($view, $dates, $leftDate, $upDate, $rightDate){
 		if($scope.unavailableDates.length > 0){
@@ -1618,7 +1619,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			$scope.bookingForm.checkIn.$setValidity("validcheckIn", false);
 			$scope.bookingForm.checkOut.$setValidity("validcheckOut", false);
 		}
-	}
+	};
 	//filter
 	$scope.showMoreDesc = "";
 	$scope.showMoreRules = "";
