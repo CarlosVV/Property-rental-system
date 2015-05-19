@@ -42,17 +42,15 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 	$scope.hasPreviousStep = false;
 	$scope.nextStep = function() {
 		$scope.goToStep($scope.currentStep+1);
-		$scope.hasNextStep = $scope.checkNextStep();
-		$scope.hasPreviousStep = $scope.checkPreviousStep();
 	};
 	$scope.previousStep = function() {
 		$scope.goToStep($scope.currentStep-1);
-		$scope.hasPreviousStep = $scope.checkPreviousStep();
-		$scope.hasNextStep = $scope.checkNextStep();
 	};
 	$scope.goToStep = function(index) {
 	    if(typeof $scope.steps[index] !== 'undefined'){
-	      $scope.currentStep = index;
+		    $scope.currentStep = index;
+			$scope.hasNextStep = $scope.checkNextStep();
+			$scope.hasPreviousStep = $scope.checkPreviousStep();
 	    }
 	};
 	$scope.checkNextStep = function(){

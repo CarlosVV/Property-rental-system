@@ -42,7 +42,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	
 	$scope.newReview = {};
 	$scope.comment = {};
-	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){console.log($scope.reviews);});
+	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
 	$scope.stars = [1,2,3,4,5];
 	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId});
 	$scope.reviewToComment = 0;
@@ -80,13 +80,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		}
 	};
 	
-	/*{
-			checkIn:checkInTemp,
-			checkOut:checkOutTemp,
-			guestNumber:parseInt($stateParams.guestNumber)
-	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
-		console.log($scope.property);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
