@@ -1,9 +1,5 @@
 /**
- * 
- */
-
-/**
- * 
+ * Application root module
  */
 var rentalApp = angular.module('RentalApp',
 	[
@@ -46,25 +42,48 @@ var rentalApp = angular.module('RentalApp',
 	 'HttpInterceptorService'
 	 ]
 );
-
+/**
+ * A common part of all API URLs
+ */
 rentalApp.constant('API_URL',"/propertyRental/api/");
+/**
+ * Application url
+ */
 rentalApp.constant('APP_URL',"/propertyRental/");
-
+/**
+ * Configuration block
+ */
 rentalApp.config(["$stateProvider","$urlRouterProvider",'$httpProvider', function($stateProvider,$urlRouterProvider,$httpProvider){
+		/**
+		 * Default state defenition
+		 */
 		$urlRouterProvider.otherwise("/");
+		/**
+		 * HTTP response interceptor
+		 */
 		$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 }]);
-
+/**
+ * Run block
+ */
 rentalApp.run(["$rootScope","$state","ConversationService","$interval",function($rootScope, $state,ConversationService,$interval){
+	/**
+	 * Check if user logged in or not
+	 */
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
 		return result;
 	};
+	/**
+	 * Get current user authority
+	 */
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
 	};
 	$rootScope.currentUsername = localStorage.getItem("currentUsername");
-	//although it's checked on login but when user hard refeshs page it should check anyway
+	/**
+	 * Although it's checked on login but when user hard refeshes page it should check anyway
+	 */
 	if($rootScope.isLoggedIn()){
 		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
 			if($rootScope.newMsgs.length){
@@ -72,7 +91,9 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 			}
 		});
 	}
-	//checking messages every 10 sec
+	/**
+	 * Checking messages every 10 sec
+	 */
 	var checkNewMsgs = $interval(function(){
 		if($rootScope.isLoggedIn()){
 			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
@@ -82,7 +103,9 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 			});
 		}
 	},5000);
-	//to redirect to right page after login
+	/**
+	 * Even that is fired on state change to redirect to right page after login
+	 */
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
         if(toState.url != '/login'){

@@ -1,3 +1,6 @@
+/**
+ * My property booking list module.
+ */
 var myPropertyBookings = angular.module("myPropertyBookings",[]);
 myPropertyBookings.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.bookings",{

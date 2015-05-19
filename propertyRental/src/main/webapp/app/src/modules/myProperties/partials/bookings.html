@@ -9,21 +9,21 @@
 			<div ng-repeat="status in bookingsStatuses">
 				<label class='facility'><input type="radio" value="{{status.name}}" ng-model="$parent.showOnlyStatus"/> {{status.name}}</label>
 			</div>
-			<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No sorting by status</label>
+			<label class="facility"><input type="radio" value="" ng-model="showOnlyStatus"/> No filter by status</label>
 		</div>
 		<div class="col-md-4">
-			<strong>Sort by creation year:</strong>
+			<strong>Filter by creation year:</strong>
 			<div ng-repeat="year in availableYears">
 				<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyYear"/> {{year}}</label>
 			</div>
-			<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No sorting by year</label>
+			<label class="facility"><input type="radio" value="" ng-model="showOnlyYear"/> No filter by year</label>
 		</div>
 		<div class="col-md-4">
-			<strong>Sort by check-in year:</strong>
+			<strong>Filter by check-in year:</strong>
 			<div ng-repeat="year in checkInAvailableYears">
 				<label class='facility'><input type="radio" value="{{year}}" ng-model="$parent.showOnlyCheckInYear"/> {{year}}</label>
 			</div>
-			<label class="facility"><input type="radio" value="" ng-model="showOnlyCheckInYear"/> No sorting by year</label>
+			<label class="facility"><input type="radio" value="" ng-model="showOnlyCheckInYear"/> No filter by year</label>
 		</div>
 	</div>
 	<div class="col-md-12">

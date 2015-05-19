@@ -1,3 +1,6 @@
+/**
+ * Login module.
+ */
 var login = angular.module("login",[]);
 login.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("login",{

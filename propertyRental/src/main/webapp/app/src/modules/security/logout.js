@@ -1,3 +1,6 @@
+/**
+ * Logout module.
+ */
 var logout = angular.module("logout",[]);
 logout.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("logout",{

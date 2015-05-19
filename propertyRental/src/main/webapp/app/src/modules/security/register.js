@@ -1,3 +1,6 @@
+/**
+ * Register module.
+ */
 var register = angular.module("register",[]);
 register.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("register",{

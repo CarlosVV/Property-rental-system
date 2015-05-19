@@ -1,4 +1,7 @@
 var propertyDirective = angular.module("GroupBookingsByDateDirective", []);
+/**
+ * Directive that shows check in month in booking list.
+ */
 propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 	return {
 		restrict:"E",

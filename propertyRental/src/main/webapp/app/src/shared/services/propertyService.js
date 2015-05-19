@@ -1,6 +1,5 @@
 var propertyService = angular.module("PropertyServiceModule", []);
 propertyService.factory("PropertyService", [ "$resource", "API_URL", function($resource,API_URL) {
-	//earlier was: {id : "@id"}
 	var propertyService = {
 		property: $resource(API_URL+'properties/:id', {}, {
 				find:{

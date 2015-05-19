@@ -1,3 +1,6 @@
+/**
+ * My bookings list module.
+ */
 var myBookings = angular.module("myBookings",[]);
 home.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyBookings",{

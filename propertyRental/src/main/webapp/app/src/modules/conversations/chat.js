@@ -1,3 +1,6 @@
+/**
+ * Chat module.
+ */
 var chat = angular.module("chat",[]);
 chat.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("conversations.chat",{

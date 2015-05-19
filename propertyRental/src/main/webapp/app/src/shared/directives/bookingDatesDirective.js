@@ -1,5 +1,7 @@
 var propertyDirective = angular.module("BookingDatesDirective", []);
-
+/**
+ * Check whether check in and check out dates match with each other.
+ */
 propertyDirective.directive('checkDatesMatch', function () {
     var isValid = function(name,date1,date2) {
 		if(typeof date1 === 'undefined' || typeof date2 === 'undefined')
@@ -77,7 +79,9 @@ propertyDirective.directive('checkDatesMatch', function () {
         }
     };
 });
-//alternative to $scope.$watch solution
+/**
+ * Directive for conversion from moment date object to string and vice versa
+ */
 propertyDirective.directive('filterDate',["$filter", function($filter){
 	return {
 		require:'ngModel',
@@ -98,6 +102,9 @@ propertyDirective.directive('filterDate',["$filter", function($filter){
 		}
 	};
 }]);
+/**
+ * Directive that shows booking price based on check in, check out dates and price per night.
+ */
 propertyDirective.directive('countBookingPrice',function(){
 	return{
 		scope:{

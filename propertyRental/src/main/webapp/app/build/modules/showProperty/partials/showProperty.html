@@ -139,6 +139,7 @@
 			<div class="reviewHeader">Wrote {{review.username}}:</div>
 			<div class="reviewBody">{{review.review}}</div>
 			<div class="reviewBody">Stars: {{review.stars}}/5</div>
+			<a href="javascript:void(0);" class="commentLink" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
 			<hr/>
 			<div ng-repeat="answer in reviews">
 				<div ng-if="review.id == answer.parentReviewId" class="review">
@@ -146,10 +147,9 @@
 					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</button>
 					<div class="reviewHeader">Answer from the host:</div>
-					<div class="reviewBody">{{answer.review}}</div>
-					<a href="javascript:void(0);" class="commentLink" ng-if="currentUser == property.userAccount.username && canComment(review.id)" ng-click="commentReview(review.id)">Comment this review</a>
+					<div class="reviewBody">{{answer.review}}</div> 
 					<hr/>
-				</div>
+				</div> 
 			</div>
 			<div class="row" ng-if="reviewToComment == review.id">
 				<form novalidate name="commentForm" ng-submit="addReview(review.id,commentForm)">
@@ -159,13 +159,13 @@
 					   	<input type="submit" value="Add a comment" class="btn btn-default"/>
 					</div>
 				</form>
-			</div>
+			</div> 
 		</div>
 	</div>
 	<div class="row" ng-if="!reviews.length">
 		<h4>There are no reviews</h4>
 	</div>
-	<form novalidate name="reviewForm" ng-if="canSendReviews.allowed" ng-submit="reviewForm.$valid && addReview(0,reviewForm)">
+	<form novalidate name="reviewForm" ng-if="canSendReviews.allowed && currentUsername != property.userAccount.username" ng-submit="reviewForm.$valid && addReview(0,reviewForm)">
 		<div class="col-md-5">
 			<p>Please add a review:</p>
 			<textarea name="review" ng-model="newReview.review" rows="5" class="form-control" required></textarea>

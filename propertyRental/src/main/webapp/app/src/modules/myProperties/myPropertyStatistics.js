@@ -1,3 +1,6 @@
+/**
+ * My property statistics module.
+ */
 var myPropertyStatistics = angular.module("myPropertyStatistics",[]);
 myPropertyStatistics.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.statistics",{

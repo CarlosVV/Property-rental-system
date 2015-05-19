@@ -1,4 +1,7 @@
 var propertyDirective = angular.module("CheckListDirective", []);
+/**
+ * Forms list from check buttons.
+ */
 propertyDirective.directive('checkList',["$parse",function($parse){
 	return{
 		restrict:'A',

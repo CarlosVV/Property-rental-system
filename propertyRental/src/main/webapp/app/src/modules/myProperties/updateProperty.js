@@ -1,3 +1,6 @@
+/**
+ * My property update module.
+ */
 var updateProperty = angular.module("updateProperty",[]);
 updateProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.update",{

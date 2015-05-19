@@ -1,3 +1,6 @@
+/**
+ * My specific property module.
+ */
 var myProperty = angular.module("myProperty",[]);
 myProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail",{

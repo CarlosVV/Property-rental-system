@@ -2,10 +2,6 @@
 var propertyFilters = angular.module("TruncateFilter", []);
 /**
  * Truncate filter. Truncate till first found space.
- * @Param text
- * @Param limit
- * @Param showMore
- * @return String
  */
 propertyFilters.filter('truncate', function(){
 	return function(text,limit,showMore){

@@ -1,5 +1,8 @@
 
 var propertyFilters = angular.module("SortingFilters", []);
+/**
+ * Filter that shows only properties with specific facilities.
+ */
 propertyFilters.filter('sortByFacility', function(){
 	return function(properties,facilities){
 		if(!angular.isUndefined(properties) && facilities.length > 0){
@@ -29,6 +32,9 @@ propertyFilters.filter('sortByFacility', function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only properties of certain type.
+ */
 propertyFilters.filter('sortByType',function(){
 	return function(properties,types){
 		if(!angular.isUndefined(properties) && types.length > 0){
@@ -50,6 +56,9 @@ propertyFilters.filter('sortByType',function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only properties in specific price range.
+ */
 propertyFilters.filter('sortByPrice',function(){
 	return function(properties,prices){
 		if(!angular.isUndefined(properties) && prices.length > 0){
@@ -73,6 +82,9 @@ propertyFilters.filter('sortByPrice',function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only bookings that were booked in specific year.
+ */
 propertyFilters.filter('sortByYearBooking',function(){
 	return function(bookings,year){
 		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
@@ -88,6 +100,9 @@ propertyFilters.filter('sortByYearBooking',function(){
 		return bookings;
 	}
 });
+/**
+ * Filter that shows only bookings with specific check in year.
+ */
 propertyFilters.filter('sortByCheckInBooking',function(){
 	return function(bookings,year){
 		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
@@ -103,6 +118,9 @@ propertyFilters.filter('sortByCheckInBooking',function(){
 		return bookings;
 	}
 });
+/**
+ * Filter for pagination.
+ */
 propertyFilters.filter('startFrom',function(){
 	return function (input, start) {
 		if(!angular.isUndefined(input)){

@@ -1,3 +1,6 @@
+/**
+ * Conversations module.
+ */
 var conversations = angular.module("conversations",[]);
 conversations.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("conversations",{

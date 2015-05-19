@@ -1,4 +1,7 @@
 var propertyDirective = angular.module("BookingStatusDirective", []);
+/**
+ * Directive that shows booking status.
+ */
 propertyDirective.directive("showBookingStatus",function(){
 	return{
 		restrict:"E",

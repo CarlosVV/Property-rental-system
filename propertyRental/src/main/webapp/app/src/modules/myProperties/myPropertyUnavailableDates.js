@@ -1,3 +1,6 @@
+/**
+ * My property unavailable dates module.
+ */
 var myPropUnDates = angular.module("myPropertyUnavailableDates",[]);
 myPropUnDates.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.unDates",{

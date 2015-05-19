@@ -1,3 +1,6 @@
+/**
+ * Home module.
+ */
 var home = angular.module("home",[]);
 
 home.config(["$stateProvider",function($stateProvider){

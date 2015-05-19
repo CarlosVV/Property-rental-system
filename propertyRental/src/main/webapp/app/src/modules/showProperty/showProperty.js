@@ -1,3 +1,6 @@
+/**
+ * Show property module.
+ */
 var showProperty = angular.module("showProperty",[]);
 showProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showProperty",{
@@ -39,7 +42,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	
 	$scope.newReview = {};
 	$scope.comment = {};
-	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){console.log($scope.reviews);});
 	$scope.stars = [1,2,3,4,5];
 	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId});
 	$scope.reviewToComment = 0;
@@ -54,7 +57,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		if(parentReviewId == 0){
 			if(typeof $scope.newReview.stars !== 'undefined'){
 				PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
-					$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+					var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+						$scope.reviews = reviewsTemp;
+					});
 					$scope.newReview = {};
 					formObject.$setPristine();
 					$scope.starsRequired = false;
@@ -65,7 +70,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		}else{
 			$scope.comment.parentReviewId = parentReviewId;
 			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.comment,function(data){
-				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+				var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+					$scope.reviews = reviewsTemp;
+				});
 				$scope.comment = {};
 				$scope.reviewToComment = 0;
 				formObject.$setPristine();
@@ -79,6 +86,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
+		console.log($scope.property);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
@@ -190,10 +198,11 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			}
 		}
 	};
-	//Reviews
 	$scope.deleteReview = function(reviewId){
 		PropertyService.reviews.remove({id:reviewId}, function(){
-			$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+			var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+				$scope.reviews = reviewsTemp;
+			});
 		});
 	};
 	$scope.canComment = function(reviewId){

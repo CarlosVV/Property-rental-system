@@ -1,9 +1,5 @@
 /**
- * 
- */
-
-/**
- * 
+ * Application root module
  */
 var rentalApp = angular.module('RentalApp',
 	[
@@ -46,25 +42,48 @@ var rentalApp = angular.module('RentalApp',
 	 'HttpInterceptorService'
 	 ]
 );
-
+/**
+ * A common part of all API URLs
+ */
 rentalApp.constant('API_URL',"/propertyRental/api/");
+/**
+ * Application url
+ */
 rentalApp.constant('APP_URL',"/propertyRental/");
-
+/**
+ * Configuration block
+ */
 rentalApp.config(["$stateProvider","$urlRouterProvider",'$httpProvider', function($stateProvider,$urlRouterProvider,$httpProvider){
+		/**
+		 * Default state defenition
+		 */
 		$urlRouterProvider.otherwise("/");
+		/**
+		 * HTTP response interceptor
+		 */
 		$httpProvider.interceptors.push('httpErrorResponseInterceptor');
 }]);
-
+/**
+ * Run block
+ */
 rentalApp.run(["$rootScope","$state","ConversationService","$interval",function($rootScope, $state,ConversationService,$interval){
+	/**
+	 * Check if user logged in or not
+	 */
 	$rootScope.isLoggedIn = function(){
 		var result = localStorage.getItem("currentUsername") !== null;
 		return result;
 	};
+	/**
+	 * Get current user authority
+	 */
 	$rootScope.getAuthority = function(){
 		return localStorage.getItem("authority");
 	};
 	$rootScope.currentUsername = localStorage.getItem("currentUsername");
-	//although it's checked on login but when user hard refeshs page it should check anyway
+	/**
+	 * Although it's checked on login but when user hard refeshes page it should check anyway
+	 */
 	if($rootScope.isLoggedIn()){
 		$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
 			if($rootScope.newMsgs.length){
@@ -72,7 +91,9 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 			}
 		});
 	}
-	//checking messages every 10 sec
+	/**
+	 * Checking messages every 10 sec
+	 */
 	var checkNewMsgs = $interval(function(){
 		if($rootScope.isLoggedIn()){
 			$rootScope.newMsgs = new ConversationService.conversation.query({},function(){
@@ -82,7 +103,9 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 			});
 		}
 	},5000);
-	//to redirect to right page after login
+	/**
+	 * Even that is fired on state change to redirect to right page after login
+	 */
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
         if(toState.url != '/login'){
@@ -99,8 +122,14 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	        }
         }
     });
-}]);;var addProperty = angular.module("addProperty",[]);
+}]);;/**
+ * Add property module.
+ */
+var addProperty = angular.module("addProperty",[]);
 addProperty.config(["$stateProvider",function($stateProvider){
+	/**
+	 * State configuration.
+	 */
 	$stateProvider.state("addProperty",{
 		url:"/addProperty",
 		views:{
@@ -338,7 +367,10 @@ addProperty.controller("AddPropertyCtrl",["$scope","$timeout","$state","Property
 		return true;
 	};
 	
-}]);;var chat = angular.module("chat",[]);
+}]);;/**
+ * Chat module.
+ */
+var chat = angular.module("chat",[]);
 chat.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("conversations.chat",{
     	url:"/{bookingId}",
@@ -437,7 +469,10 @@ chat.controller("ChatCtrl",["$scope","ConversationService","$stateParams","$root
 			formObject.$setPristine();
 		});
 	};
-}]);;var conversations = angular.module("conversations",[]);
+}]);;/**
+ * Conversations module.
+ */
+var conversations = angular.module("conversations",[]);
 conversations.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("conversations",{
     	abstract:true,
@@ -473,7 +508,10 @@ conversations.controller("ConversationsCtrl",["$scope","BookingService","$rootSc
 		}
 		return false;
 	};
-}]);;var home = angular.module("home",[]);
+}]);;/**
+ * Home module.
+ */
+var home = angular.module("home",[]);
 
 home.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("home", {
@@ -554,7 +592,10 @@ home.controller("HomeController",["$scope","PropertyService","$state","$filter",
 			}
 		}
 	};
-}]);;var myBookings = angular.module("myBookings",[]);
+}]);;/**
+ * My bookings list module.
+ */
+var myBookings = angular.module("myBookings",[]);
 home.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyBookings",{
 		url:"/showMyBookings",
@@ -627,7 +668,10 @@ myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",
 		$scope.filteredBookings = $filter('filter')($scope.filteredBookings,$scope.showOnlyStatus);
 		$scope.filteredBookings = $filter('sortByCheckInBooking')($scope.filteredBookings,$scope.showOnlyCheckInYear);
     });
-}]);;var myProperties = angular.module("myProperties",[]);
+}]);;/**
+ * My property list module.
+ */
+var myProperties = angular.module("myProperties",[]);
 myProperties.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties",{
 		abstract:true,
@@ -652,10 +696,6 @@ myProperties.config(["$stateProvider",function($stateProvider){
     });
 }]);
 myProperties.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","BookingService", function($scope, PropertyService,BookingService){
-	/*$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	$scope.selectedChartId;
-	$scope.selectedBookingsPropertyId;
-	$scope.selectedYear = moment().year();*/
 	$scope.properties = PropertyService.property.findMyProperties(function(){
 		//generating data for select statistics
 		var currentTime = moment();
@@ -668,7 +708,10 @@ myProperties.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","Boo
 			}
 		}
 	});
-}]);;var myProperty = angular.module("myProperty",[]);
+}]);;/**
+ * My specific property module.
+ */
+var myProperty = angular.module("myProperty",[]);
 myProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail",{
 		url:"/{propertyId}",
@@ -692,7 +735,10 @@ myProperty.controller("ShowMyPropertyCtrl",["$scope", "PropertyService","Booking
 			}
 		}
 	},true);
-}]);;var myPropertyBookings = angular.module("myPropertyBookings",[]);
+}]);;/**
+ * My property booking list module.
+ */
+var myPropertyBookings = angular.module("myPropertyBookings",[]);
 myPropertyBookings.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.bookings",{
 		url:"/bookings",
@@ -874,7 +920,10 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
     	}
     };
     
-}]);;var myPropertyStatistics = angular.module("myPropertyStatistics",[]);
+}]);;/**
+ * My property statistics module.
+ */
+var myPropertyStatistics = angular.module("myPropertyStatistics",[]);
 myPropertyStatistics.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.statistics",{
 		url:"/statistics",
@@ -1012,7 +1061,10 @@ myPropertyStatistics.controller("ShowMyPropertyStatisticsCtrl",["$scope", "Prope
 	$scope.showPropertyAvgGuestCount($scope.avgGuestCountYear);
 	$scope.showPropertyAvgStars($scope.avgStarsYear);
 	$scope.showBookingsAvgLength($scope.avgBookingsLengthYear);
-}]);;var myPropUnDates = angular.module("myPropertyUnavailableDates",[]);
+}]);;/**
+ * My property unavailable dates module.
+ */
+var myPropUnDates = angular.module("myPropertyUnavailableDates",[]);
 myPropUnDates.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.unDates",{
 		url:"/unavailableDates",
@@ -1051,7 +1103,10 @@ myPropUnDates.controller("UnavailableDatesCtrl",["$scope","PropertyService","Boo
 			$scope.datesUpdated = true;
 		});
 	};
-}]);;var updateProperty = angular.module("updateProperty",[]);
+}]);;/**
+ * My property update module.
+ */
+var updateProperty = angular.module("updateProperty",[]);
 updateProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties.detail.update",{
 		url:"/update",
@@ -1249,7 +1304,10 @@ updateProperty.controller("UpdatePropertyCtrl",["$scope","PropertyService","$sta
 		}
 		return true;
 	};
-}]);;var searchProperties = angular.module("searchProperties",[]);
+}]);;/**
+ * Property search module.
+ */
+var searchProperties = angular.module("searchProperties",[]);
 searchProperties.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("queryProperties",{
 		url:"/queryProperties/:address/:country/:city/:admArea/:checkIn/:checkOut/:guestNumber",
@@ -1360,7 +1418,10 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
 	}
-}]);;var login = angular.module("login",[]);
+}]);;/**
+ * Login module.
+ */
+var login = angular.module("login",[]);
 login.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("login",{
 		url:"/login",
@@ -1400,7 +1461,10 @@ login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", f
 			$scope.errorLogIn = true;
 		});
 	};
-}]);;var logout = angular.module("logout",[]);
+}]);;/**
+ * Logout module.
+ */
+var logout = angular.module("logout",[]);
 logout.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("logout",{
 		url:"/logout",
@@ -1416,7 +1480,10 @@ logout.config(["$stateProvider",function($stateProvider){
 }]);
 logout.controller('LogoutCtrl', ["$scope","AccountService","$state","$rootScope",function($scope,AccountService,$state,$rootScope){
     $scope.service = new AccountService.logout();
-}]);;var register = angular.module("register",[]);
+}]);;/**
+ * Register module.
+ */
+var register = angular.module("register",[]);
 register.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("register",{
 		url:"/register",
@@ -1453,7 +1520,10 @@ register.controller("RegisterCtrl",["$scope","AccountService","$state",function(
 		});
 	};
 	
-}]);;var showProperty = angular.module("showProperty",[]);
+}]);;/**
+ * Show property module.
+ */
+var showProperty = angular.module("showProperty",[]);
 showProperty.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showProperty",{
 		url:"/showProperty/{propertyId}/{checkIn}/{checkOut}/{guestNumber}",
@@ -1494,7 +1564,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	
 	$scope.newReview = {};
 	$scope.comment = {};
-	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+	$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){console.log($scope.reviews);});
 	$scope.stars = [1,2,3,4,5];
 	$scope.canSendReviews = new PropertyService.reviews.canSendReviews({propertyId:$stateParams.propertyId});
 	$scope.reviewToComment = 0;
@@ -1509,7 +1579,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		if(parentReviewId == 0){
 			if(typeof $scope.newReview.stars !== 'undefined'){
 				PropertyService.reviews.save({id:$stateParams.propertyId},$scope.newReview,function(data){
-					$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+					var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+						$scope.reviews = reviewsTemp;
+					});
 					$scope.newReview = {};
 					formObject.$setPristine();
 					$scope.starsRequired = false;
@@ -1520,7 +1592,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 		}else{
 			$scope.comment.parentReviewId = parentReviewId;
 			PropertyService.reviews.save({id:$stateParams.propertyId},$scope.comment,function(data){
-				$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+				var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+					$scope.reviews = reviewsTemp;
+				});
 				$scope.comment = {};
 				$scope.reviewToComment = 0;
 				formObject.$setPristine();
@@ -1534,6 +1608,7 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			guestNumber:parseInt($stateParams.guestNumber)
 	};*/
 	$scope.property = new PropertyService.property.get({id:$stateParams.propertyId}, function(){
+		console.log($scope.property);
 		$scope.map.center.latitude = $scope.property.latitude;
 		$scope.map.center.longitude = $scope.property.longitude;
 		$scope.marker = {
@@ -1645,10 +1720,11 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 			}
 		}
 	};
-	//Reviews
 	$scope.deleteReview = function(reviewId){
 		PropertyService.reviews.remove({id:reviewId}, function(){
-			$scope.reviews = new PropertyService.reviews.query({id:$stateParams.propertyId});
+			var reviewsTemp = new PropertyService.reviews.query({id:$stateParams.propertyId},function(){
+				$scope.reviews = reviewsTemp;
+			});
 		});
 	};
 	$scope.canComment = function(reviewId){
@@ -1661,7 +1737,9 @@ showProperty.controller("ShowPropertyCtrl", ["$scope","PropertyService","$resour
 	};
 	
 }]);;var propertyDirective = angular.module("BookingDatesDirective", []);
-
+/**
+ * Check whether check in and check out dates match with each other.
+ */
 propertyDirective.directive('checkDatesMatch', function () {
     var isValid = function(name,date1,date2) {
 		if(typeof date1 === 'undefined' || typeof date2 === 'undefined')
@@ -1739,7 +1817,9 @@ propertyDirective.directive('checkDatesMatch', function () {
         }
     };
 });
-//alternative to $scope.$watch solution
+/**
+ * Directive for conversion from moment date object to string and vice versa
+ */
 propertyDirective.directive('filterDate',["$filter", function($filter){
 	return {
 		require:'ngModel',
@@ -1760,6 +1840,9 @@ propertyDirective.directive('filterDate',["$filter", function($filter){
 		}
 	};
 }]);
+/**
+ * Directive that shows booking price based on check in, check out dates and price per night.
+ */
 propertyDirective.directive('countBookingPrice',function(){
 	return{
 		scope:{
@@ -1802,6 +1885,9 @@ propertyDirective.directive('countBookingPrice',function(){
 		}
 	};
 });;var propertyDirective = angular.module("BookingStatusDirective", []);
+/**
+ * Directive that shows booking status.
+ */
 propertyDirective.directive("showBookingStatus",function(){
 	return{
 		restrict:"E",
@@ -1822,6 +1908,9 @@ propertyDirective.directive("showBookingStatus",function(){
 		}
 	}
 });;var propertyDirective = angular.module("CheckListDirective", []);
+/**
+ * Forms list from check buttons.
+ */
 propertyDirective.directive('checkList',["$parse",function($parse){
 	return{
 		restrict:'A',
@@ -1853,6 +1942,9 @@ propertyDirective.directive('checkList',["$parse",function($parse){
 		}
 	};
 }]);;var propertyDirective = angular.module("DatepickerDirective", []);
+/**
+ * Datepicker directive with possibility of picking multiple dates.
+ */
 propertyDirective.directive("myDatepicker",function(){
 	return {
 		restrict:"E",
@@ -1893,6 +1985,9 @@ propertyDirective.directive("myDatepicker",function(){
 		}
 	};
 });;var propertyDirective = angular.module("GroupBookingsByDateDirective", []);
+/**
+ * Directive that shows check in month in booking list.
+ */
 propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 	return {
 		restrict:"E",
@@ -1928,10 +2023,10 @@ propertyDirective.directive("groupBookingsByDate",["$filter",function($filter){
 		}
 	};
 }]);;var propertyDirective = angular.module("ValidateQueryDirective", []);
-//this directive is used to check whether user has chosen address from the list that is provided by google
-//validates ng-model specified in input
-//http://habrahabr.ru/post/167793/
-//passing STRING of some object (usually giving country)
+
+/**
+ * This directive is used to check whether user has chosen address from the list that is provided by google
+ */
 propertyDirective.directive('validateQuery', function () {
     var isValid = function(query) {
         if(query != '' && typeof query !== 'undefined'){
@@ -1945,10 +2040,8 @@ propertyDirective.directive('validateQuery', function () {
         require:'ngModel',
         link:function (scope, elm, attrs, ngModelCtrl) {
             ngModelCtrl.$parsers.unshift(function (viewValue) {
-            	//this variant cuz we have {{}} in our attribute check-query="{{query}}"
+            	//attrs.$observe because we have {{}} in our attribute check-query="{{query}}"
             	attrs.$observe('validateQuery',function(actualValue){
-            		//можно исопльзовать scope.query??
-            		//scope.$eval to transform from string to javascript object
             		ngModelCtrl.$setValidity('validQuery', isValid(actualValue));
             	});
         		return viewValue;
@@ -1963,6 +2056,9 @@ propertyDirective.directive('validateQuery', function () {
     };
 });;
 var propertyFilters = angular.module("SortingFilters", []);
+/**
+ * Filter that shows only properties with specific facilities.
+ */
 propertyFilters.filter('sortByFacility', function(){
 	return function(properties,facilities){
 		if(!angular.isUndefined(properties) && facilities.length > 0){
@@ -1992,6 +2088,9 @@ propertyFilters.filter('sortByFacility', function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only properties of certain type.
+ */
 propertyFilters.filter('sortByType',function(){
 	return function(properties,types){
 		if(!angular.isUndefined(properties) && types.length > 0){
@@ -2013,6 +2112,9 @@ propertyFilters.filter('sortByType',function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only properties in specific price range.
+ */
 propertyFilters.filter('sortByPrice',function(){
 	return function(properties,prices){
 		if(!angular.isUndefined(properties) && prices.length > 0){
@@ -2036,6 +2138,9 @@ propertyFilters.filter('sortByPrice',function(){
 		return properties;
 	};
 });
+/**
+ * Filter that shows only bookings that were booked in specific year.
+ */
 propertyFilters.filter('sortByYearBooking',function(){
 	return function(bookings,year){
 		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
@@ -2051,6 +2156,9 @@ propertyFilters.filter('sortByYearBooking',function(){
 		return bookings;
 	}
 });
+/**
+ * Filter that shows only bookings with specific check in year.
+ */
 propertyFilters.filter('sortByCheckInBooking',function(){
 	return function(bookings,year){
 		if(!angular.isUndefined(bookings) && !angular.isUndefined(year) && year != ""){
@@ -2066,6 +2174,9 @@ propertyFilters.filter('sortByCheckInBooking',function(){
 		return bookings;
 	}
 });
+/**
+ * Filter for pagination.
+ */
 propertyFilters.filter('startFrom',function(){
 	return function (input, start) {
 		if(!angular.isUndefined(input)){
@@ -2076,10 +2187,6 @@ propertyFilters.filter('startFrom',function(){
 var propertyFilters = angular.module("TruncateFilter", []);
 /**
  * Truncate filter. Truncate till first found space.
- * @Param text
- * @Param limit
- * @Param showMore
- * @return String
  */
 propertyFilters.filter('truncate', function(){
 	return function(text,limit,showMore){
@@ -2117,7 +2224,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                "&password=" + data.password, {
 	                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 	                } ).then(function(data2) {
-	                    //alert("login successful");
 	                    localStorage.setItem("currentUsername", data.username);
 	                    $rootScope.currentUsername = localStorage.getItem("currentUsername");
 	                    localStorage.setItem("authority",data2.data.authority);
@@ -2127,7 +2233,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	    },
 		logout : function(){
 			$http.post(APP_URL+"logout", {}).success(function() {
-			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");
 				localStorage.removeItem("authority");
 				delete $rootScope.currentUsername;
@@ -2207,14 +2312,13 @@ httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', fun
 				$location.path('/accessDenied');
 				break;
 			default:
-				alert("Unknown error occured.");
+				console.log("Unknown error occured.");
 			}
 			return $q.reject(response);
 		}
 	};
 }]);;var propertyService = angular.module("PropertyServiceModule", []);
 propertyService.factory("PropertyService", [ "$resource", "API_URL", function($resource,API_URL) {
-	//earlier was: {id : "@id"}
 	var propertyService = {
 		property: $resource(API_URL+'properties/:id', {}, {
 				find:{

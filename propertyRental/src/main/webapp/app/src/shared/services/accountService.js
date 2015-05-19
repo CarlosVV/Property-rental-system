@@ -15,7 +15,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	                "&password=" + data.password, {
 	                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 	                } ).then(function(data2) {
-	                    //alert("login successful");
 	                    localStorage.setItem("currentUsername", data.username);
 	                    $rootScope.currentUsername = localStorage.getItem("currentUsername");
 	                    localStorage.setItem("authority",data2.data.authority);
@@ -25,7 +24,6 @@ propertyService.factory("AccountService",["$resource","API_URL","$http","$rootSc
 	    },
 		logout : function(){
 			$http.post(APP_URL+"logout", {}).success(function() {
-			    //alert("logout successful");
 				localStorage.removeItem("currentUsername");
 				localStorage.removeItem("authority");
 				delete $rootScope.currentUsername;

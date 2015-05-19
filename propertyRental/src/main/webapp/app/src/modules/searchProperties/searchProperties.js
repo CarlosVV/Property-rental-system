@@ -1,3 +1,6 @@
+/**
+ * Property search module.
+ */
 var searchProperties = angular.module("searchProperties",[]);
 searchProperties.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("queryProperties",{

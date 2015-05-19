@@ -1,3 +1,6 @@
+/**
+ * My property list module.
+ */
 var myProperties = angular.module("myProperties",[]);
 myProperties.config(["$stateProvider",function($stateProvider){
 	$stateProvider.state("showMyProperties",{
@@ -23,10 +26,6 @@ myProperties.config(["$stateProvider",function($stateProvider){
     });
 }]);
 myProperties.controller("ShowMyPropertiesCtrl",["$scope", "PropertyService","BookingService", function($scope, PropertyService,BookingService){
-	/*$scope.bookingsStatuses = BookingService.bookingsStatuses.query();
-	$scope.selectedChartId;
-	$scope.selectedBookingsPropertyId;
-	$scope.selectedYear = moment().year();*/
 	$scope.properties = PropertyService.property.findMyProperties(function(){
 		//generating data for select statistics
 		var currentTime = moment();

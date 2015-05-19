@@ -1,5 +1,11 @@
+/**
+ * Add property module.
+ */
 var addProperty = angular.module("addProperty",[]);
 addProperty.config(["$stateProvider",function($stateProvider){
+	/**
+	 * State configuration.
+	 */
 	$stateProvider.state("addProperty",{
 		url:"/addProperty",
 		views:{

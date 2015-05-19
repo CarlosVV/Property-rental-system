@@ -1,4 +1,7 @@
 var propertyDirective = angular.module("DatepickerDirective", []);
+/**
+ * Datepicker directive with possibility of picking multiple dates.
+ */
 propertyDirective.directive("myDatepicker",function(){
 	return {
 		restrict:"E",
