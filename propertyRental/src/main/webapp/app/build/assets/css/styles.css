@@ -37,7 +37,7 @@ For elements with both the ng-valid and ng-dirty classes
 }
 a.apartmentBlock:hover{
     border-style: solid;
-    border-color: black;
+    border-color: #337AB7;
     border-width: 1px;
 }
 .editPropButton{

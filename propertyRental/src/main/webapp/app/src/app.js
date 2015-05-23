@@ -108,6 +108,7 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	 */
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
+        $rootScope.unknownError = false;
         if(toState.url != '/login'){
 	        $rootScope.returnToState = toState;
 	        $rootScope.returnToStateParams = toStateParams;

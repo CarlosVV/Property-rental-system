@@ -1,15 +1,17 @@
 <div class="container">
 	<h1>Please login</h1>
-	<form name="loginForm" id="loginForm" ng-submit="loginForm.$valid && login()">
+	<form name="loginForm" id="loginForm" ng-submit="loginForm.$valid && login(loginForm)">
 		<div class="errorMsg" ng-if="loginForm.$submitted && errorLogIn">
 			The username or password you have entered is invalid.
 		</div>
 		<div class="form-group">
-			<label>Username:</label> <input type="text" ng-model="userAccount.username"
+			<label>Username:</label> <input type="text" name="username" ng-model="userAccount.username"
+				ng-blur="resetValidity(loginForm)"
 				class="form-control" required />
 		</div>
 		<div class="form-group">
-			<label>Password:</label> <input type="password"
+			<label>Password:</label> <input type="password" name="password"
+				ng-blur="resetValidity(loginForm)"
 				ng-model="userAccount.password" class="form-control" required />
 		</div>
 		<button class="btn btn-success" type="submit">Login</button>

@@ -30,7 +30,7 @@ login.config(["$stateProvider",function($stateProvider){
    });
 }]);
 login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
-	$scope.login = function(){
+	$scope.login = function(formObject){
 		AccountService.login($scope.userAccount).then(function(){
 			if($scope.returnToState){
 				$state.go($scope.returnToState.name, $scope.returnToStateParams);
@@ -39,6 +39,12 @@ login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", f
 			}
 		},function(){
 			$scope.errorLogIn = true;
+			formObject.username.$setValidity("validUsername",false);
+			formObject.password.$setValidity("validPassword",false);
 		});
 	};
+	$scope.resetValidity = function(formObject){
+		formObject.username.$setValidity("validUsername",true);
+		formObject.password.$setValidity("validPassword",true);
+	}
 }]);

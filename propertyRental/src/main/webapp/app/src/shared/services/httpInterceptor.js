@@ -1,6 +1,6 @@
 var httpInterceptor = angular.module('HttpInterceptorService',[]);
 //to intercept both 401 and 403 errors
-httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', function($q, $location) {
+httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location','$rootScope', function($q, $location,$rootScope) {
 	return {
 		response : function(responseData) {
 			return responseData;
@@ -17,6 +17,7 @@ httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', fun
 				break;
 			default:
 				console.log("Unknown error occured.");
+				$rootScope.unknownError = true;
 			}
 			return $q.reject(response);
 		}

@@ -108,6 +108,7 @@ rentalApp.run(["$rootScope","$state","ConversationService","$interval",function(
 	 */
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams, fromState, fromStateParams){
         $rootScope.pageTitle = toState.data.pageTitle + " - Property rental system";
+        $rootScope.unknownError = false;
         if(toState.url != '/login'){
 	        $rootScope.returnToState = toState;
 	        $rootScope.returnToStateParams = toStateParams;
@@ -1448,7 +1449,7 @@ login.config(["$stateProvider",function($stateProvider){
    });
 }]);
 login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", function($scope,AccountService,$state,$rootScope){
-	$scope.login = function(){
+	$scope.login = function(formObject){
 		AccountService.login($scope.userAccount).then(function(){
 			if($scope.returnToState){
 				$state.go($scope.returnToState.name, $scope.returnToStateParams);
@@ -1457,8 +1458,14 @@ login.controller("LoginCtrl",["$scope","AccountService","$state","$rootScope", f
 			}
 		},function(){
 			$scope.errorLogIn = true;
+			formObject.username.$setValidity("validUsername",false);
+			formObject.password.$setValidity("validPassword",false);
 		});
 	};
+	$scope.resetValidity = function(formObject){
+		formObject.username.$setValidity("validUsername",true);
+		formObject.password.$setValidity("validPassword",true);
+	}
 }]);;/**
  * Logout module.
  */
@@ -2288,7 +2295,7 @@ propertyService.factory("ConversationService",["$resource","API_URL",function($r
 	return conversationService;
 }]);;var httpInterceptor = angular.module('HttpInterceptorService',[]);
 //to intercept both 401 and 403 errors
-httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', function($q, $location) {
+httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location','$rootScope', function($q, $location,$rootScope) {
 	return {
 		response : function(responseData) {
 			return responseData;
@@ -2305,6 +2312,7 @@ httpInterceptor.factory('httpErrorResponseInterceptor', [ '$q', '$location', fun
 				break;
 			default:
 				console.log("Unknown error occured.");
+				$rootScope.unknownError = true;
 			}
 			return $q.reject(response);
 		}

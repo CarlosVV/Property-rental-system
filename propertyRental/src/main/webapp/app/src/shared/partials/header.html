@@ -25,8 +25,6 @@
 				<li ng-show="isLoggedIn()"><a ui-sref="conversations.pleaseSelect">Conversations</a></li>
 				<li ng-show="isLoggedIn()"><a ui-sref="showMyBookings">Show my bookings</a></li>
 				<li ng-show="isLoggedIn()"><a ui-sref="showMyProperties.pleaseSelect">Show my props</a></li>
-				<!-- <li ng-show="isLoggedIn()"><a ui-sref="updateProperty({propertyId:1})">Update prop 1</a></li> -->
-				<li><a ui-sref="showProperty({propertyId:1})">Show prop 1</a></li>
 				<li ng-show="isLoggedIn()"><a ui-sref="addProperty">Add property</a></li>
                 <li ng-show="!isLoggedIn()"><a ui-sref="login">Login</a></li>
                 <li ng-show="!isLoggedIn()"><a ui-sref="register">Register</a></li>
@@ -36,3 +34,10 @@
 		</div>
 	</div>
 </nav>
+<div class="container" ng-show="unknownError">
+	<div class="alert alert-danger" role="alert">
+	  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	  <span class="sr-only">Error:</span> 
+	  	Received unknown error from the server!
+	</div>
+</div>

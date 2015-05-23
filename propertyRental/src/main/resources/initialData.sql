@@ -1,9 +1,8 @@
 
 INSERT INTO Authority(id,name,description) VALUES(1,'ROLE_USER','Every registered users have this role.');
-INSERT INTO Authority(id,name,description) VALUES(2,'ROLE_ADMIN','Only admins have this role.');
 
-INSERT INTO UserAccount(username,password,authority_id) VALUES('fuser','u',1);
-INSERT INTO UserAccount(username,password,authority_id) VALUES('suser','s',1);
+INSERT INTO UserAccount(username,password,authority_id) VALUES('FirstUser','f',1);
+INSERT INTO UserAccount(username,password,authority_id) VALUES('SecondUser','s',1);
 
 INSERT INTO PropertyType(id,name,description) VALUES(1,'Apartment','Apartment desc');
 INSERT INTO PropertyType(id,name,description) VALUES(2,'Studio','Studio desc');
@@ -36,19 +35,19 @@ INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(
 INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(2,3);
 INSERT INTO Property_PropertyFacility(property_id,propertyFacilities_id) VALUES(2,5);
 
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-20');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-21');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-20');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-21');
 
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-12');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-13');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-14');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-05-15');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-07-12');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-07-13');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-07-14');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-07-15');
 
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-05');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-06');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-05');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-06');
 
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-03');
-INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-04-04');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-01');
+INSERT INTO UnavailableDate(property_id,when) VALUES(1,'2015-06-03');
 
 INSERT INTO BookingStatus(id,name,description) VALUES(1,'Created','The booking has been created');
 INSERT INTO BookingStatus(id,name,description) VALUES(2,'Payed and accepted','The booking had been payed by the customer and owner accepted it');
@@ -60,8 +59,8 @@ INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, chec
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,2,2,'2015-06-02','2015-06-10',1300,2,'2015-04-09');
 INSERT INTO Booking(userAccount_id, property_id, bookingStatus_id, checkIn, checkOut,price,guestNumber,bookedDate) VALUES(2,1,2,'2015-07-01','2015-07-12',1400,2,'2015-04-11');
 
-INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'VERY NICE PROPERTY 10/10',5,'2015-04-06');
-INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'Didnt like it',2,'2015-05-12');
+INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'Very nice property.',5,'2015-05-11');
+INSERT INTO Review(author_id,property_id,review,stars,addingDate) VALUES(2,1,'Didnt like it',2,'2015-06-05');
 INSERT INTO Review(author_id,property_id,review,parentReview_id,addingDate) VALUES(1,1,'Thank you for good review!',1,'2015-05-16');
 
 INSERT INTO Message(sentDate,message,sender_id,receiver_id,booking_id,receiverRead) VALUES('2011-03-15','Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',1,2,1,false);
