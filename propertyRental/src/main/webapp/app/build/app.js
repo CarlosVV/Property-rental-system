@@ -612,7 +612,7 @@ home.config(["$stateProvider",function($stateProvider){
 }]);
 myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",function($scope,BookingService,$filter){
 	$scope.currentPage = 1;
-    $scope.itemsPerPage = 2;
+    $scope.itemsPerPage = 5;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
     $scope.showOnlyCheckInYear = "";
@@ -752,7 +752,7 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 	$scope.availableYears = [];
 	$scope.checkInAvailableYears = [];
 	$scope.currentPage = 1;
-    $scope.itemsPerPage = 2;
+    $scope.itemsPerPage = 5;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
     $scope.showOnlyCheckInYear = "";
@@ -1348,6 +1348,8 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 		},
 	];
 	$scope.sorting = {propertyFacilities:[],propertyTypes:[],prices:[]};
+	$scope.currentPage = 1;
+    $scope.itemsPerPage = 5;
 	//for callendar
 	//if no check in/check out specified, then undefined and no weird 01/01/0001 on calendar
 	var checkInTemp = undefined;
@@ -1406,17 +1408,27 @@ searchProperties.controller("SearchPropertiesCtrl",["$scope", "PropertyService",
 			}
 		}
 	});
-	$scope.properties = PropertyService.property.find($scope.query);
+	$scope.properties = PropertyService.property.find($scope.query,function(){
+		$scope.filteredProperties = $scope.properties;
+	});
 	$scope.queryProperties = function(query){
 		var newUrl = "/queryProperties/"+$scope.query.address+"/"+$scope.query.country+"/"+$scope.query.city+"/"+$scope.query.administrativeArea+"/"+encodeURIComponent(moment($scope.query.checkIn).format('DD/MM/YYYY'))+"/"+encodeURIComponent(moment($scope.query.checkOut).format('DD/MM/YYYY'))+"/"+$scope.query.guestNumber;
 		$location.path(newUrl).replace();
-		$scope.properties = PropertyService.property.find($scope.query);
-	}
+		$scope.properties = PropertyService.property.find($scope.query,function(){
+			$scope.filteredProperties = $scope.properties;
+		});
+	};
 	$scope.resetQuery = function(){
 		$scope.query.city = "";
 		$scope.query.administrativeArea = "";
 		$scope.query.country = "";
-	}
+	};
+	$scope.$watch('sorting',function(){
+    	$scope.currentPage = 1;
+		$scope.filteredProperties = $filter('sortByFacility')($scope.properties,$scope.sorting.propertyFacilities);
+		$scope.filteredProperties = $filter('sortByType')($scope.filteredProperties,$scope.sorting.propertyTypes);
+		$scope.filteredProperties = $filter('sortByPrice')($scope.filteredProperties,$scope.sorting.prices);
+    },true);
 }]);;/**
  * Login module.
  */

@@ -19,7 +19,7 @@ home.config(["$stateProvider",function($stateProvider){
 }]);
 myBookings.controller("ShowMyBookingsCtrl",["$scope","BookingService","$filter",function($scope,BookingService,$filter){
 	$scope.currentPage = 1;
-    $scope.itemsPerPage = 2;
+    $scope.itemsPerPage = 5;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
     $scope.showOnlyCheckInYear = "";

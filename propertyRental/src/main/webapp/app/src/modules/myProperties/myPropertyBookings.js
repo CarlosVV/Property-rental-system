@@ -16,7 +16,7 @@ myPropertyBookings.controller("ShowMyPropertyBookingsCtrl",["$scope", "PropertyS
 	$scope.availableYears = [];
 	$scope.checkInAvailableYears = [];
 	$scope.currentPage = 1;
-    $scope.itemsPerPage = 2;
+    $scope.itemsPerPage = 5;
     $scope.showOnlyStatus = "";
     $scope.showOnlyYear = "";
     $scope.showOnlyCheckInYear = "";

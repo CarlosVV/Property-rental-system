@@ -66,7 +66,8 @@
 		</div>
 	</div>
 	<div class="col-md-9">
-		<div class="row" ng-repeat="property in properties | sortByFacility : sorting.propertyFacilities | sortByType : sorting.propertyTypes | sortByPrice : sorting.prices">
+		<!-- <div class="row" ng-repeat="property in properties | sortByFacility : sorting.propertyFacilities | sortByType : sorting.propertyTypes | sortByPrice : sorting.prices"> -->
+		<div class="row" ng-repeat="property in filteredProperties | startFrom:(currentPage - 1)*itemsPerPage | limitTo:itemsPerPage">
 			<a ui-sref="showProperty({propertyId : property.id,checkIn:queryToPass.checkIn,checkOut:queryToPass.checkOut,guestNumber:query.guestNumber})" class="col-md-12 apartmentBlock">
 				<div class="apartmentTitle">{{property.title}}</div>
 				<div class="apartmentLocation">{{property.city}}, {{property.administrativeArea}}, {{property.country}}</div>
@@ -76,6 +77,16 @@
 					<li class="apartmentLocation propFacMiniList" ng-repeat="facility in property.propertyFacilities">&bull; {{facility.name}} </li>
 				</ul>
 			</a>
+		</div>
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-8">
+				<pagination ng-if="properties.$resolved && properties.length" boundary-links="true" total-items="filteredProperties.length"
+	                ng-model="$parent.currentPage" class="pagination-sm"
+	                previous-text="&lsaquo;" next-text="&rsaquo;"
+	                first-text="&laquo;" last-text="&raquo;"
+	            	items-per-page="itemsPerPage"></pagination>
+			</div>
 		</div>
 	</div>
 </div>

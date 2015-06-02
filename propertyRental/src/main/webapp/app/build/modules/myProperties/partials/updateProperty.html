@@ -75,7 +75,7 @@
 				    <div ng-show="photosBackup.length > 0" class="photoList col-md-8">
 			    		<p>Deleted photos:</p>
 						<div class="row" ng-repeat="p in photosBackup">
-							<button ng-click="restorePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							<button ng-click="restorePhoto(p)" type="button" class="deletePhoto btn btn-primary" aria-label="Left Align">
 							  <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
 							</button>
 							<img ng-src="../uploads/photos/{{p.path}}" class="thumbnail thumbnail-backup">
@@ -85,7 +85,7 @@
 				    <div ng-show="photosToUpload.length > 0" class="photoList col-md-8">
 			    		<p>Photos:</p>
 						<div class="row" ng-repeat="p in photosToUpload">
-							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
 							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 							<img ng-if="p.path" ng-src="../uploads/photos/{{p.path}}" class="thumbnail">

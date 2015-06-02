@@ -118,7 +118,7 @@
 				    <div ng-no-file-drop>File Drag/Drop is not supported for this browser</div>
 				    <div ng-show="photosToUpload.length > 0" class="photoList col-md-8">
 						<div class="row" ng-repeat="p in photosToUpload">
-							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-default" aria-label="Left Align">
+							<button ng-click="removePhoto(p)" type="button" class="deletePhoto btn btn-danger" aria-label="Left Align">
 							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 							<img ng-show="p.dataUrl" ng-src="{{p.dataUrl}}" class="thumbnail">

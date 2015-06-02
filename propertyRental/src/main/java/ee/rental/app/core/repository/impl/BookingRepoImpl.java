@@ -51,7 +51,7 @@ public class BookingRepoImpl implements BookingRepo{
 
 	public List<Booking> findBookingsByAccount(String username) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.userAccount.username=:username ORDER BY id DESC");
+		Query query = session.createQuery("SELECT b FROM Booking b WHERE b.userAccount.username=:username ORDER BY checkIn DESC");
 		query.setParameter("username", username);
 		List<Booking> result = (List<Booking>) query.list();
 		session.flush();
