@@ -4,6 +4,11 @@ The project is made as part of my bachelor's thesis "Web application front end a
 
 Demo: http://imbi.ld.ttu.ee:443/propertyRental
 
+######Most properties are located in Tallinn, Estonia.
+######Sample users' credentials: 
+######Username: FirstUser Password: f
+######Username: SecondUser Password: s
+
 #### Main technologies used: 
 ##### Server-side: 
 1. Spring MVC  
